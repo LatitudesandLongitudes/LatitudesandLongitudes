@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-10">
+    <div class="max-w-2xl mx-auto bg-white p-10 rounded-3xl shadow-lg">
+        <h1 class="font-bold text-2xl mb-8">Update Your Journey</h1>
+        <div class="space-y-6">
+            <input type="text" id="title" placeholder="Trip Title (e.g., Goa in a New Light)" class="w-full p-4 border rounded-xl">
+            <input type="text" id="img" placeholder="Hero Image URL" class="w-full p-4 border rounded-xl">
+            <textarea id="story" placeholder="Write your story here..." class="w-full p-4 border rounded-xl h-40"></textarea>
+            <button id="saveBtn" class="w-full bg-amber-600 text-white py-4 rounded-xl font-bold uppercase tracking-widest">Publish Changes</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAecvrfHyfXRGF3kkr-nL2vEhyIn4tZmU0",
+            authDomain: "latitudesandlongitudes-3f37b.firebaseapp.com",
+            projectId: "latitudesandlongitudes-3f37b",
+            databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com/",
+            appId: "1:831088196667:web:3b54c623a82d04febbf01e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        document.getElementById('saveBtn').onclick = () => {
+            set(ref(db, 'tripData'), {
+                title: document.getElementById('title').value,
+                story: document.getElementById('story').value,
+                heroImg: document.getElementById('img').value
+            }).then(() => alert("Your journey has been updated live!"));
+        };
+    </script>
+</body>
+</html>

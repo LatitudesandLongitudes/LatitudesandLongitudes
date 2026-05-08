@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#faf9f6] h-screen flex items-center justify-center">
+    <div class="max-w-md w-full bg-white p-10 rounded-[30px] shadow-sm border border-gray-100">
+        <h2 class="text-center font-bold uppercase tracking-widest text-xs mb-8">Admin Access</h2>
+        <form id="loginForm" class="space-y-4">
+            <input type="email" id="email" placeholder="Email" class="w-full p-4 bg-gray-50 rounded-xl outline-none border border-gray-100 focus:border-amber-500">
+            <input type="password" id="pass" placeholder="Password" class="w-full p-4 bg-gray-50 rounded-xl outline-none border border-gray-100 focus:border-amber-500">
+            <button class="w-full bg-black text-white py-4 rounded-xl font-bold uppercase tracking-widest text-[10px]">Login</button>
+        </form>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAecvrfHyfXRGF3kkr-nL2vEhyIn4tZmU0",
+            authDomain: "latitudesandlongitudes-3f37b.firebaseapp.com",
+            projectId: "latitudesandlongitudes-3f37b",
+            appId: "1:831088196667:web:3b54c623a82d04febbf01e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        document.getElementById('loginForm').onsubmit = (e) => {
+            e.preventDefault();
+            signInWithEmailAndPassword(auth, email.value, pass.value)
+                .then(() => { window.location.href = "admin.html"; })
+                .catch(err => alert("Access Denied: " + err.message));
+        };
+    </script>
+</body>
+</html>

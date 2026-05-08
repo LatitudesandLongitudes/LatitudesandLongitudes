@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latitudes and Longitudes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Montserrat:wght@200;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --sand-bg: #faf9f6; --warm-earth: #8d5d46; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--sand-bg); color: #2d2a26; }
+        .serif { font-family: 'Cormorant Garamond', serif; }
+        .dusty-overlay { background: linear-gradient(to bottom, rgba(141, 93, 70, 0.2), rgba(30, 20, 15, 0.7)); }
+    </style>
+</head>
+<body>
+    <nav class="fixed w-full z-50 bg-[#faf9f6]/80 backdrop-blur-md px-10 py-6 flex justify-between items-center border-b border-[#e8e4db]">
+        <div class="flex flex-col">
+            <span class="serif text-2xl font-bold tracking-tighter uppercase">Latitudes and Longitudes.</span>
+        </div>
+        <a href="login.html" class="text-[10px] uppercase tracking-widest font-bold">Admin</a>
+    </nav>
+
+    <header class="relative h-screen flex items-center justify-center overflow-hidden">
+        <img id="hero-img" src="" class="absolute inset-0 w-full h-full object-cover">
+        <div class="absolute inset-0 dusty-overlay"></div>
+        <div class="relative text-center text-white px-4">
+            <h1 id="main-title" class="serif text-7xl md:text-9xl italic leading-none">Loading...</h1>
+        </div>
+    </header>
+
+    <section class="max-w-4xl mx-auto py-32 px-6 text-center">
+        <p id="narrative" class="serif text-3xl md:text-4xl leading-relaxed text-[#4a453e] italic">
+            Fetching your story from coordinates...
+        </p>
+    </section>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAecvrfHyfXRGF3kkr-nL2vEhyIn4tZmU0",
+            authDomain: "latitudesandlongitudes-3f37b.firebaseapp.com",
+            projectId: "latitudesandlongitudes-3f37b",
+            storageBucket: "latitudesandlongitudes-3f37b.firebasestorage.app",
+            databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com/",
+            messagingSenderId: "831088196667",
+            appId: "1:831088196667:web:3b54c623a82d04febbf01e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        onValue(ref(db, 'tripData'), (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                document.getElementById('main-title').innerText = data.title;
+                document.getElementById('narrative').innerText = data.story;
+                document.getElementById('hero-img').src = data.heroImg;
+            }
+        });
+    </script>
+</body>
+</html>
