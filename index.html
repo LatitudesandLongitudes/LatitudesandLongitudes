@@ -1,16 +1,15 @@
 <!DOCTYPE html>
-<html lang="ml">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Latitudes and Longitudes</title>
+    <title>Latitudes and Longitudes | Travel Journal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Montserrat:wght@200;400;500&display=swap" rel="stylesheet">
     <style>
         :root {
             --warm-white: #faf9f6;
             --dusty-earth: #8d5d46;
-            --muted-gold: #c5a358;
             --charcoal: #2d2a26;
         }
         body { 
@@ -20,21 +19,19 @@
             -webkit-font-smoothing: antialiased;
         }
         .serif { font-family: 'Cormorant Garamond', serif; }
-        
-        /* അലോങ് ഡസ്റ്റി റോഡ്‌സ് സ്റ്റൈൽ ഹീറോ സെക്ഷൻ */
         .hero-image {
-            height: 90vh;
-            background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), 
+            height: 85vh;
+            background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.3)), 
                         url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
         }
+        .post-animation { transition: opacity 1s ease, transform 1s ease; }
     </style>
 </head>
 <body>
 
-    <!-- നവിഗേഷൻ (Along Dusty Roads ലേഔട്ട്) -->
     <nav class="absolute w-full z-50 px-10 py-12 flex justify-between items-center text-white">
         <div class="flex flex-col">
             <h1 class="serif text-3xl font-light tracking-tighter uppercase leading-none">Latitudes and Longitudes.</h1>
@@ -46,23 +43,24 @@
         </div>
     </nav>
 
-    <!-- ഫുൾ സ്ക്രീൻ ഹീറോ -->
     <header class="hero-image flex items-center justify-center text-white text-center">
         <div class="max-w-3xl px-6">
-            <span class="text-[10px] tracking-[0.6em] uppercase mb-6 block">Current Chapter: The American West</span>
-            <h2 class="serif text-6xl md:text-9xl italic leading-tight">Beyond the <br> Horizon.</h2>
+            <span class="text-[10px] tracking-[0.6em] uppercase mb-6 block">Documenting Life Across Coordinates</span>
+            <h2 class="serif text-6xl md:text-8xl italic leading-tight">Stories from <br> the Road.</h2>
         </div>
     </header>
 
-    <!-- ജേർണൽ ലിസ്റ്റ് -->
     <main id="journal-feed" class="max-w-5xl mx-auto py-32 px-6">
-        <!-- ഡാറ്റാ ഇവിടെ വരും -->
         <div id="posts-loading" class="text-center py-20">
-            <p class="serif text-2xl italic opacity-30">Preparing the pages...</p>
+            <p class="serif text-2xl italic opacity-30 tracking-widest">Preparing the journal...</p>
         </div>
     </main>
 
-    <!-- ഫയർബേസ് കണക്ഷൻ -->
+    <footer class="py-20 border-t border-stone-200 text-center">
+        <p class="serif text-xl italic opacity-60 mb-4">"We travel not to escape life, but for life not to escape us."</p>
+        <p class="text-[9px] tracking-[0.5em] uppercase opacity-40">Latitudes & Longitudes &copy; 2026</p>
+    </footer>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -91,23 +89,26 @@
                     });
                     
                     const article = document.createElement('article');
-                    article.className = 'grid md:grid-cols-2 gap-16 items-center mb-40 opacity-0 transition-opacity duration-1000';
+                    article.className = 'grid md:grid-cols-2 gap-16 items-center mb-40 opacity-0 transform translate-y-10 post-animation';
                     article.innerHTML = `
                         <div class="overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&q=80" 
-                                 class="w-full h-[500px] object-cover grayscale-[20%] hover:grayscale-0 transition-all duration-700">
+                            <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&q=80" 
+                                 class="w-full h-[500px] object-cover hover:scale-105 transition-transform duration-1000">
                         </div>
                         <div class="text-left">
                             <span class="text-[9px] tracking-[0.4em] uppercase opacity-40 mb-4 block">${postDate}</span>
                             <h3 class="serif text-5xl md:text-6xl mb-6 text-[#8d5d46] italic leading-tight">${post.title.toLowerCase()}</h3>
-                            <p class="text-stone-500 leading-relaxed text-base font-light max-w-sm mb-8">
+                            <p class="text-stone-500 leading-relaxed text-base font-light mb-8">
                                 ${post.content}
                             </p>
-                            <a href="#" class="text-[10px] tracking-[0.3em] uppercase font-bold border-b border-charcoal pb-2">Read Story</a>
+                            <a href="#" class="text-[10px] tracking-[0.3em] uppercase font-bold border-b border-charcoal pb-2 hover:opacity-50 transition-opacity">Read Story</a>
                         </div>
                     `;
                     feed.appendChild(article);
-                    setTimeout(() => article.style.opacity = '1', 100);
+                    setTimeout(() => {
+                        article.style.opacity = '1';
+                        article.style.transform = 'translateY(0)';
+                    }, 100);
                 });
             }
         });
