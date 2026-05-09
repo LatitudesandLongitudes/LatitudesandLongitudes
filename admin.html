@@ -2,85 +2,54 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Architect | Latitudes & Longitudes</title>
+    <title>Admin Architect | Control Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #faf9f6; font-family: 'Montserrat', sans-serif; color: #2d2a26; }
-        .serif { font-family: 'Cormorant Garamond', serif; }
-        .card { background: white; border: 1px solid #e0dbd1; padding: 1.5rem; margin-bottom: 1rem; }
-        label { display: block; font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.6; margin-bottom: 4px; }
-        input, textarea, select { width: 100%; border: 1px solid #eee; padding: 8px; font-size: 14px; margin-bottom: 10px; }
+        body { background-color: #faf9f6; font-family: 'Montserrat', sans-serif; }
+        .input-box { border: 1px solid #e0dbd1; padding: 12px; width: 100%; margin-bottom: 15px; border-radius: 2px; }
+        label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.5; margin-bottom: 5px; display: block; }
     </style>
 </head>
-<body class="p-6 md:p-12">
-    <div class="max-w-6xl mx-auto">
-        <header class="mb-12 border-b border-stone-200 pb-6 flex justify-between items-end">
-            <div>
-                <h1 class="serif text-5xl text-[#8d5d46]">Travel Architect</h1>
-                <p class="text-[10px] tracking-[0.3em] uppercase opacity-50">Manage Geography & Itineraries</p>
+<body class="p-8 md:p-20">
+    <div class="max-w-4xl mx-auto">
+        <div class="flex justify-between items-end border-b border-stone-200 pb-8 mb-12">
+            <h1 class="serif text-5xl text-[#8d5d46]">Admin Architect</h1>
+            <a href="index.html" class="text-[10px] tracking-widest uppercase opacity-40 hover:opacity-100">← Back to Site</a>
+        </div>
+
+        <div class="bg-white p-8 border border-stone-200 mb-12 shadow-sm">
+            <h2 class="serif text-2xl mb-8 italic">Add New Narrative</h2>
+            <div class="grid grid-cols-2 gap-6">
+                <div><label>Trip Name</label><input type="text" id="tripName" class="input-box"></div>
+                <div><label>Coordinates</label><input type="text" id="tripCoords" class="input-box"></div>
+                <div>
+                    <label>Continent</label>
+                    <select id="tripContinent" class="input-box">
+                        <option value="North America">North America</option>
+                        <option value="Europe">Europe</option>
+                        <option value="Asia">Asia</option>
+                    </select>
+                </div>
+                <div><label>Country</label><input type="text" id="tripCountry" class="input-box"></div>
             </div>
-            <a href="index.html" class="text-[10px] tracking-widest uppercase border border-stone-300 px-4 py-2 hover:bg-black hover:text-white transition-all">View Live Site</a>
-        </header>
+            <label>Cover Photo URL</label><input type="text" id="tripPhoto" class="input-box">
+            <label>The Story</label><textarea id="tripStory" class="input-box h-32"></textarea>
+            <button onclick="saveTrip()" class="w-full bg-[#8d5d46] text-white py-4 uppercase tracking-[0.4em] text-[10px] hover:bg-black transition-colors">Publish to Archive</button>
+        </div>
 
-        <div class="grid md:grid-cols-2 gap-12">
-            <section>
-                <h2 class="serif text-2xl mb-4 font-bold">1. Main Story & Geography</h2>
-                <div class="card">
-                    <label>Place Name</label>
-                    <input type="text" id="tripName" placeholder="e.g. Colorado Road Trip">
-                    
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label>Continent</label>
-                            <select id="tripContinent">
-                                <option value="North America">North America</option>
-                                <option value="Europe">Europe</option>
-                                <option value="Asia">Asia</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>Country</label>
-                            <input type="text" id="tripCountry" placeholder="e.g. USA">
-                        </div>
-                    </div>
-
-                    <label>Coordinates & Map URL</label>
-                    <input type="text" id="tripCoords" placeholder="39.55° N, 105.78° W">
-                    <input type="text" id="tripMap" placeholder="Google Maps Link">
-
-                    <label>Main Photo URL</label>
-                    <input type="text" id="tripPhoto" placeholder="Unsplash/Direct link">
-
-                    <label>The Story (Narration)</label>
-                    <textarea id="tripStory" rows="4"></textarea>
-                    
-                    <button onclick="saveTrip()" class="w-full bg-[#8d5d46] text-white py-3 text-[10px] tracking-widest uppercase mt-4">Save Trip Essentials</button>
-                </div>
-
-                <h2 class="serif text-2xl mt-12 mb-4 font-bold">2. Add Daily Itinerary</h2>
-                <div class="card bg-stone-50">
-                    <label>Select Saved Trip</label>
-                    <select id="tripSelect"></select>
-                    <label>Day Number/Heading</label>
-                    <input type="text" id="dayTitle" placeholder="Day 1: Arrival">
-                    <label>Details (Food, Stay, Tickets, Notes)</label>
-                    <textarea id="dayContent" rows="6" placeholder="Food: Small heading... Stay: Details..."></textarea>
-                    <button onclick="addDay()" class="w-full bg-black text-white py-3 text-[10px] tracking-widest uppercase mt-2">Attach Day</button>
-                </div>
-            </section>
-
-            <section>
-                <h2 class="serif text-2xl mb-4 font-bold">Archive Management</h2>
-                <div id="itinerary-list" class="space-y-4"></div>
-            </section>
+        <div class="bg-stone-100 p-8 border border-stone-200">
+            <h2 class="serif text-2xl mb-8 italic">Build Detailed Itinerary</h2>
+            <label>Select Parent Trip</label><select id="tripSelect" class="input-box"></select>
+            <label>Day / Sub-Heading</label><input type="text" id="dayTitle" class="input-box" placeholder="e.g. Day 1: Exploring Denver">
+            <label>Daily Details</label><textarea id="dayContent" class="input-box h-48" placeholder="Food: ..., Stay: ..., Notes: ..."></textarea>
+            <button onclick="addDay()" class="w-full bg-black text-white py-4 uppercase tracking-[0.4em] text-[10px]">Add Day to Itinerary</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, set, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAecvrfHyFXRGF3kkr-nL2vEhyIn4tZmU0",
@@ -90,33 +59,28 @@
             messagingSenderId: "831088196667",
             appId: "1:831088196667:web:3b54c623a82d04febbf01e"
         };
-
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
         window.saveTrip = function() {
-            const newRef = push(ref(db, 'itineraries'));
-            set(newRef, {
+            const tripRef = push(ref(db, 'itineraries'));
+            set(tripRef, {
                 name: document.getElementById('tripName').value,
+                coords: document.getElementById('tripCoords').value,
                 continent: document.getElementById('tripContinent').value,
                 country: document.getElementById('tripCountry').value,
-                coords: document.getElementById('tripCoords').value,
-                map: document.getElementById('tripMap').value,
                 photo: document.getElementById('tripPhoto').value,
-                story: document.getElementById('tripStory').value,
-                timestamp: new Date().toISOString()
-            });
+                story: document.getElementById('tripStory').value
+            }).then(() => { alert("Story Saved!"); location.reload(); });
         };
 
         onValue(ref(db, 'itineraries'), (snapshot) => {
             const data = snapshot.val();
             const select = document.getElementById('tripSelect');
-            const list = document.getElementById('itinerary-list');
-            select.innerHTML = ''; list.innerHTML = '';
+            select.innerHTML = '<option>Select a trip...</option>';
             if(data) {
                 Object.keys(data).forEach(id => {
                     select.innerHTML += `<option value="${id}">${data[id].name}</option>`;
-                    list.innerHTML += `<div class="card"><strong>${data[id].name}</strong><br><button onclick="deleteTrip('${id}')" class="text-red-500 text-[10px]">Delete</button></div>`;
                 });
             }
         });
@@ -127,10 +91,8 @@
             set(dayRef, {
                 title: document.getElementById('dayTitle').value,
                 content: document.getElementById('dayContent').value
-            }).then(() => alert("Day added!"));
+            }).then(() => alert("Day Added!"));
         };
-
-        window.deleteTrip = (id) => confirm("Delete Trip?") && remove(ref(db, `itineraries/${id}`));
     </script>
 </body>
 </html>
