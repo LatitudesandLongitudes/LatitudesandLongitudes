@@ -1,73 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Latitudes and Longitudes | Our Travels</title>
+    <title>Latitudes and Longitudes</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Montserrat:wght@200;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Montserrat:wght@200;400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --sand-bg: #faf9f6;
-            --earth-text: #8d5d46;
-            --gold-accent: #c5a358;
-            --deep-charcoal: #2d2a26;
+            --warm-white: #faf9f6;
+            --dusty-earth: #8d5d46;
+            --muted-gold: #c5a358;
+            --charcoal: #2d2a26;
         }
         body { 
-            background-color: var(--sand-bg); 
-            color: var(--deep-charcoal);
+            background-color: var(--warm-white); 
+            color: var(--charcoal);
             font-family: 'Montserrat', sans-serif;
-            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
         }
         .serif { font-family: 'Cormorant Garamond', serif; }
-        .post-card {
-            border-bottom: 1px solid #e8e4db;
-            transition: all 0.5s ease;
+        
+        /* അലോങ് ഡസ്റ്റി റോഡ്‌സ് സ്റ്റൈൽ ഹീറോ സെക്ഷൻ */
+        .hero-image {
+            height: 90vh;
+            background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), 
+                        url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
-        .fade-in { animation: fadeIn 1.5s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <!-- നവിഗേഷൻ ബാർ -->
-    <nav class="fixed w-full z-50 bg-[#faf9f6]/80 backdrop-blur-md px-8 py-6 flex justify-between items-center border-b border-[#e8e4db]">
+    <!-- നവിഗേഷൻ (Along Dusty Roads ലേഔട്ട്) -->
+    <nav class="absolute w-full z-50 px-10 py-12 flex justify-between items-center text-white">
         <div class="flex flex-col">
-            <h1 class="serif text-2xl font-bold tracking-tighter uppercase leading-none">Latitudes and Longitudes.</h1>
-            <p class="text-[9px] tracking-[0.4em] uppercase opacity-50 mt-1">A Couple's Journey in Coordinates</p>
+            <h1 class="serif text-3xl font-light tracking-tighter uppercase leading-none">Latitudes and Longitudes.</h1>
+            <p class="text-[9px] tracking-[0.5em] uppercase opacity-80 mt-2">The Couple's Archive</p>
         </div>
-        <div class="flex items-center gap-6">
-            <a href="admin.html" class="text-[10px] tracking-widest uppercase border border-current px-4 py-1.5 hover:bg-[#2d2a26] hover:text-white transition-all">Admin Mode</a>
+        <div class="hidden md:flex gap-10 text-[11px] tracking-[0.3em] uppercase font-medium">
+            <a href="index.html" class="hover:opacity-60 transition-opacity">Journal</a>
+            <a href="admin.html" class="hover:opacity-60 transition-opacity">Admin</a>
         </div>
     </nav>
 
-    <!-- ഹീറോ സെക്ഷൻ -->
-    <header class="relative h-[70vh] flex items-center justify-center overflow-hidden">
-        <div class="text-center z-10 px-6 fade-in">
-            <span class="text-[10px] tracking-[0.5em] uppercase opacity-60 mb-4 block">Current Location: Kannur, India</span>
-            <h2 class="serif text-6xl md:text-8xl italic text-[#8d5d46] leading-tight">Stories from <br> the Road.</h2>
+    <!-- ഫുൾ സ്ക്രീൻ ഹീറോ -->
+    <header class="hero-image flex items-center justify-center text-white text-center">
+        <div class="max-w-3xl px-6">
+            <span class="text-[10px] tracking-[0.6em] uppercase mb-6 block">Current Chapter: The American West</span>
+            <h2 class="serif text-6xl md:text-9xl italic leading-tight">Beyond the <br> Horizon.</h2>
         </div>
     </header>
 
-    <!-- യാത്രാ വിവരണങ്ങൾ ഇവിടെ വരും (Dynamic Content) -->
-    <main id="journal-container" class="max-w-3xl mx-auto px-6 pb-32 space-y-32">
-        <!-- ഡാറ്റാ ലോഡ് ചെയ്യുമ്പോൾ കാണിക്കുന്ന മെസ്സേജ് -->
-        <div class="text-center py-20">
-            <p class="serif text-2xl italic opacity-40 animate-pulse">Gathering memories...</p>
+    <!-- ജേർണൽ ലിസ്റ്റ് -->
+    <main id="journal-feed" class="max-w-5xl mx-auto py-32 px-6">
+        <!-- ഡാറ്റാ ഇവിടെ വരും -->
+        <div id="posts-loading" class="text-center py-20">
+            <p class="serif text-2xl italic opacity-30">Preparing the pages...</p>
         </div>
     </main>
-
-    <footer class="py-20 border-t border-[#e8e4db] text-center">
-        <p class="serif text-xl italic opacity-60 mb-2">"The journey is the destination."</p>
-        <p class="text-[10px] tracking-widest uppercase opacity-40">Latitudes & Longitudes © 2026</p>
-    </footer>
 
     <!-- ഫയർബേസ് കണക്ഷൻ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // image_9.png-ൽ നിന്നുള്ള നിങ്ങളുടെ ഫയർബേസ് കോൺഫിഗറേഷൻ
         const firebaseConfig = {
             apiKey: "AIzaSyAecvrfHyFXRGF3kkr-nL2vEhyIn4tZmU0",
             authDomain: "latitudesandlongitudes-3f37b.firebaseapp.com",
@@ -79,36 +78,37 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        const journalContainer = document.getElementById('journal-container');
+        const feed = document.getElementById('journal-feed');
 
-        // ഡാറ്റാബേസിൽ നിന്ന് യാത്രകൾ എടുക്കുന്നു
         onValue(ref(db, 'posts'), (snapshot) => {
             const data = snapshot.val();
-            journalContainer.innerHTML = '';
+            feed.innerHTML = '';
             
             if (data) {
-                // പുത്തൻ പോസ്റ്റുകൾ മുകളിൽ വരാൻ വേണ്ടി റിവേഴ്സ് ചെയ്യുന്നു
                 Object.values(data).reverse().forEach(post => {
                     const postDate = new Date(post.date).toLocaleDateString('en-US', { 
-                        year: 'numeric', month: 'long', day: 'numeric' 
+                        year: 'numeric', month: 'long' 
                     });
                     
-                    const section = document.createElement('article');
-                    section.className = 'post-card text-center pb-24 fade-in';
-                    section.innerHTML = `
-                        <div class="mb-8">
-                             <span class="text-[10px] tracking-[0.4em] uppercase opacity-40">${postDate}</span>
-                             <div class="h-[1px] w-8 bg-[#c5a358] mx-auto mt-4"></div>
+                    const article = document.createElement('article');
+                    article.className = 'grid md:grid-cols-2 gap-16 items-center mb-40 opacity-0 transition-opacity duration-1000';
+                    article.innerHTML = `
+                        <div class="overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&q=80" 
+                                 class="w-full h-[500px] object-cover grayscale-[20%] hover:grayscale-0 transition-all duration-700">
                         </div>
-                        <h3 class="serif text-4xl md:text-6xl mb-8 text-[#8d5d46] lowercase italic">${post.title}</h3>
-                        <p class="text-stone-600 leading-relaxed text-lg serif italic max-w-xl mx-auto px-4">
-                            ${post.content}
-                        </p>
+                        <div class="text-left">
+                            <span class="text-[9px] tracking-[0.4em] uppercase opacity-40 mb-4 block">${postDate}</span>
+                            <h3 class="serif text-5xl md:text-6xl mb-6 text-[#8d5d46] italic leading-tight">${post.title.toLowerCase()}</h3>
+                            <p class="text-stone-500 leading-relaxed text-base font-light max-w-sm mb-8">
+                                ${post.content}
+                            </p>
+                            <a href="#" class="text-[10px] tracking-[0.3em] uppercase font-bold border-b border-charcoal pb-2">Read Story</a>
+                        </div>
                     `;
-                    journalContainer.appendChild(section);
+                    feed.appendChild(article);
+                    setTimeout(() => article.style.opacity = '1', 100);
                 });
-            } else {
-                journalContainer.innerHTML = '<p class="text-center serif text-xl opacity-40">No entries yet. Add your first trip!</p>';
             }
         });
     </script>
