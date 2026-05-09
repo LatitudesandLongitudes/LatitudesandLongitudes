@@ -3,85 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Latitudes and Longitudes</title>
+    <title>Latitudes & Longitudes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,400&family=Montserrat:wght@200;400&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #faf9f6; --text: #2d2a26; --accent: #8d5d46; }
+        :root { --bg: #faf9f6; --text: #2d2a26; --accent: #8d5d46; --border: #e0dbd1; }
         body { background-color: var(--bg); color: var(--text); font-family: 'Montserrat', sans-serif; }
         .serif { font-family: 'Cormorant Garamond', serif; }
-        
-        /* Hero Background Styling */
+        .mix-nav { mix-blend-mode: difference; color: white; }
         .hero-bg {
             background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), 
-                        url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=2070'); /* Replace with your couple photo */
-            background-size: cover;
-            background-position: center;
-            height: 100vh;
-            filter: sepia(15%);
+                        url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070');
+            background-size: cover; background-position: center; height: 100vh; filter: sepia(15%);
         }
-
-        .mix-nav { mix-blend-mode: difference; color: white; }
         .nav-pillar { writing-mode: vertical-rl; transform: rotate(180deg); }
-        
-        /* Pillar Overlay Styling */
-        .pillar-container {
-            background: rgba(250, 249, 246, 0.85); /* Earthy sand color with transparency */
-            backdrop-filter: blur(10px);
-        }
+        .pillar { border-right: 1px solid var(--border); transition: all 0.5s ease; }
+        .pillar:hover { background: #f3f0e9; }
+        .story-img { filter: sepia(20%) contrast(90%); transition: 1s; }
     </style>
 </head>
 <body>
 
-    <nav class="fixed top-0 left-0 w-full z-50 p-8 flex justify-between items-start pointer-events-none">
-        <div class="pointer-events-auto mix-nav flex items-center gap-6">
-            <a href="index.html" class="serif text-3xl uppercase tracking-tighter">Home.</a>
-            <div class="flex gap-4 opacity-70 text-[10px] tracking-widest">
-                <a href="#">IG</a> <a href="#">YT</a>
+    <nav class="fixed top-0 right-0 z-50 p-8 md:p-12 pointer-events-none">
+        <div class="pointer-events-auto mix-nav text-right">
+            <a href="index.html" class="serif text-3xl uppercase tracking-tighter block">Home.</a>
+            <div class="flex justify-end gap-4 mt-2 opacity-60 text-[10px] tracking-[0.2em]">
+                <a href="#" target="_blank" class="hover:text-[#8d5d46]">IG</a>
+                <a href="#" target="_blank" class="hover:text-[#8d5d46]">YT</a>
             </div>
         </div>
     </nav>
 
-    <section class="relative h-screen w-full flex flex-col items-center justify-center text-center text-white hero-bg">
-        <div class="z-10 mix-nav">
-            <p class="text-[10px] tracking-[0.8em] uppercase mb-4 opacity-80">39.5501° N, 105.7821° W</p>
+    <section class="relative h-screen w-full flex flex-col items-center justify-center text-center hero-bg">
+        <div class="mix-nav">
+            <p class="text-[10px] tracking-[0.8em] uppercase mb-4 opacity-80">39.55° N, 105.78° W</p>
             <h1 class="serif text-7xl md:text-9xl italic font-light tracking-tighter">Latitudes & Longitudes</h1>
-            <div class="h-[1px] w-24 bg-white mx-auto mt-8 opacity-40"></div>
-        </div>
-        
-        <div class="absolute bottom-10 animate-bounce opacity-50">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
+            <div class="h-[1px] w-24 bg-white mx-auto mt-8 opacity-30"></div>
         </div>
     </section>
 
-    <section id="portal" class="relative z-20 flex h-[60vh] w-full border-t border-stone-200 pillar-container">
-        <div onclick="document.getElementById('explore').scrollIntoView({behavior:'smooth'})" class="w-1/3 border-r border-stone-200 flex flex-col items-center justify-center hover:bg-[#f3f0e9] transition-all cursor-pointer group">
-            <span class="nav-pillar text-[9px] tracking-[1em] uppercase opacity-40 group-hover:opacity-100 transition-opacity">The Stories</span>
-            <h2 class="serif text-4xl mt-8 italic">Narratives</h2>
+    <section id="portal" class="relative z-20 flex h-[60vh] w-full border-t border-stone-200 bg-[#faf9f6]/95 backdrop-blur-sm">
+        <div onclick="document.getElementById('explore').scrollIntoView({behavior:'smooth'})" class="w-1/3 pillar flex flex-col items-center justify-center cursor-pointer group">
+            <span class="nav-pillar text-[9px] tracking-[1em] uppercase opacity-40 group-hover:opacity-100 transition-all">Narratives</span>
+            <h2 class="serif text-4xl mt-8 italic">Stories</h2>
         </div>
-        <div class="w-1/3 border-r border-stone-200 flex flex-col items-center justify-center hover:bg-[#f3f0e9] transition-all cursor-pointer group">
-            <span class="nav-pillar text-[9px] tracking-[1em] uppercase opacity-40 group-hover:opacity-100 transition-opacity">Global Log</span>
+        <div class="w-1/3 pillar flex flex-col items-center justify-center cursor-pointer group">
+            <span class="nav-pillar text-[9px] tracking-[1em] uppercase opacity-40 group-hover:opacity-100 transition-all">Global Log</span>
             <h2 class="serif text-4xl mt-8 italic">Coordinates</h2>
         </div>
-        <div class="w-1/3 flex flex-col items-center justify-center hover:bg-[#f3f0e9] transition-all cursor-pointer group">
-            <span class="nav-pillar text-[9px] tracking-[1em] uppercase opacity-40 group-hover:opacity-100 transition-opacity">Itineraries</span>
+        <div class="w-1/3 flex flex-col items-center justify-center cursor-pointer group">
+            <span class="nav-pillar text-[9px] tracking-[1em] uppercase opacity-40 group-hover:opacity-100 transition-all">Itineraries</span>
             <h2 class="serif text-4xl mt-8 italic text-[#8d5d46]">Compass</h2>
         </div>
     </section>
 
-    <section id="explore" class="relative z-10 bg-[#faf9f6] py-32">
-        <div class="max-w-6xl mx-auto px-6">
+    <section id="explore" class="relative z-10 bg-[#faf9f6] py-32 border-t border-stone-200">
+        <div class="max-w-6xl mx-auto px-6 text-center">
             <div class="flex justify-center gap-12 mb-12 text-[10px] tracking-[0.4em] uppercase opacity-40">
                 <button onclick="filterContinent('North America')" class="hover:text-[#8d5d46]">North America</button>
                 <button onclick="filterContinent('Europe')" class="hover:text-[#8d5d46]">Europe</button>
                 <button onclick="filterContinent('Asia')" class="hover:text-[#8d5d46]">Asia</button>
             </div>
             <div id="country-list" class="flex justify-center gap-10 mb-24 serif italic text-3xl opacity-60"></div>
-            
-            <div id="story-grid" class="space-y-48 pb-20">
-                </div>
+            <div id="story-grid" class="space-y-48"></div>
         </div>
     </section>
 
-    </body>
+    <footer class="relative z-10 bg-[#faf9f6] border-t border-stone-200 py-24 text-center">
+        <p class="serif italic opacity-40 text-3xl mb-8">Latitudes & Longitudes</p>
+        <div class="h-[1px] w-12 bg-[#8d5d46] opacity-20 mx-auto mb-8"></div>
+        <p class="text-[8px] tracking-[0.4em] uppercase opacity-30 mb-12">&copy; 2026 Collective Archive</p>
+        
+        <a href="admin.html" class="inline-block text-[8px] tracking-[0.3em] uppercase opacity-20 hover:opacity-100 transition-opacity border border-stone-200 px-4 py-2">
+            Admin Mode
+        </a>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAecvrfHyFXRGF3kkr-nL2vEhyIn4tZmU0",
+            authDomain: "latitudesandlongitudes-3f37b.firebaseapp.com",
+            projectId: "latitudesandlongitudes-3f37b",
+            storageBucket: "latitudesandlongitudes-3f37b.firebasestorage.app",
+            messagingSenderId: "831088196667",
+            appId: "1:831088196667:web:3b54c623a82d04febbf01e"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        let allTrips = [];
+        onValue(ref(db, 'itineraries'), (snapshot) => {
+            const data = snapshot.val();
+            if(data) {
+                allTrips = Object.values(data);
+                renderStories(allTrips);
+            }
+        });
+
+        window.filterContinent = (cont) => {
+            const countries = [...new Set(allTrips.filter(t => t.continent === cont).map(t => t.country))];
+            const div = document.getElementById('country-list');
+            div.innerHTML = countries.map(c => `<span class="cursor-pointer hover:text-[#8d5d46]" onclick="filterCountry('${c}')">${c}</span>`).join('');
+        };
+
+        window.filterCountry = (c) => renderStories(allTrips.filter(t => t.country === c));
+
+        function renderStories(trips) {
+            const grid = document.getElementById('story-grid');
+            grid.innerHTML = trips.map(t => `
+                <article class="grid md:grid-cols-2 gap-16 items-center text-left">
+                    <img src="${t.photo}" class="story-img h-[600px] w-full object-cover">
+                    <div>
+                        <span class="text-[9px] tracking-[0.5em] uppercase text-[#8d5d46] font-medium">${t.coords}</span>
+                        <h4 class="serif text-7xl italic my-8">${t.name}</h4>
+                        <p class="text-stone-500 font-light leading-relaxed mb-8">${t.story}</p>
+                        <button class="text-[10px] tracking-[0.4em] uppercase border-b border-black pb-1 hover:text-[#8d5d46] hover:border-[#8d5d46] transition-all">Open Itinerary</button>
+                    </div>
+                </article>
+            `).join('');
+        }
+    </script>
+</body>
 </html>
