@@ -3,61 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Latitudes and Longitudes</title>
+    <title>Latitudes and Longitudes | The Couple's Archive</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Montserrat:wght@200;400;600&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
     <style>
-        :root { --sand-bg: #faf9f6; --warm-earth: #8d5d46; }
+        :root { --dusty-gold: #c5a358; --warm-earth: #8d5d46; --sand-bg: #faf9f6; }
         body { font-family: 'Montserrat', sans-serif; background-color: var(--sand-bg); color: #2d2a26; }
         .serif { font-family: 'Cormorant Garamond', serif; }
         .dusty-overlay { background: linear-gradient(to bottom, rgba(141, 93, 70, 0.2), rgba(30, 20, 15, 0.7)); }
+        .drop-cap::first-letter { font-family: 'Cormorant Garamond', serif; font-size: 5rem; float: left; margin-right: 12px; line-height: 0.8; color: var(--warm-earth); }
     </style>
 </head>
 <body>
+
     <nav class="fixed w-full z-50 bg-[#faf9f6]/80 backdrop-blur-md px-10 py-6 flex justify-between items-center border-b border-[#e8e4db]">
         <div class="flex flex-col">
             <span class="serif text-2xl font-bold tracking-tighter uppercase">Latitudes and Longitudes.</span>
+            <span class="text-[9px] uppercase tracking-[0.4em] text-[#8d5d46] mt-1">A Couple's Journey in Coordinates</span>
         </div>
-        <a href="login.html" class="text-[10px] uppercase tracking-widest font-bold">Admin</a>
+        <div class="hidden md:flex gap-8 text-[10px] uppercase tracking-widest font-bold text-[#2d2a26]">
+            <a href="admin.html" class="bg-[#2d2a26] text-white px-5 py-2 rounded-sm hover:bg-[#c5a358] transition">Admin Mode</a>
+        </div>
     </nav>
 
     <header class="relative h-screen flex items-center justify-center overflow-hidden">
-        <img id="hero-img" src="" class="absolute inset-0 w-full h-full object-cover">
+        <img id="hero-img" src="https://images.unsplash.com/photo-1512356181113-853a150f1aa7?auto=format&fit=crop&q=80&w=2000" class="absolute inset-0 w-full h-full object-cover grayscale-[20%] sepia-[10%]">
         <div class="absolute inset-0 dusty-overlay"></div>
         <div class="relative text-center text-white px-4">
-            <h1 id="main-title" class="serif text-7xl md:text-9xl italic leading-none">Loading...</h1>
+            <p class="text-[10px] uppercase tracking-[0.8em] mb-6 opacity-80">Kannur ➔ Goa</p>
+            <h1 id="main-title" class="serif text-7xl md:text-9xl italic leading-none mb-4">Loading Journal...</h1>
+            <div class="w-24 h-[1px] bg-[--dusty-gold] mx-auto mt-8"></div>
         </div>
     </header>
 
-    <section class="max-w-4xl mx-auto py-32 px-6 text-center">
-        <p id="narrative" class="serif text-3xl md:text-4xl leading-relaxed text-[#4a453e] italic">
-            Fetching your story from coordinates...
-        </p>
+    <section class="max-w-4xl mx-auto py-32 px-6">
+        <div class="text-center">
+            <h4 class="text-[10px] uppercase tracking-[0.4em] text-[--dusty-gold] mb-6 font-bold">The Narrative</h4>
+            <p id="main-story" class="serif text-3xl md:text-4xl leading-relaxed text-[#4a453e] italic drop-cap">
+                നിങ്ങളുടെ യാത്രാ വിശേഷങ്ങൾ ഇവിടെ ലോഡ് ആകുന്നു...
+            </p>
+        </div>
     </section>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
+    <script>
+        // Your Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyAecvrfHyfXRGF3kkr-nL2vEhyIn4tZmU0",
             authDomain: "latitudesandlongitudes-3f37b.firebaseapp.com",
             projectId: "latitudesandlongitudes-3f37b",
             storageBucket: "latitudesandlongitudes-3f37b.firebasestorage.app",
-            databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com/",
             messagingSenderId: "831088196667",
-            appId: "1:831088196667:web:3b54c623a82d04febbf01e"
+            appId: "1:831088196667:web:3b54c623a82d04febbf01e",
+            databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com/"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
-        onValue(ref(db, 'tripData'), (snapshot) => {
+        // Listen for data updates
+        database.ref('tripData').on('value', (snapshot) => {
             const data = snapshot.val();
-            if (data) {
-                document.getElementById('main-title').innerText = data.title;
-                document.getElementById('narrative').innerText = data.story;
-                document.getElementById('hero-img').src = data.heroImg;
+            if(data) {
+                document.getElementById('main-title').innerText = data.title || "Goa in a New Light.";
+                document.getElementById('main-story').innerText = data.story || "വിവരങ്ങൾ ലഭ്യമല്ല.";
             }
         });
     </script>
