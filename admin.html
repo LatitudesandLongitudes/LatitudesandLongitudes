@@ -2,93 +2,50 @@
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
-    <title>Admin | Latitudes and Longitudes</title>
+    <title>Admin Panel | Add Journey</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 </head>
-<body class="bg-[#faf9f6] p-8">
-    <div id="login-section" class="max-w-md mx-auto mt-20 bg-white p-10 rounded-3xl shadow-sm border border-gray-100">
-        <h2 class="text-2xl font-bold mb-6 text-center">Admin Login</h2>
-        <input type="email" id="email" placeholder="Email" class="w-full p-4 mb-4 bg-gray-50 border rounded-xl">
-        <input type="password" id="password" placeholder="Password" class="w-full p-4 mb-6 bg-gray-50 border rounded-xl">
-        <button onclick="login()" class="w-full bg-black text-white py-4 rounded-xl font-bold">ENTER JOURNAL</button>
+<body class="bg-stone-100 p-10 font-serif">
+    <div class="max-w-2xl mx-auto bg-white p-12 shadow-sm rounded">
+        <h2 class="text-3xl italic mb-8 border-b pb-4">Add New Journey Log</h2>
+        <input type="text" id="title" placeholder="സ്ഥലത്തിന്റെ പേര് (Title)" class="w-full p-4 mb-4 border rounded">
+        <textarea id="content" placeholder="യാത്രാ വിവരങ്ങൾ (Story)" class="w-full p-4 mb-4 border h-48 rounded"></textarea>
+        <button onclick="savePost()" class="w-full bg-black text-white py-4 uppercase tracking-widest hover:bg-stone-800 transition">Publish to Site</button>
+        <a href="index.html" class="block text-center mt-6 text-stone-400 text-sm">Back to Home</a>
     </div>
 
-    <div id="editor-section" class="hidden max-w-4xl mx-auto">
-        <div class="flex justify-between items-center mb-10">
-            <h1 class="text-3xl font-bold italic">Visual Editor</h1>
-            <button onclick="logout()" class="text-sm text-red-500 underline">Logout</button>
-        </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-            <div class="bg-white p-8 rounded-3xl border border-gray-100 space-y-6">
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Main Title</label>
-                    <input type="text" id="db-title" class="w-full p-3 border rounded-lg">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Story (Malayalam/English)</label>
-                    <textarea id="db-story" class="w-full p-3 border rounded-lg h-40"></textarea>
-                </div>
-                <button onclick="saveToFirebase()" class="w-full bg-[#c5a358] text-white py-4 rounded-xl font-bold">SAVE TO CLOUD</button>
-            </div>
-            
-            <div class="bg-gray-100 p-8 rounded-3xl border border-dashed border-gray-300">
-                <p class="text-center text-gray-400 italic">Live Preview syncs after saving.</p>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Your Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyAecvrfHyfXRGF3kkr-nL2vEhyIn4tZmU0",
             authDomain: "latitudesandlongitudes-3f37b.firebaseapp.com",
             projectId: "latitudesandlongitudes-3f37b",
+            databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com/",
             storageBucket: "latitudesandlongitudes-3f37b.firebasestorage.app",
             messagingSenderId: "831088196667",
-            appId: "1:831088196667:web:3b54c623a82d04febbf01e",
-            databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com/"
+            appId: "1:831088196667:web:3b54c623a82d04febbf01e"
         };
 
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-        const auth = firebase.auth();
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
-        function login() {
-            const e = document.getElementById('email').value;
-            const p = document.getElementById('password').value;
-            auth.signInWithEmailAndPassword(e, p)
-                .then(() => {
-                    document.getElementById('login-section').classList.add('hidden');
-                    document.getElementById('editor-section').classList.remove('hidden');
-                    loadData();
-                })
-                .catch(err => alert(err.message));
-        }
+        window.savePost = function() {
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+            if(!title || !content) return alert("ദയവായി എല്ലാം പൂരിപ്പിക്കുക!");
 
-        function saveToFirebase() {
-            const title = document.getElementById('db-title').value;
-            const story = document.getElementById('db-story').value;
-            database.ref('tripData').set({
+            const newPostRef = push(ref(db, 'posts'));
+            set(newPostRef, {
                 title: title,
-                story: story
-            }).then(() => alert("Saved Successfully!"));
-        }
-
-        function loadData() {
-            database.ref('tripData').once('value').then((snapshot) => {
-                const data = snapshot.val();
-                if(data) {
-                    document.getElementById('db-title').value = data.title;
-                    document.getElementById('db-story').value = data.story;
-                }
+                content: content,
+                date: new Date().toISOString()
+            }).then(() => {
+                alert("സന്തോഷവാർത്ത! നിങ്ങളുടെ പുതിയ പോസ്റ്റ് സൈറ്റിൽ വന്നിരിക്കുന്നു.");
+                window.location.href = "index.html";
             });
         }
-
-        function logout() { auth.signOut(); location.reload(); }
     </script>
 </body>
 </html>
