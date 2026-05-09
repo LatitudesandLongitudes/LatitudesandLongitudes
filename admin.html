@@ -1,28 +1,57 @@
 <!DOCTYPE html>
-<html lang="ml">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Panel | Add Journey</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | Latitudes and Longitudes</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #faf9f6; font-family: 'Montserrat', sans-serif; }
+        .serif { font-family: 'Cormorant Garamond', serif; }
+    </style>
 </head>
-<body class="bg-stone-100 p-10 font-serif">
-    <div class="max-w-2xl mx-auto bg-white p-12 shadow-sm rounded">
-        <h2 class="text-3xl italic mb-8 border-b pb-4">Add New Journey Log</h2>
-        <input type="text" id="title" placeholder="സ്ഥലത്തിന്റെ പേര് (Title)" class="w-full p-4 mb-4 border rounded">
-        <textarea id="content" placeholder="യാത്രാ വിവരങ്ങൾ (Story)" class="w-full p-4 mb-4 border h-48 rounded"></textarea>
-        <button onclick="savePost()" class="w-full bg-black text-white py-4 uppercase tracking-widest hover:bg-stone-800 transition">Publish to Site</button>
-        <a href="index.html" class="block text-center mt-6 text-stone-400 text-sm">Back to Home</a>
+<body class="p-6 md:p-20">
+    <div class="max-w-2xl mx-auto bg-white p-10 shadow-sm border border-stone-100">
+        <h1 class="serif text-4xl mb-8 text-[#8d5d46]">New Journey Entry</h1>
+        
+        <div class="space-y-6">
+            <div>
+                <label class="block text-[10px] tracking-widest uppercase mb-2 opacity-50">Location Name</label>
+                <input type="text" id="postTitle" placeholder="e.g. Coastal Roads of Goa" 
+                    class="w-full border-b border-stone-200 py-2 focus:outline-none focus:border-[#8d5d46] transition-colors">
+            </div>
+
+            <div>
+                <label class="block text-[10px] tracking-widest uppercase mb-2 opacity-50">Image URL</label>
+                <input type="text" id="postImage" placeholder="Paste a link to your travel photo" 
+                    class="w-full border-b border-stone-200 py-2 focus:outline-none focus:border-[#8d5d46] transition-colors">
+            </div>
+
+            <div>
+                <label class="block text-[10px] tracking-widest uppercase mb-2 opacity-50">Your Story</label>
+                <textarea id="postContent" rows="5" placeholder="Describe your experience..." 
+                    class="w-full border border-stone-100 p-4 focus:outline-none focus:border-[#8d5d46] transition-colors"></textarea>
+            </div>
+
+            <button onclick="savePost()" class="w-full bg-[#2d2a26] text-white py-4 text-[10px] tracking-[0.3em] uppercase hover:bg-[#8d5d46] transition-colors">
+                Publish to Journal
+            </button>
+            
+            <div class="pt-4 text-center">
+                <a href="index.html" class="text-[10px] tracking-widest uppercase opacity-40 hover:opacity-100">← Back to Website</a>
+            </div>
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, set, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyAecvrfHyfXRGF3kkr-nL2vEhyIn4tZmU0",
+            apiKey: "AIzaSyAecvrfHyFXRGF3kkr-nL2vEhyIn4tZmU0",
             authDomain: "latitudesandlongitudes-3f37b.firebaseapp.com",
             projectId: "latitudesandlongitudes-3f37b",
-            databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com/",
             storageBucket: "latitudesandlongitudes-3f37b.firebasestorage.app",
             messagingSenderId: "831088196667",
             appId: "1:831088196667:web:3b54c623a82d04febbf01e"
@@ -32,18 +61,24 @@
         const db = getDatabase(app);
 
         window.savePost = function() {
-            const title = document.getElementById('title').value;
-            const content = document.getElementById('content').value;
-            if(!title || !content) return alert("ദയവായി എല്ലാം പൂരിപ്പിക്കുക!");
+            const title = document.getElementById('postTitle').value;
+            const content = document.getElementById('postContent').value;
+            const imageUrl = document.getElementById('postImage').value || "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1"; // Default image if empty
+            
+            if(!title || !content) {
+                alert("Please fill in the location and your story.");
+                return;
+            }
 
             const newPostRef = push(ref(db, 'posts'));
             set(newPostRef, {
                 title: title,
                 content: content,
+                image: imageUrl,
                 date: new Date().toISOString()
             }).then(() => {
-                alert("സന്തോഷവാർത്ത! നിങ്ങളുടെ പുതിയ പോസ്റ്റ് സൈറ്റിൽ വന്നിരിക്കുന്നു.");
-                window.location.href = "index.html";
+                alert("Story published successfully!");
+                location.reload();
             });
         }
     </script>
