@@ -3,115 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Latitudes and Longitudes | Travel Journal</title>
+    <title>Latitudes & Longitudes | Archive</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Montserrat:wght@200;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,400&family=Montserrat:wght@200;400&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --warm-white: #faf9f6;
-            --dusty-earth: #8d5d46;
-            --charcoal: #2d2a26;
-        }
-        body { 
-            background-color: var(--warm-white); 
-            color: var(--charcoal);
-            font-family: 'Montserrat', sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
+        :root { --bg: #faf9f6; --text: #2d2a26; --accent: #8d5d46; --border: #e0dbd1; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Montserrat', sans-serif; }
         .serif { font-family: 'Cormorant Garamond', serif; }
-        .hero-image {
-            height: 85vh;
-            background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.3)), 
-                        url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }
-        .post-animation { transition: opacity 1s ease, transform 1s ease; }
+        .mix-nav { mix-blend-mode: difference; color: white; }
+        .nav-pillar { writing-mode: vertical-rl; transform: rotate(180deg); }
+        .pillar { border-right: 1px solid var(--border); transition: all 0.5s ease; }
+        .pillar:hover { background: #f3f0e9; }
+        .story-img { filter: sepia(20%) contrast(90%); }
     </style>
 </head>
 <body>
 
-    <nav class="absolute w-full z-50 px-10 py-12 flex justify-between items-center text-white">
-        <div class="flex flex-col">
-            <h1 class="serif text-3xl font-light tracking-tighter uppercase leading-none">Latitudes and Longitudes.</h1>
-            <p class="text-[9px] tracking-[0.5em] uppercase opacity-80 mt-2">A Couple's Journey in Coordinates</p>
-        </div>
-        <div class="hidden md:flex gap-10 text-[11px] tracking-[0.3em] uppercase font-medium">
-            <a href="index.html" class="hover:opacity-60 transition-opacity">Journal</a>
-            <a href="admin.html" class="hover:opacity-60 transition-opacity">Admin</a>
+    <nav class="fixed top-0 left-0 w-full z-50 p-8 flex justify-between items-start pointer-events-none">
+        <div class="pointer-events-auto mix-nav flex items-center gap-6">
+            <a href="index.html" class="serif text-3xl uppercase tracking-tighter">Home.</a>
+            <div class="flex gap-4 opacity-50 text-[10px]">
+                <a href="#">IG</a> <a href="#">YT</a>
+            </div>
         </div>
     </nav>
 
-    <header class="hero-image flex items-center justify-center text-white text-center">
-        <div class="max-w-3xl px-6">
-            <span class="text-[10px] tracking-[0.6em] uppercase mb-6 block">Documenting Life Across Coordinates</span>
-            <h2 class="serif text-6xl md:text-8xl italic leading-tight">Stories from <br> the Road.</h2>
+    <div id="portal" class="flex h-screen w-full fixed top-0 left-0 z-0">
+        <div onclick="document.getElementById('explore').scrollIntoView({behavior:'smooth'})" class="w-1/3 pillar flex flex-col items-center justify-center cursor-pointer">
+            <span class="nav-pillar text-[10px] tracking-[1em] uppercase opacity-40">Narratives</span>
+            <h2 class="serif text-4xl mt-8 italic">Stories</h2>
         </div>
-    </header>
-
-    <main id="journal-feed" class="max-w-5xl mx-auto py-32 px-6">
-        <div id="posts-loading" class="text-center py-20">
-            <p class="serif text-2xl italic opacity-30 tracking-widest">Preparing the journal...</p>
+        <div class="w-1/3 pillar flex flex-col items-center justify-center cursor-pointer">
+            <span class="nav-pillar text-[10px] tracking-[1em] uppercase opacity-40">Global Log</span>
+            <h2 class="serif text-4xl mt-8 italic">Coordinates</h2>
         </div>
-    </main>
+        <div class="w-1/3 flex flex-col items-center justify-center cursor-pointer">
+            <span class="nav-pillar text-[10px] tracking-[1em] uppercase opacity-40">Itineraries</span>
+            <h2 class="serif text-4xl mt-8 italic text-[#8d5d46]">Compass</h2>
+        </div>
+    </div>
 
-    <footer class="py-20 border-t border-stone-200 text-center">
-        <p class="serif text-xl italic opacity-60 mb-4">"We travel not to escape life, but for life not to escape us."</p>
-        <p class="text-[9px] tracking-[0.5em] uppercase opacity-40">Latitudes & Longitudes &copy; 2026</p>
+    <section id="explore" class="relative z-10 mt-[100vh] bg-[#faf9f6] border-t border-stone-200 pt-20">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <div class="flex justify-center gap-10 mb-12 text-[10px] tracking-[0.3em] uppercase opacity-50">
+                <button onclick="filterContinent('North America')" class="hover:text-[#8d5d46]">North America</button>
+                <button onclick="filterContinent('Europe')" class="hover:text-[#8d5d46]">Europe</button>
+                <button onclick="filterContinent('Asia')" class="hover:text-[#8d5d46]">Asia</button>
+            </div>
+            <div id="country-list" class="flex justify-center gap-8 mb-20 serif italic text-2xl opacity-60"></div>
+            
+            <div id="story-grid" class="space-y-40 pb-40">
+                </div>
+        </div>
+    </section>
+
+    <footer class="relative z-10 bg-[#faf9f6] border-t border-stone-200 py-20 text-center">
+        <p class="serif italic opacity-40 text-2xl">Latitudes & Longitudes</p>
+        <a href="admin.html" class="block mt-10 text-[8px] tracking-[0.4em] uppercase opacity-20">Admin Access</a>
     </footer>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAecvrfHyFXRGF3kkr-nL2vEhyIn4tZmU0",
-            authDomain: "latitudesandlongitudes-3f37b.firebaseapp.com",
-            projectId: "latitudesandlongitudes-3f37b",
-            storageBucket: "latitudesandlongitudes-3f37b.firebasestorage.app",
-            messagingSenderId: "831088196667",
-            appId: "1:831088196667:web:3b54c623a82d04febbf01e"
-        };
-
+        const firebaseConfig = { /* SAME AS ABOVE */ };
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        const feed = document.getElementById('journal-feed');
 
-        onValue(ref(db, 'posts'), (snapshot) => {
+        let allTrips = [];
+
+        onValue(ref(db, 'itineraries'), (snapshot) => {
             const data = snapshot.val();
-            feed.innerHTML = '';
-            
-            if (data) {
-                Object.values(data).reverse().forEach(post => {
-                    const postDate = new Date(post.date).toLocaleDateString('en-US', { 
-                        year: 'numeric', month: 'long' 
-                    });
-                    
-                    const article = document.createElement('article');
-                    article.className = 'grid md:grid-cols-2 gap-16 items-center mb-40 opacity-0 transform translate-y-10 post-animation';
-                    article.innerHTML = `
-                        <div class="overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&q=80" 
-                                 class="w-full h-[500px] object-cover hover:scale-105 transition-transform duration-1000">
-                        </div>
-                        <div class="text-left">
-                            <span class="text-[9px] tracking-[0.4em] uppercase opacity-40 mb-4 block">${postDate}</span>
-                            <h3 class="serif text-5xl md:text-6xl mb-6 text-[#8d5d46] italic leading-tight">${post.title.toLowerCase()}</h3>
-                            <p class="text-stone-500 leading-relaxed text-base font-light mb-8">
-                                ${post.content}
-                            </p>
-                            <a href="#" class="text-[10px] tracking-[0.3em] uppercase font-bold border-b border-charcoal pb-2 hover:opacity-50 transition-opacity">Read Story</a>
-                        </div>
-                    `;
-                    feed.appendChild(article);
-                    setTimeout(() => {
-                        article.style.opacity = '1';
-                        article.style.transform = 'translateY(0)';
-                    }, 100);
-                });
+            if(data) {
+                allTrips = Object.values(data);
+                renderStories(allTrips);
             }
         });
+
+        window.filterContinent = (cont) => {
+            const countries = [...new Set(allTrips.filter(t => t.continent === cont).map(t => t.country))];
+            const div = document.getElementById('country-list');
+            div.innerHTML = countries.map(c => `<span class="cursor-pointer" onclick="filterCountry('${c}')">${c}</span>`).join('');
+        };
+
+        window.filterCountry = (c) => renderStories(allTrips.filter(t => t.country === c));
+
+        function renderStories(trips) {
+            const grid = document.getElementById('story-grid');
+            grid.innerHTML = trips.map(t => `
+                <article class="grid md:grid-cols-2 gap-12 items-center text-left">
+                    <img src="${t.photo}" class="story-img h-[500px] w-full object-cover">
+                    <div>
+                        <span class="text-[9px] tracking-[0.5em] uppercase text-[#8d5d46]">${t.coords}</span>
+                        <h4 class="serif text-7xl italic my-6">${t.name}</h4>
+                        <p class="text-stone-500 font-light leading-relaxed mb-8">${t.story}</p>
+                        <button class="border-b border-black text-[10px] tracking-widest uppercase pb-1">Open Itinerary</button>
+                    </div>
+                </article>
+            `).join('');
+        }
     </script>
 </body>
 </html>
