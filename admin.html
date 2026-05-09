@@ -1,65 +1,91 @@
-<div class="space-y-6">
-    <div class="grid grid-cols-2 gap-4">
-        <div>
-            <label class="block text-[9px] tracking-widest uppercase mb-1 opacity-60">Location Name</label>
-            <input type="text" id="postTitle" placeholder="e.g., Isle of Skye" 
-                class="w-full border-b border-stone-200 py-2 focus:outline-none focus:border-[#8d5d46]">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latitudes and Longitudes | Journal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Montserrat:wght@200;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --warm-white: #faf9f6; --earth: #8d5d46; --charcoal: #2d2a26; }
+        body { background-color: var(--warm-white); color: var(--charcoal); font-family: 'Montserrat', sans-serif; -webkit-font-smoothing: antialiased; }
+        .serif { font-family: 'Cormorant Garamond', serif; }
+        
+        /* Smooth Hero Section */
+        .hero { height: 80vh; display: flex; align-items: center; justify-content: center; text-align: center; border-bottom: 1px solid #eee; }
+        
+        /* Post Styling to match reference */
+        .post-container { max-width: 1100px; margin: 0 auto; padding: 80px 20px; }
+        .post-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 60px; align-items: center; margin-bottom: 120px; }
+        @media (max-width: 768px) { .post-grid { grid-template-columns: 1fr; } }
+        
+        .img-wrapper { overflow: hidden; height: 600px; }
+        .img-wrapper img { w-full h-full object-cover transition-transform duration-1000 hover:scale-105; }
+    </style>
+</head>
+<body>
+
+    <nav class="p-10 flex justify-between items-center border-b border-stone-100">
+        <div class="flex flex-col">
+            <h1 class="serif text-2xl font-bold uppercase tracking-tighter">Latitudes and Longitudes.</h1>
+            <span class="text-[8px] tracking-[0.5em] uppercase opacity-50">A Travel Archive</span>
         </div>
-        <div>
-            <label class="block text-[9px] tracking-widest uppercase mb-1 opacity-60">Coordinates (Lat/Long)</label>
-            <input type="text" id="postCoords" placeholder="e.g., 57.4124° N, 6.1963° W" 
-                class="w-full border-b border-stone-200 py-2 focus:outline-none focus:border-[#8d5d46]">
+        <div class="flex gap-8 text-[10px] tracking-widest uppercase">
+            <a href="index.html" class="border-b border-charcoal">Journal</a>
+            <a href="admin.html" class="opacity-40">Admin</a>
         </div>
-    </div>
+    </nav>
 
-    <div>
-        <label class="block text-[9px] tracking-widest uppercase mb-1 opacity-60">Subtitle / Category</label>
-        <input type="text" id="postSubtitle" placeholder="e.g., A Guide to the Scottish Highlands" 
-            class="w-full border-b border-stone-200 py-2 focus:outline-none focus:border-[#8d5d46]">
-    </div>
+    <header class="hero">
+        <div>
+            <p class="text-[10px] tracking-[0.6em] uppercase mb-4 opacity-40">Est. 2025</p>
+            <h2 class="serif text-7xl md:text-9xl italic">The Journal</h2>
+        </div>
+    </header>
 
-    <div>
-        <label class="block text-[9px] tracking-widest uppercase mb-1 opacity-60">Cover Image URL</label>
-        <input type="text" id="postImage" placeholder="Paste Unsplash or direct link..." 
-            class="w-full border-b border-stone-200 py-2 focus:outline-none focus:border-[#8d5d46]">
-    </div>
+    <main id="journal-feed" class="post-container">
+        </main>
 
-    <div>
-        <label class="block text-[9px] tracking-widest uppercase mb-1 opacity-60">The Story</label>
-        <textarea id="postContent" rows="6" placeholder="Start writing..." 
-            class="w-full border border-stone-100 p-3 text-sm focus:outline-none focus:border-[#8d5d46]"></textarea>
-    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    <button onclick="savePost()" class="w-full bg-[#2d2a26] text-white py-4 text-[10px] tracking-[0.3em] uppercase hover:bg-[#8d5d46] transition-all">
-        Publish Entry
-    </button>
-</div>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAecvrfHyFXRGF3kkr-nL2vEhyIn4tZmU0",
+            authDomain: "latitudesandlongitudes-3f37b.firebaseapp.com",
+            projectId: "latitudesandlongitudes-3f37b",
+            storageBucket: "latitudesandlongitudes-3f37b.firebasestorage.app",
+            messagingSenderId: "831088196667",
+            appId: "1:831088196667:web:3b54c623a82d04febbf01e"
+        };
 
-<script type="module">
-    // ... (Keep your existing Firebase imports) ...
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const feed = document.getElementById('journal-feed');
 
-    window.savePost = function() {
-        const title = document.getElementById('postTitle').value;
-        const subtitle = document.getElementById('postSubtitle').value;
-        const coords = document.getElementById('postCoords').value;
-        const content = document.getElementById('postContent').value;
-        const image = document.getElementById('postImage').value;
-
-        if(!title || !content) return alert("Please fill in the essentials.");
-
-        const newRef = push(ref(db, 'posts'));
-        set(newRef, {
-            title,
-            subtitle,
-            coords,
-            content,
-            image,
-            date: new Date().toISOString()
-        }).then(() => {
-            alert("Entry Saved!");
-            location.reload();
+        onValue(ref(db, 'posts'), (snapshot) => {
+            const data = snapshot.val();
+            feed.innerHTML = '';
+            if (data) {
+                Object.values(data).reverse().forEach(post => {
+                    const article = document.createElement('div');
+                    article.className = 'post-grid';
+                    article.innerHTML = `
+                        <div class="img-wrapper">
+                            <img src="${post.image || 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1'}" alt="">
+                        </div>
+                        <div>
+                            <p class="text-[9px] tracking-[0.4em] uppercase opacity-40 mb-2">${post.coords || 'Coordinates Pending'}</p>
+                            <h3 class="serif text-5xl mb-4 italic text-[#8d5d46]">${post.title}</h3>
+                            <h4 class="text-[11px] font-semibold uppercase tracking-[0.2em] mb-6">${post.subtitle || ''}</h4>
+                            <p class="text-stone-500 leading-relaxed font-light mb-8 text-sm md:text-base">${post.content}</p>
+                            <button class="text-[10px] tracking-widest uppercase border-b border-charcoal pb-1">Read the story</button>
+                        </div>
+                    `;
+                    feed.appendChild(article);
+                });
+            }
         });
-    };
-</script>
+    </script>
 </body>
 </html>
