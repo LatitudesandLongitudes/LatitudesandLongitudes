@@ -1,98 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Admin Architect | Control Panel</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
-    <style>
-        body { background-color: #faf9f6; font-family: 'Montserrat', sans-serif; }
-        .input-box { border: 1px solid #e0dbd1; padding: 12px; width: 100%; margin-bottom: 15px; border-radius: 2px; }
-        label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.5; margin-bottom: 5px; display: block; }
-    </style>
-</head>
-<body class="p-8 md:p-20">
-    <div class="max-w-4xl mx-auto">
-        <div class="flex justify-between items-end border-b border-stone-200 pb-8 mb-12">
-            <h1 class="serif text-5xl text-[#8d5d46]">Admin Architect</h1>
-            <a href="index.html" class="text-[10px] tracking-widest uppercase opacity-40 hover:opacity-100">← Back to Site</a>
-        </div>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        <div class="bg-white p-8 border border-stone-200 mb-12 shadow-sm">
-            <h2 class="serif text-2xl mb-8 italic">Add New Narrative</h2>
-            <div class="grid grid-cols-2 gap-6">
-                <div><label>Trip Name</label><input type="text" id="tripName" class="input-box"></div>
-                <div><label>Coordinates</label><input type="text" id="tripCoords" class="input-box"></div>
-                <div>
-                    <label>Continent</label>
-                    <select id="tripContinent" class="input-box">
-                        <option value="North America">North America</option>
-                        <option value="Europe">Europe</option>
-                        <option value="Asia">Asia</option>
-                    </select>
-                </div>
-                <div><label>Country</label><input type="text" id="tripCountry" class="input-box"></div>
-            </div>
-            <label>Cover Photo URL</label><input type="text" id="tripPhoto" class="input-box">
-            <label>The Story</label><textarea id="tripStory" class="input-box h-32"></textarea>
-            <button onclick="saveTrip()" class="w-full bg-[#8d5d46] text-white py-4 uppercase tracking-[0.4em] text-[10px] hover:bg-black transition-colors">Publish to Archive</button>
-        </div>
+    const firebaseConfig = {
+        apiKey: "AIzaSyAecvrfHyFXRGF3kkr-nL2vEhyIn4tZmU0",
+        authDomain: "latitudesandlongitudes-3f37b.firebaseapp.com",
+        projectId: "latitudesandlongitudes-3f37b",
+        // CRITICAL: Explicitly pointing to the database instance
+        databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com", 
+        storageBucket: "latitudesandlongitudes-3f37b.firebasestorage.app",
+        messagingSenderId: "831088196667",
+        appId: "1:831088196667:web:3b54c623a82d04febbf01e"
+    };
 
-        <div class="bg-stone-100 p-8 border border-stone-200">
-            <h2 class="serif text-2xl mb-8 italic">Build Detailed Itinerary</h2>
-            <label>Select Parent Trip</label><select id="tripSelect" class="input-box"></select>
-            <label>Day / Sub-Heading</label><input type="text" id="dayTitle" class="input-box" placeholder="e.g. Day 1: Exploring Denver">
-            <label>Daily Details</label><textarea id="dayContent" class="input-box h-48" placeholder="Food: ..., Stay: ..., Notes: ..."></textarea>
-            <button onclick="addDay()" class="w-full bg-black text-white py-4 uppercase tracking-[0.4em] text-[10px]">Add Day to Itinerary</button>
-        </div>
-    </div>
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    // Using an Event Listener instead of an onclick function for modular stability
+    document.getElementById('saveBtn').addEventListener('click', async () => {
+        const status = document.getElementById('status');
+        status.innerText = "Attempting to save...";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAecvrfHyFXRGF3kkr-nL2vEhyIn4tZmU0",
-            authDomain: "latitudesandlongitudes-3f37b.firebaseapp.com",
-            projectId: "latitudesandlongitudes-3f37b",
-            storageBucket: "latitudesandlongitudes-3f37b.firebasestorage.app",
-            messagingSenderId: "831088196667",
-            appId: "1:831088196667:web:3b54c623a82d04febbf01e"
-        };
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-
-        window.saveTrip = function() {
-            const tripRef = push(ref(db, 'itineraries'));
-            set(tripRef, {
-                name: document.getElementById('tripName').value,
-                coords: document.getElementById('tripCoords').value,
-                continent: document.getElementById('tripContinent').value,
-                country: document.getElementById('tripCountry').value,
-                photo: document.getElementById('tripPhoto').value,
-                story: document.getElementById('tripStory').value
-            }).then(() => { alert("Story Saved!"); location.reload(); });
+        const tripData = {
+            name: document.getElementById('name').value,
+            continent: document.getElementById('continent').value,
+            country: document.getElementById('country').value,
+            photo: document.getElementById('photo').value,
+            story: document.getElementById('story').value,
+            timestamp: Date.now()
         };
 
-        onValue(ref(db, 'itineraries'), (snapshot) => {
-            const data = snapshot.val();
-            const select = document.getElementById('tripSelect');
-            select.innerHTML = '<option>Select a trip...</option>';
-            if(data) {
-                Object.keys(data).forEach(id => {
-                    select.innerHTML += `<option value="${id}">${data[id].name}</option>`;
-                });
-            }
-        });
-
-        window.addDay = function() {
-            const id = document.getElementById('tripSelect').value;
-            const dayRef = push(ref(db, `itineraries/${id}/days`));
-            set(dayRef, {
-                title: document.getElementById('dayTitle').value,
-                content: document.getElementById('dayContent').value
-            }).then(() => alert("Day Added!"));
-        };
-    </script>
-</body>
-</html>
+        try {
+            const newListRef = push(ref(db, 'itineraries'));
+            await set(newListRef, tripData);
+            status.innerHTML = "✅ SAVED SUCCESSFULLY! Refresh your website.";
+            // Clear input fields
+            document.querySelectorAll('input, textarea').forEach(el => el.value = "");
+        } catch (e) {
+            status.innerHTML = "❌ FAILED: " + e.message;
+            console.error("Database Error:", e);
+        }
+    });
+</script>
