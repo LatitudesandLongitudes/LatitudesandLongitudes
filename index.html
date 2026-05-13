@@ -2,6 +2,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
+    // 1. CONFIGURATION
     const firebaseConfig = {
         apiKey: "AIzaSyAecvrfHyFXRGF3kkr-nL2vEhyIn4tZmU0",
         authDomain: "latitudesandlongitudes-3f37b.firebaseapp.com",
@@ -12,32 +13,51 @@
         appId: "1:831088196667:web:3b54c623a82d04febbf01e"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    // This 'onValue' function stays awake and watches for changes
-    onValue(ref(db, 'itineraries'), (snapshot) => {
-        const data = snapshot.val();
+    try {
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
         const grid = document.getElementById('story-grid');
-        
-        if (data) {
-            console.log("Archive data received:", data);
-            // Convert Firebase object into an array and reverse for newest-first
-            const entries = Object.values(data).reverse();
+
+        // 2. DATA LISTENER
+        onValue(ref(db, 'itineraries'), (snapshot) => {
+            const data = snapshot.val();
             
-            grid.innerHTML = entries.map(item => `
-                <div class="mb-24 opacity-0 animate-fade-in">
-                    <img src="${item.photo}" class="w-full h-[500px] object-cover mb-8 filter sepia-[20%]">
-                    <span class="text-[9px] tracking-widest uppercase text-[#8d5d46]">${item.country || ''}</span>
-                    <h2 class="serif text-6xl italic mt-2 mb-6">${item.name}</h2>
-                    <p class="text-stone-500 max-w-2xl leading-relaxed">${item.story}</p>
-                </div>
-            `).join('');
-        } else {
-            grid.innerHTML = `<p class="serif opacity-30 italic">The journal is currently waiting for its first entry.</p>`;
-        }
-    }, (error) => {
-        console.error("The read failed: ", error);
-        document.getElementById('story-grid').innerHTML = "Permission Error: Check Firebase Rules.";
-    });
+            if (data) {
+                // Convert to array and reverse (latest journeys first)
+                const trips = Object.keys(data).map(key => ({
+                    ...data[key],
+                    id: key
+                })).reverse();
+
+                console.log("Data loaded successfully:", trips);
+
+                grid.innerHTML = trips.map(t => `
+                    <article class="mb-32 text-left animate-fade-in">
+                        <div class="relative overflow-hidden mb-8 bg-stone-200">
+                            <img src="${t.photo}" class="w-full h-[600px] object-cover filter sepia-[10%]" 
+                                 onerror="this.src='https://placehold.co/800x600?text=Image+URL+Broken'">
+                        </div>
+                        <div class="max-w-3xl">
+                            <span class="text-[9px] tracking-[0.4em] uppercase text-[#8d5d46] font-bold">
+                                ${t.continent || ''} — ${t.country || ''}
+                            </span>
+                            <h2 class="serif text-7xl italic my-6 leading-tight">${t.name}</h2>
+                            <p class="text-stone-500 font-light leading-relaxed text-lg mb-10">${t.story}</p>
+                            <button onclick="window.location.href='itinerary.html?id=${t.id}'" 
+                                    class="text-[10px] tracking-[0.3em] uppercase border-b border-black pb-1 hover:text-[#8d5d46] transition-all">
+                                View Compass Details
+                            </button>
+                        </div>
+                    </article>
+                `).join('');
+            } else {
+                grid.innerHTML = `<div class="py-20 text-center opacity-30 italic serif text-2xl">The archive is currently empty. Add your first story via the Admin Architect.</div>`;
+            }
+        }, (error) => {
+            grid.innerHTML = `<div class="p-10 bg-red-50 text-red-800 text-sm">Firebase Error: ${error.message}. Please check your Database Rules.</div>`;
+        });
+
+    } catch (err) {
+        document.getElementById('story-grid').innerHTML = `<div class="p-10 bg-red-100 text-red-900">Script Crash: ${err.message}</div>`;
+    }
 </script>
