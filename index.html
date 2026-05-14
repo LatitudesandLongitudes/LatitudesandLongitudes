@@ -3,38 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Latitudes & Longitudes | Recovery</title>
+    <title>Latitudes & Longitudes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,400&family=Montserrat:wght@200;400&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #faf9f6; --text: #2d2a26; --accent: #8d5d46; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Montserrat', sans-serif; margin: 0; }
+        .serif { font-family: 'Cormorant Garamond', serif; }
+        
+        /* THE COVER PAGE IMAGE */
+        .hero-bg {
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), 
+                        url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070');
+            background-size: cover; 
+            background-position: center; 
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: white;
+            text-align: center;
+        }
+
+        /* Nav links that stand out against the image */
+        .nav-link { 
+            mix-blend-mode: difference; 
+            color: white; 
+            transition: opacity 0.3s;
+        }
+        .nav-link:hover { opacity: 0.6; }
+    </style>
 </head>
-<body class="bg-[#faf9f6] text-[#2d2a26] font-['Montserrat']">
+<body>
 
-    <div id="debug-status" class="fixed top-0 left-0 w-full bg-red-100 text-red-800 text-[10px] p-2 text-center z-[100] hidden">
-        System Error Detected. Check Console (F12).
-    </div>
-
-    <nav class="p-10 text-right">
-        <h1 class="serif text-4xl italic tracking-tighter">Latitudes & Longitudes</h1>
-        <div class="flex justify-end gap-4 mt-2 opacity-50 text-[10px] tracking-widest">
-            <span>HOME</span> / <span>ADMIN</span>
+    <nav class="fixed top-0 right-0 z-50 p-8 md:p-12 text-right">
+        <a href="index.html" class="nav-link serif text-3xl uppercase tracking-tighter block mb-2">Home.</a>
+        <div class="flex justify-end gap-5 text-[10px] tracking-[0.2em] uppercase font-medium">
+            <a href="https://instagram.com/YOUR_HANDLE" target="_blank" class="nav-link">IG</a>
+            <a href="https://youtube.com/YOUR_CHANNEL" target="_blank" class="nav-link">YT</a>
+            <a href="https://facebook.com/YOUR_PAGE" target="_blank" class="nav-link">FB</a>
         </div>
     </nav>
 
-    <main class="max-w-4xl mx-auto px-6 py-20">
-        <div id="story-grid" class="space-y-32">
-            <p class="text-center serif italic opacity-30 animate-pulse">Initializing Archive Connection...</p>
+    <header class="hero-bg">
+        <p class="text-[10px] tracking-[0.8em] uppercase mb-4 opacity-80">Couples Collective</p>
+        <h1 class="serif text-7xl md:text-9xl italic font-light tracking-tighter">Latitudes & Longitudes</h1>
+        <div class="h-[1px] w-24 bg-white mt-12 opacity-30"></div>
+    </header>
+
+    <main class="py-32 px-6 bg-[#faf9f6]">
+        <div id="story-grid" class="max-w-5xl mx-auto space-y-40">
+            <p class="text-center opacity-30 italic serif text-xl">Accessing the archive...</p>
         </div>
     </main>
 
-    <footer class="py-20 text-center border-t border-stone-200">
-        <a href="admin.html" class="text-[8px] tracking-[0.4em] uppercase opacity-20 hover:opacity-100">Admin Mode</a>
+    <footer class="py-24 text-center border-t border-stone-200 bg-[#faf9f6]">
+        <p class="serif italic opacity-40 text-3xl mb-8">Latitudes & Longitudes</p>
+        <div class="flex justify-center gap-6 mb-12 opacity-30 text-[10px] tracking-widest uppercase">
+            <a href="#">Instagram</a>
+            <a href="#">YouTube</a>
+            <a href="#">Facebook</a>
+        </div>
+        <a href="admin.html" class="inline-block text-[8px] tracking-[0.4em] uppercase opacity-20 hover:opacity-100 border border-stone-300 px-4 py-2">Admin Architect</a>
     </footer>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // CONFIG WITH EXPLICIT DATABASE URL
         const firebaseConfig = {
             apiKey: "AIzaSyAecvrfHyFXRGF3kkr-nL2vEhyIn4tZmU0",
             authDomain: "latitudesandlongitudes-3f37b.firebaseapp.com",
@@ -45,39 +82,30 @@
             appId: "1:831088196667:web:3b54c623a82d04febbf01e"
         };
 
-        try {
-            const app = initializeApp(firebaseConfig);
-            const db = getDatabase(app);
-            const grid = document.getElementById('story-grid');
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const grid = document.getElementById('story-grid');
 
-            // Listen for data
-            onValue(ref(db, 'itineraries'), (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    const trips = Object.values(data).reverse();
-                    grid.innerHTML = trips.map(t => `
-                        <article class="border-b border-stone-100 pb-20">
-                            <img src="${t.photo}" class="w-full h-96 object-cover bg-stone-100 mb-8" onerror="this.src='https://placehold.co/800x400?text=Image+Not+Found'">
-                            <p class="text-[10px] tracking-widest text-[#8d5d46] uppercase mb-2">${t.country || 'Global'}</p>
-                            <h2 class="serif text-5xl italic mb-6">${t.name}</h2>
-                            <p class="text-stone-500 leading-relaxed font-light">${t.story}</p>
-                        </article>
-                    `).join('');
-                } else {
-                    grid.innerHTML = "<p class='text-center opacity-30 italic serif text-2xl'>Archive is empty. Please add a story in Admin.</p>";
-                }
-            }, (error) => {
-                document.getElementById('debug-status').classList.remove('hidden');
-                document.getElementById('debug-status').innerText = "Firebase Error: " + error.message;
-            });
-        } catch (e) {
-            document.getElementById('debug-status').classList.remove('hidden');
-            document.getElementById('debug-status').innerText = "Script Crash: " + e.message;
-        }
+        onValue(ref(db, 'itineraries'), (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                const trips = Object.values(data).reverse();
+                grid.innerHTML = trips.map(t => `
+                    <article class="text-left group">
+                        <div class="overflow-hidden mb-8 bg-stone-200">
+                            <img src="${t.photo}" class="w-full h-[600px] object-cover transition-transform duration-700 group-hover:scale-105" onerror="this.src='https://placehold.co/800x600?text=Image+Not+Found'">
+                        </div>
+                        <span class="text-[9px] tracking-widest uppercase text-[#8d5d46] font-bold">${t.country || ''}</span>
+                        <h2 class="serif text-7xl italic mt-2 mb-6 leading-tight">${t.name}</h2>
+                        <p class="text-stone-500 font-light leading-relaxed max-w-2xl text-lg">${t.story}</p>
+                    </article>
+                `).join('');
+            } else {
+                grid.innerHTML = "<p class='text-center opacity-30 serif text-2xl'>Archive is currently empty.</p>";
+            }
+        }, (error) => {
+            grid.innerHTML = `<p class='text-red-500 text-center'>Connection Error: ${error.message}</p>`;
+        });
     </script>
-
-    <style>
-        .serif { font-family: 'Cormorant Garamond', serif; }
-    </style>
 </body>
 </html>
