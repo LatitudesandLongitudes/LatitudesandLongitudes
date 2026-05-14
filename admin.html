@@ -1,44 +1,141 @@
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Architect | Latitudes & Longitudes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #faf9f6; font-family: 'Montserrat', sans-serif; color: #2d2a26; }
+        .serif { font-family: 'Cormorant Garamond', serif; }
+        .input-box { border: 1px solid #e0dbd1; padding: 12px; width: 100%; margin-bottom: 20px; background: white; border-radius: 2px; }
+        label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.6; margin-bottom: 8px; display: block; }
+    </style>
+</head>
+<body class="p-8 md:p-20">
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyAecvrfHyFXRGF3kkr-nL2vEhyIn4tZmU0",
-        authDomain: "latitudesandlongitudes-3f37b.firebaseapp.com",
-        projectId: "latitudesandlongitudes-3f37b",
-        // CRITICAL: Explicitly pointing to the database instance
-        databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com", 
-        storageBucket: "latitudesandlongitudes-3f37b.firebasestorage.app",
-        messagingSenderId: "831088196667",
-        appId: "1:831088196667:web:3b54c623a82d04febbf01e"
-    };
+    <div class="max-w-2xl mx-auto">
+        <header class="mb-12 border-b border-stone-200 pb-8 flex justify-between items-end">
+            <div>
+                <h1 class="serif text-5xl text-[#8d5d46]">Admin Mode</h1>
+                <p class="text-[10px] tracking-widest uppercase opacity-40 mt-2">Feeding the Archive</p>
+            </div>
+            <a href="index.html" class="text-[10px] tracking-widest uppercase border-b border-black pb-1">View Website</a>
+        </header>
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+        <div id="status-msg" class="hidden mb-8 p-4 text-sm text-center border"></div>
 
-    // Using an Event Listener instead of an onclick function for modular stability
-    document.getElementById('saveBtn').addEventListener('click', async () => {
-        const status = document.getElementById('status');
-        status.innerText = "Attempting to save...";
+        <div class="bg-white p-10 border border-stone-200 shadow-sm">
+            <div>
+                <label>Journey Name</label>
+                <input type="text" id="tripName" placeholder="e.g. Exploring Rocky Mountain" class="input-box">
+            </div>
 
-        const tripData = {
-            name: document.getElementById('name').value,
-            continent: document.getElementById('continent').value,
-            country: document.getElementById('country').value,
-            photo: document.getElementById('photo').value,
-            story: document.getElementById('story').value,
-            timestamp: Date.now()
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label>Continent</label>
+                    <select id="tripContinent" class="input-box">
+                        <option value="North America">North America</option>
+                        <option value="Europe">Europe</option>
+                        <option value="Asia">Asia</option>
+                        <option value="South America">South America</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Country</label>
+                    <input type="text" id="tripCountry" placeholder="e.g. USA" class="input-box">
+                </div>
+            </div>
+
+            <div>
+                <label>Main Image URL</label>
+                <input type="text" id="tripPhoto" placeholder="https://..." class="input-box">
+            </div>
+
+            <div>
+                <label>The Narrative</label>
+                <textarea id="tripStory" placeholder="Write the soul of the trip here..." class="input-box h-40"></textarea>
+            </div>
+
+            <button id="submitBtn" class="w-full bg-black text-white py-5 text-[11px] uppercase tracking-[0.5em] hover:bg-[#8d5d46] transition-all">
+                Publish to Website
+            </button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAecvrfHyFXRGF3kkr-nL2vEhyIn4tZmU0",
+            authDomain: "latitudesandlongitudes-3f37b.firebaseapp.com",
+            projectId: "latitudesandlongitudes-3f37b",
+            databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com",
+            storageBucket: "latitudesandlongitudes-3f37b.firebasestorage.app",
+            messagingSenderId: "831088196667",
+            appId: "1:831088196667:web:3b54c623a82d04febbf01e"
         };
 
-        try {
-            const newListRef = push(ref(db, 'itineraries'));
-            await set(newListRef, tripData);
-            status.innerHTML = "✅ SAVED SUCCESSFULLY! Refresh your website.";
-            // Clear input fields
-            document.querySelectorAll('input, textarea').forEach(el => el.value = "");
-        } catch (e) {
-            status.innerHTML = "❌ FAILED: " + e.message;
-            console.error("Database Error:", e);
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const submitBtn = document.getElementById('submitBtn');
+        const statusBox = document.getElementById('status-msg');
+
+        submitBtn.addEventListener('click', async () => {
+            // UI Feedback
+            submitBtn.innerText = "SENDING...";
+            submitBtn.disabled = true;
+            statusBox.className = "mb-8 p-4 text-sm text-center border bg-stone-100 text-stone-600 block";
+            statusBox.innerText = "Connecting to database...";
+
+            const tripData = {
+                name: document.getElementById('tripName').value,
+                continent: document.getElementById('tripContinent').value,
+                country: document.getElementById('tripCountry').value,
+                photo: document.getElementById('tripPhoto').value,
+                story: document.getElementById('tripStory').value,
+                timestamp: Date.now()
+            };
+
+            // Basic Validation
+            if(!tripData.name || !tripData.photo) {
+                showStatus("Please enter at least a Name and Photo URL.", "bg-red-50 text-red-700 border-red-200");
+                resetBtn();
+                return;
+            }
+
+            try {
+                const itinerariesRef = ref(db, 'itineraries');
+                const newTripRef = push(itinerariesRef);
+                await set(newTripRef, tripData);
+                
+                showStatus("✅ TRIP PUBLISHED! Check your homepage.", "bg-green-50 text-green-700 border-green-200");
+                clearForm();
+            } catch (error) {
+                console.error(error);
+                showStatus("❌ DATABASE ERROR: " + error.message, "bg-red-50 text-red-700 border-red-200");
+            } finally {
+                resetBtn();
+            }
+        });
+
+        function showStatus(msg, classes) {
+            statusBox.innerText = msg;
+            statusBox.className = "mb-8 p-4 text-sm text-center border block " + classes;
         }
-    });
-</script>
+
+        function resetBtn() {
+            submitBtn.innerText = "PUBLISH TO WEBSITE";
+            submitBtn.disabled = false;
+        }
+
+        function clearForm() {
+            document.querySelectorAll('input, textarea').forEach(el => el.value = "");
+        }
+    </script>
+
+</body>
+</html>
