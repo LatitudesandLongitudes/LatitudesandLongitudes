@@ -2,55 +2,47 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Architect | Latitudes & Longitudes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
     <style>
         body { background-color: #faf9f6; font-family: 'Montserrat', sans-serif; color: #2d2a26; }
         .serif { font-family: 'Cormorant Garamond', serif; }
-        .input-box { border: 1px solid #e0dbd1; padding: 12px; width: 100%; margin-bottom: 20px; background: white; border-radius: 2px; }
-        label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.6; margin-bottom: 8px; display: block; }
+        .input-box { border: 1px solid #e0dbd1; padding: 15px; width: 100%; margin-bottom: 20px; background: white; }
+        label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.6; margin-bottom: 10px; display: block; }
     </style>
 </head>
 <body class="p-8 md:p-20">
 
-    <div class="max-w-3xl mx-auto">
-        <header class="mb-12 border-b border-stone-200 pb-8 flex justify-between items-end">
-            <div>
-                <h1 class="serif text-5xl text-[#8d5d46]">Admin Mode</h1>
-                <p class="text-[10px] tracking-widest uppercase opacity-40 mt-2">Manage the Archive</p>
-            </div>
-            <a href="index.html" class="text-[10px] tracking-widest uppercase border-b border-black pb-1">View Website</a>
+    <div class="max-w-4xl mx-auto">
+        <header class="mb-16 border-b border-stone-200 pb-10 flex justify-between items-end">
+            <h1 class="serif text-5xl text-[#8d5d46]">Admin Architect</h1>
+            <a href="index.html" class="text-[10px] tracking-widest uppercase border-b border-black">View Website</a>
         </header>
 
-        <div id="status-msg" class="hidden mb-8 p-4 text-sm text-center border"></div>
-
         <div class="bg-white p-10 border border-stone-200 shadow-sm mb-16">
-            <h2 class="serif text-2xl mb-6 italic">Add New Narrative</h2>
-            <label>Journey Name</label>
-            <input type="text" id="tripName" placeholder="e.g. Exploring Rocky Mountain" class="input-box">
-
-            <div class="grid grid-cols-2 gap-4">
-                <div><label>Continent</label><input type="text" id="tripContinent" class="input-box"></div>
+            <h2 class="serif text-3xl mb-8 italic">New Narrative</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div><label>Journey Name</label><input type="text" id="tripName" class="input-box"></div>
                 <div><label>Country</label><input type="text" id="tripCountry" class="input-box"></div>
             </div>
-
-            <label>Main Image URL</label>
-            <input type="text" id="tripPhoto" class="input-box">
-
-            <label>The Narrative</label>
-            <textarea id="tripStory" class="input-box h-32"></textarea>
-
-            <button id="submitBtn" class="w-full bg-black text-white py-5 text-[11px] uppercase tracking-[0.5em] hover:bg-[#8d5d46] transition-all">
-                Publish to Website
-            </button>
+            <label>Cover Image URL</label><input type="text" id="tripPhoto" class="input-box">
+            <label>Poetic Introduction</label><textarea id="tripStory" class="input-box h-32"></textarea>
+            <button id="submitBtn" class="w-full bg-black text-white py-5 text-[11px] uppercase tracking-[0.5em] hover:bg-[#8d5d46] transition-all">Publish Narrative</button>
         </div>
 
-        <div class="bg-stone-50 p-10 border border-stone-200">
-            <h2 class="serif text-2xl mb-8 italic text-[#8d5d46]">Current Archive</h2>
-            <div id="archive-list" class="space-y-4">
-                <p class="text-xs opacity-40 italic">Loading your journeys...</p>
+        <div class="bg-stone-50 p-10 border border-stone-200 mb-16">
+            <h2 class="serif text-3xl mb-10 italic">Archive Management</h2>
+            <div id="archive-list" class="space-y-4"></div>
+        </div>
+
+        <div id="itinerary-editor" class="hidden bg-white p-10 border-4 border-[#8d5d46] shadow-xl">
+            <h2 id="selected-trip-name" class="serif text-3xl mb-10 italic text-[#8d5d46]"></h2>
+            <label>Day / Place Title</label><input type="text" id="dayTitle" placeholder="e.g. Day 1: The Mountain Ridge" class="input-box">
+            <label>Detailed Observations</label><textarea id="dayContent" class="input-box h-48"></textarea>
+            <div class="flex gap-4">
+                <button onclick="addDay()" class="flex-1 bg-black text-white py-5 text-[10px] uppercase tracking-widest">Append to Compass</button>
+                <button onclick="document.getElementById('itinerary-editor').classList.add('hidden')" class="px-8 border border-stone-300 text-[10px] uppercase">Close</button>
             </div>
         </div>
     </div>
@@ -72,55 +64,53 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // 1. ADD DATA
+        // Publish Narrative
         document.getElementById('submitBtn').addEventListener('click', async () => {
-            const tripData = {
+            const data = {
                 name: document.getElementById('tripName').value,
-                continent: document.getElementById('tripContinent').value,
                 country: document.getElementById('tripCountry').value,
                 photo: document.getElementById('tripPhoto').value,
-                story: document.getElementById('tripStory').value,
-                timestamp: Date.now()
+                story: document.getElementById('tripStory').value
             };
-
-            if(!tripData.name) return alert("Please enter a name");
-
-            try {
-                await push(ref(db, 'itineraries'), tripData);
-                alert("Published!");
-                document.querySelectorAll('input, textarea').forEach(el => el.value = "");
-            } catch (e) { alert(e.message); }
+            if(!data.name) return;
+            await push(ref(db, 'itineraries'), data);
+            alert("Narrative Archived.");
+            document.querySelectorAll('input, textarea').forEach(i => i.value = "");
         });
 
-        // 2. LOAD & DELETE DATA
-        const archiveList = document.getElementById('archive-list');
+        // Load List
         onValue(ref(db, 'itineraries'), (snapshot) => {
             const data = snapshot.val();
+            const list = document.getElementById('archive-list');
             if (data) {
-                archiveList.innerHTML = Object.keys(data).map(key => `
-                    <div class="flex justify-between items-center bg-white p-4 border border-stone-200 group">
-                        <div>
-                            <p class="font-medium text-sm">${data[key].name}</p>
-                            <p class="text-[9px] opacity-40 uppercase tracking-widest">${data[key].country || 'Global'}</p>
+                list.innerHTML = Object.keys(data).map(key => `
+                    <div class="flex justify-between items-center bg-white p-6 border border-stone-200">
+                        <div><p class="font-medium text-lg">${data[key].name}</p><p class="text-[9px] opacity-40 uppercase tracking-widest">${data[key].country || 'Global'}</p></div>
+                        <div class="flex gap-6 uppercase text-[10px] tracking-widest">
+                            <button onclick="window.manageItinerary('${key}', '${data[key].name}')" class="text-blue-500 hover:underline">Add Details</button>
+                            <button onclick="window.deleteTrip('${key}')" class="text-red-400 hover:text-red-600">Delete</button>
                         </div>
-                        <button onclick="window.deleteTrip('${key}')" class="text-[9px] tracking-widest uppercase text-red-400 hover:text-red-700 transition-colors">
-                            Delete
-                        </button>
                     </div>
                 `).reverse().join('');
-            } else {
-                archiveList.innerHTML = "<p class='text-xs opacity-40'>No trips found in the archive.</p>";
             }
         });
 
-        // Make delete function global
-        window.deleteTrip = (id) => {
-            if(confirm("Are you sure you want to remove this journey from the archive?")) {
-                remove(ref(db, `itineraries/${id}`))
-                    .then(() => alert("Entry removed."))
-                    .catch((e) => alert("Error: " + e.message));
-            }
+        let activeId = null;
+        window.manageItinerary = (id, name) => {
+            activeId = id;
+            document.getElementById('itinerary-editor').classList.remove('hidden');
+            document.getElementById('selected-trip-name').innerText = "Detailed Compass: " + name;
+            document.getElementById('itinerary-editor').scrollIntoView({behavior:'smooth'});
         };
+
+        window.addDay = async () => {
+            const day = { title: document.getElementById('dayTitle').value, content: document.getElementById('dayContent').value };
+            await push(ref(db, `itineraries/${activeId}/days`), day);
+            alert("Entry Saved.");
+            document.getElementById('dayTitle').value = ""; document.getElementById('dayContent').value = "";
+        };
+
+        window.deleteTrip = (id) => { if(confirm("Permanently erase this journey?")) remove(ref(db, `itineraries/${id}`)); };
     </script>
 </body>
 </html>
