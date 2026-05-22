@@ -7,13 +7,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #fdfcf7; --text: #242220; }
-        body { background-color: var(--bg); color: var(--text); font-family: 'Montserrat', sans-serif; margin: 0; }
+        :root { var(--bg-earth): #f4f1ea; --text-stone: #2e2b2a; --header-olive: #8c7d62; }
+        body { background-color: #f4f1ea; color: var(--text-stone); font-family: 'Montserrat', sans-serif; margin: 0; }
         .serif { font-family: 'Cormorant Garamond', serif; }
-        .custom-navbar {
-            position: absolute; top: 0; left: 0; width: 100%; z-index: 9999;
-            display: flex; justify-content: space-between; align-items: center; padding: 40px 50px; box-sizing: border-box;
-        }
+        .custom-navbar { position: absolute; top: 0; left: 0; width: 100%; z-index: 9999; display: flex; justify-content: space-between; align-items: center; padding: 40px 50px; box-sizing: border-box; }
         .nav-group { display: flex; gap: 30px; }
         .nav-link { color: #ffffff !important; text-transform: uppercase; font-size: 11px; font-weight: 300; letter-spacing: 0.3em; }
     </style>
@@ -22,37 +19,25 @@
 
     <header class="custom-navbar">
         <div class="nav-group">
-            <a href="index.html" class="nav-link" style="font-weight: 500;">Home</a>
+            <a href="index.html" class="nav-link">Home</a>
             <a href="compass.html" class="nav-link">Compass</a>
             <a href="corners.html" class="nav-link">Corners</a>
-            <a href="chronicles.html" class="nav-link">Chronicles</a>
+            <a href="chronicles.html" class="nav-link" style="color: #c59b85 !important; font-weight: 500;">Chronicles</a>
         </div>
         <a href="index.html" class="serif text-2xl italic text-[#c59b85] lowercase no-underline">l&l</a>
     </header>
 
-    <section class="bg-[#8c7d62] text-white pt-48 pb-24 px-6 text-center">
+    <section class="bg-[#8c7d62] text-white pt-48 pb-24 px-6 text-center border-b border-[#796c54]">
         <h1 class="serif text-5xl md:text-6xl font-light text-white tracking-wide mb-2">Chronicles</h1>
-        <p class="serif text-lg italic text-[#fdfcf7]/70 font-light">The complete archive of observations and long-form stories.</p>
+        <p class="serif text-lg italic text-[#fdfcf7]/70 font-light">A diary of raw reflections, emotional records, and moments encountered along the map.</p>
     </section>
 
-    <section class="max-w-6xl mx-auto px-6 py-24">
-        <div id="chronicles-threesome-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-32">
-            </div>
-
-        <div class="h-[1px] w-full bg-stone-200 mb-24"></div>
-
-        <div id="story-grid" class="space-y-64">
+    <section class="max-w-4xl mx-auto px-6 py-32">
+        <div id="story-grid" class="space-y-44">
             </div>
     </section>
 
-    <div id="itinerary-modal" class="hidden fixed inset-0 z-[100] w-full h-full bg-[#fdfcf7] overflow-y-auto">
-        <div class="max-w-4xl mx-auto px-6 py-32 relative">
-            <button onclick="closeModal()" class="fixed top-12 right-12 text-[9px] tracking-[0.4em] uppercase border border-stone-200 px-6 py-3 bg-white hover:bg-black hover:text-white transition-all">Close</button>
-            <div id="modal-content" class="mt-12"></div>
-        </div>
-    </div>
-
-    <footer class="py-12 text-center bg-[#242220] text-stone-500 text-[10px] tracking-widest uppercase">
+    <footer class="py-12 text-center bg-[#2e2b2a] text-[#dad4c5] text-[10px] tracking-widest uppercase">
         <a href="index.html" class="hover:text-white">Return Home Cover</a>
     </footer>
 
@@ -70,51 +55,30 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        window.allTrips = [];
 
         onValue(ref(db, 'itineraries'), (snapshot) => {
             const data = snapshot.val();
             const longGrid = document.getElementById('story-grid');
-            const miniGrid = document.getElementById('chronicles-threesome-grid');
             
             if (data) {
-                window.allTrips = Object.keys(data).map(key => ({...data[key], id: key})).reverse();
-                
-                miniGrid.innerHTML = window.allTrips.slice(0, 3).map(t => `
-                    <div class="flex flex-col text-left cursor-pointer group" onclick="openItinerary('${t.id}')">
-                        <div class="w-full h-72 overflow-hidden mb-4 shadow-sm"><img src="${t.photo}" class="w-full h-full object-cover"></div>
-                        <h3 class="serif text-xl text-stone-800 group-hover:text-[#c59b85] font-light mb-1">${t.name}</h3>
-                        <p class="text-xs text-stone-500 line-clamp-3">${t.story}</p>
-                    </div>
-                `).join('');
+                const trips = Object.keys(data).map(key => ({...data[key], id: key})).reverse();
 
-                longGrid.innerHTML = window.allTrips.map((t, idx) => `
-                    <article class="grid md:grid-cols-12 gap-12 items-center text-left">
-                        <div class="md:col-span-7 ${idx % 2 === 0 ? '' : 'md:order-2'} overflow-hidden"><img src="${t.photo}" class="w-full h-[60vh] object-cover"></div>
-                        <div class="md:col-span-5">
-                            <span class="text-[9px] tracking-widest text-[#8d5d46] uppercase font-semibold block mb-2">${t.country || 'Record'}</span>
-                            <h2 class="serif text-5xl font-light italic mb-4">${t.name}</h2>
-                            <p class="serif text-lg text-stone-500 italic mb-6 leading-relaxed">${t.story}</p>
-                            <button onclick="openItinerary('${t.id}')" class="text-[9px] tracking-widest uppercase text-stone-400 hover:text-[#8d5d46]">Consult logs ⟶</button>
+                longGrid.innerHTML = trips.map((t) => `
+                    <article class="text-left max-w-2xl mx-auto border-b border-[#dad4c5] pb-24 last:border-0">
+                        <div class="w-full h-96 overflow-hidden mb-8 shadow-sm p-2 bg-[#e4dfd5] border border-[#dad4c5]">
+                            <img src="${t.photo}" class="w-full h-full object-cover filter contrast-[1.01] brightness-[0.98] sepia-[10%]">
+                        </div>
+                        <span class="text-[9px] tracking-[0.5em] uppercase text-[#c59b85] font-semibold block mb-2">${t.country || 'Journal'}</span>
+                        <h2 class="serif text-4xl md:text-5xl font-light italic text-[#2e2b2a] mb-6 leading-tight">${t.name}</h2>
+                        
+                        <div class="serif text-lg md:text-xl text-stone-700 italic font-light leading-relaxed space-y-6 antialiased">
+                            <p>${t.story}</p>
+                            <p class="text-stone-400 text-xs font-sans tracking-normal not-italic mt-4">Captured live from our travel diaries.</p>
                         </div>
                     </article>
                 `).join('');
             }
         });
-
-        window.openItinerary = function(tripId) {
-            const trip = window.allTrips.find(t => t.id === tripId);
-            const modal = document.getElementById('itinerary-modal');
-            const content = document.getElementById('modal-content');
-            if (trip && trip.days) {
-                let daysHtml = `<div class="relative border-l border-stone-200 max-w-xl mx-auto pl-8 space-y-12">`;
-                Object.values(trip.days).forEach((day, index) => {
-                    daysHtml += `<div><span class="serif text-4xl text-stone-200 block">${String(index+1).padStart(2,'0')}</span><h3 class="serif text-xl italic text-stone-800">${day.title}</h3><p class="text-stone-500 font-light text-sm whitespace-pre-wrap">${day.content}</p></div>`;
-                });
-                daysHtml += `</div>`; content.innerHTML = daysHtml; modal.classList.remove('hidden'); document.body.style.overflow = 'hidden';
-            }
-        };
-        window.closeModal = () => { document.getElementById('itinerary-modal').classList.add('hidden'); document.body.style.overflow = 'auto'; };
     </script>
 </body>
 </html>
