@@ -12,9 +12,9 @@
         .serif { font-family: 'Cormorant Garamond', serif; }
         
         .custom-navbar { position: absolute; top: 0; left: 0; width: 100%; z-index: 9999; display: flex; justify-content: space-between; align-items: center; padding: 40px 50px; background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%); }
-        .nav-link { color: #ffffff !important; text-transform: uppercase; font-size: 11px; font-weight: 300; letter-spacing: 0.3em; text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
-        .hero-bg { background: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)), url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070'); background-size: cover; background-position: center; height: 100vh; }
+        .nav-link { color: #ffffff !important; text-transform: uppercase; font-size: 11px; font-weight: 300; letter-spacing: 0.3em; }
         
+        .hero-bg { background: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)), url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070'); background-size: cover; background-position: center; height: 100vh; }
         .block-compass { background-color: #c59b85; }
         .block-corners { background-color: #4a5857; }
         .block-chronicles { background-color: #8c7d62; }
@@ -25,7 +25,7 @@
     <header class="custom-navbar">
         <div class="flex gap-8">
             <a href="index.html" class="nav-link font-medium">Home</a>
-            <a href="#" class="nav-link">About</a>
+            <a href="about.html" class="nav-link">About</a>
             <a href="chronicles.html" class="nav-link">Blog</a>
             <a href="corners.html" class="nav-link">Places</a>
         </div>
@@ -83,13 +83,5 @@
         </div>
     </footer>
 
-    <div id="itinerary-modal" class="hidden fixed inset-0 z-[100] w-full h-full bg-[#fdfcf7] overflow-y-auto">
-        <div class="max-w-4xl mx-auto px-6 py-32 relative">
-            <button onclick="closeModal()" class="fixed top-12 left-12 md:left-24 flex items-center gap-3 text-[10px] tracking-[0.3em] uppercase text-stone-500 hover:text-black">
-                <span>← Home</span>
-            </button>
-            <div id="modal-content" class="mt-12"></div>
-        </div>
-    </div>
 </body>
 </html>
