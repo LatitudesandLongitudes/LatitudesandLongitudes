@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corners - Explored Spaces</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #fdfcf7; --text: #242220; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Montserrat', sans-serif; margin: 0; }
+        .serif { font-family: 'Cormorant Garamond', serif; }
+        .dark-navbar { background-color: #4a5857; padding: 30px 50px; display: flex; justify-content: space-between; align-items: center; }
+        .nav-group { display: flex; gap: 30px; }
+        .nav-link { color: #ffffff; text-transform: uppercase; font-size: 11px; font-weight: 300; letter-spacing: 0.3em; }
+    </style>
+</head>
+<body>
+
+    <nav class="dark-navbar">
+        <div class="nav-group">
+            <a href="index.html" class="nav-link" style="font-weight: 500;">Home</a>
+            <a href="compass.html" class="nav-link">Compass</a>
+            <a href="corners.html" class="nav-link">Corners</a>
+            <a href="chronicles.html" class="nav-link">Chronicles</a>
+        </div>
+        <a href="index.html" class="serif text-2xl italic tracking-widest text-[#c59b85] lowercase no-underline">l&l</a>
+    </nav>
+
+    <header class="py-24 text-center max-w-xl mx-auto px-6">
+        <h1 class="serif text-5xl md:text-6xl font-light text-stone-800 mb-4">Corners</h1>
+        <p class="text-xs tracking-[0.3em] uppercase text-stone-400 font-light">An index of localized coordinates and regions encountered.</p>
+    </header>
+
+    <section class="max-w-5xl mx-auto px-6 pb-44">
+        <div id="destinations-mosaic" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+            </div>
+    </section>
+
+    <footer class="py-12 text-center bg-[#242220] text-stone-500 text-[10px] tracking-widest uppercase">
+        <a href="index.html" class="hover:text-white">Back to Base</a>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAecvrfHyFXRGF3kkr-nL2vEhyIn4tZmU0",
+            authDomain: "latitudesandlongitudes-3f37b.firebaseapp.com",
+            projectId: "latitudesandlongitudes-3f37b",
+            databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com",
+            storageBucket: "latitudesandlongitudes-3f37b.firebasestorage.app"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        onValue(ref(db, 'itineraries'), (snapshot) => {
+            const data = snapshot.val();
+            const mosaic = document.getElementById('destinations-mosaic');
+            if (data) {
+                const countries = [...new Set(Object.values(data).map(item => item.country).filter(Boolean))];
+                if(countries.length === 0) countries.push("Goa", "Kerala", "Michigan");
+                mosaic.innerHTML = countries.map(country => `
+                    <div onclick="window.location.href='chronicles.html'" class="bg-[#8c7d62]/90 hover:bg-[#8c7d62] text-white aspect-square flex items-center justify-center text-center p-4 transition-all cursor-pointer group">
+                        <span class="serif text-xl font-light tracking-wide group-hover:scale-105 transition-transform">${country}</span>
+                    </div>
+                `).join('');
+            }
+        });
+    </script>
+</body>
+</html>
