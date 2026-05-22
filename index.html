@@ -8,11 +8,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #fdfcf7; --text: #242220; --accent: #8d5d46; }
-        body { background-color: var(--bg); color: var(--text); font-family: 'Montserrat', sans-serif; margin: 0; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Montserrat', sans-serif; margin: 0; overflow-x: hidden; }
         .serif { font-family: 'Cormorant Garamond', serif; }
         
         .custom-navbar { position: absolute; top: 0; left: 0; width: 100%; z-index: 9999; display: flex; justify-content: space-between; align-items: center; padding: 40px 50px; background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%); }
-        .nav-link { color: #ffffff !important; text-transform: uppercase; font-size: 11px; font-weight: 300; letter-spacing: 0.3em; }
+        .nav-link { color: #ffffff !important; text-transform: uppercase; font-size: 11px; font-weight: 300; letter-spacing: 0.3em; text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
         
         .hero-bg { background: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)), url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070'); background-size: cover; background-position: center; height: 100vh; }
         .block-compass { background-color: #c59b85; }
@@ -25,9 +25,9 @@
     <header class="custom-navbar">
         <div class="flex gap-8">
             <a href="index.html" class="nav-link font-medium">Home</a>
-            <a href="about.html" class="nav-link">About</a>
-            <a href="chronicles.html" class="nav-link">Blog</a>
-            <a href="corners.html" class="nav-link">Places</a>
+            <a href="#" class="nav-link">About</a>
+            <a href="#" class="nav-link">Blog</a>
+            <a href="#" class="nav-link">Places</a>
         </div>
         <div class="flex gap-8">
             <a href="#" class="nav-link">Instagram</a>
@@ -59,29 +59,19 @@
         </a>
     </section>
 
+    <div id="itinerary-modal" class="hidden fixed inset-0 z-[100] w-full h-full bg-[#fdfcf7] overflow-y-auto">
+        <div class="max-w-4xl mx-auto px-6 py-32 relative">
+            <button onclick="closeModal()" class="fixed top-12 left-12 md:left-24 flex items-center gap-3 group text-[9px] tracking-[0.4em] uppercase text-stone-500 hover:text-black transition-all">
+                <span class="text-xl transition-transform duration-300 group-hover:-translate-x-2">←</span>
+                <span>Home</span>
+            </button>
+            <div id="modal-content" class="mt-12"></div>
+        </div>
+    </div>
+
     <footer class="bg-[#242220] text-[#fdfcf7] pt-24 pb-12 px-6 border-t border-stone-800">
         <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-16 mb-24">
             <div class="md:col-span-3 text-center md:text-left">
                 <h4 class="serif text-2xl font-light mb-6 text-white">Destinations</h4>
                 <ul class="text-xs uppercase text-stone-400 space-y-3">
-                    <li>India</li><li>Goa</li><li>Kerala</li><li>Michigan</li>
-                </ul>
-            </div>
-            <div class="md:col-span-5 text-center px-4 flex flex-col items-center">
-                <div class="serif text-4xl italic text-[#c59b85] mb-6 lowercase">l&l</div>
-                <p class="text-xs text-stone-400 leading-relaxed max-w-sm">Latitudes & Longitudes is an independent travel journal built to document slow mornings and structural reflections.</p>
-            </div>
-            <div class="md:col-span-4 text-center md:text-right">
-                <h4 class="serif text-2xl font-light mb-6 text-white">Newsletter</h4>
-                <input type="email" placeholder="Email Address" class="w-full bg-[#2c2927] p-3 text-xs mb-4 text-center md:text-left">
-                <button class="bg-[#c59b85] text-white px-8 py-3 text-[10px] uppercase tracking-widest">Sign Up</button>
-            </div>
-        </div>
-        <div class="max-w-6xl mx-auto border-t border-stone-800/60 pt-12 flex justify-between text-[10px] uppercase text-stone-600">
-            <span>&copy; 2026 Latitudes & Longitudes</span>
-            <a href="admin.html">Architect Entry ⟶</a>
-        </div>
-    </footer>
-
-</body>
-</html>
+                    <li>India</li><li>Goa</li><li>Kerala
