@@ -11,9 +11,9 @@
         body { background-color: var(--bg); color: var(--text); font-family: 'Montserrat', sans-serif; margin: 0; overflow-x: hidden; }
         .serif { font-family: 'Cormorant Garamond', serif; }
         
-        /* Slow, cinematic ambient zoom for the cover image */
+        /* Smooth zoom animation for background */
         .hero-bg {
-            background: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)), 
+            background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)), 
                         url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070');
             background-size: cover; background-position: center; height: 100vh;
             animation: slowZoom 20s infinite alternate ease-in-out;
@@ -21,19 +21,19 @@
 
         @keyframes slowZoom { from { transform: scale(1); } to { transform: scale(1.05); } }
         
-        /* Clean menu link styling */
+        /* Solid, high-contrast white links for maximum visibility on the hero image */
         .nav-link { 
-            color: white; 
-            mix-blend-mode: difference; 
-            transition: all 0.4s ease; 
+            color: rgba(255, 255, 255, 0.9) !important;
+            transition: all 0.3s ease; 
             display: inline-block;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2); /* Subtle protection shadow */
         }
-        .nav-link:hover { opacity: 0.5; transform: translateY(-1px); }
+        .nav-link:hover { color: #fdfcf7 !important; opacity: 0.6; transform: translateY(-1px); }
     </style>
 </head>
 <body>
 
-    <div class="fixed top-0 left-0 w-full z-50 px-8 py-8 md:px-12 md:py-10 flex justify-between items-center bg-transparent">
+    <div class="absolute top-0 left-0 w-full z-50 px-8 py-8 md:px-12 md:py-10 flex justify-between items-center bg-gradient-to-b from-black/20 to-transparent">
         
         <div class="flex gap-6 md:gap-8 text-[11px] tracking-[0.3em] uppercase font-light">
             <a href="index.html" class="nav-link font-medium">Home</a>
@@ -51,7 +51,7 @@
 
     <div class="relative w-full h-screen overflow-hidden">
         <header class="hero-bg flex items-center justify-center flex-col text-center w-full h-full"></header>
-        <div class="absolute inset-0 flex flex-col items-center justify-center text-center text-white pointer-events-none mix-blend-difference z-10">
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-center text-white pointer-events-none z-10">
             <p class="text-[10px] tracking-[0.9em] uppercase mb-4 opacity-70">The Chronicles of Exploration</p>
             <h1 class="serif text-6xl md:text-9xl italic font-light tracking-tighter">Latitudes & Longitudes</h1>
             <div class="h-[60px] w-[1px] bg-white mt-12 opacity-40"></div>
@@ -118,51 +118,4 @@
                                 <span class="text-[9px] tracking-[0.5em] uppercase text-[#8d5d46] font-semibold block mb-4">${t.country || 'Universal Context'}</span>
                                 <h2 class="serif text-5xl md:text-7xl font-light italic leading-[1.15] text-stone-800 mb-8">${t.name}</h2>
                                 <p class="serif text-xl text-stone-500 italic font-light leading-relaxed mb-10 opacity-90">${t.story}</p>
-                                <button onclick="openItinerary('${t.id}')" class="group inline-flex items-center gap-4 text-[9px] tracking-[0.5em] uppercase text-stone-400 hover:text-[#8d5d46] transition-all">
-                                    <span class="border-b border-stone-200 pb-1.5 group-hover:border-[#8d5d46]">Consult the Compass</span>
-                                    <span class="text-xl transition-transform duration-300 group-hover:translate-x-3">⟶</span>
-                                </button>
-                            </div>
-                        </article>
-                    `;
-                }).join('');
-            }
-        });
-
-        window.openItinerary = function(tripId) {
-            const trip = window.allTrips.find(t => t.id === tripId);
-            const modal = document.getElementById('itinerary-modal');
-            const content = document.getElementById('modal-content');
-            if (trip && trip.days) {
-                let daysHtml = `
-                    <div class="text-center mb-32">
-                        <span class="text-[10px] tracking-[0.8em] uppercase opacity-40">Day-by-Day Logistics</span>
-                        <h2 class="serif text-6xl md:text-8xl italic font-light mt-4 text-stone-800">${trip.name}</h2>
-                        <div class="h-[1px] w-20 bg-[#8d5d46] mx-auto mt-12 opacity-30"></div>
-                    </div>
-                    <div class="relative border-l border-stone-200 max-w-2xl mx-auto pl-8 md:pl-16 space-y-24">
-                `;
-                
-                Object.values(trip.days).forEach((day, index) => {
-                    const displayNum = String(index + 1).padStart(2, '0');
-                    daysHtml += `
-                        <div class="relative">
-                            <div class="absolute -left-[37px] md:-left-[69px] top-1 w-4 h-4 rounded-full bg-[#fdfcf7] border-2 border-[#8d5d46]"></div>
-                            <span class="serif text-6xl md:text-7xl font-light text-stone-200 block mb-2 leading-none">${displayNum}</span>
-                            <h3 class="serif text-2xl md:text-3xl italic text-stone-800 mb-4 font-medium">${day.title}</h3>
-                            <p class="text-stone-500 font-light leading-relaxed text-base md:text-lg whitespace-pre-wrap">${day.content}</p>
-                        </div>
-                    `;
-                });
-                
-                daysHtml += `</div>`;
-                content.innerHTML = daysHtml;
-                modal.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-            } else { alert("The detailed logbook is missing entries for this configuration."); }
-        };
-
-        window.closeModal = () => { document.getElementById('itinerary-modal').classList.add('hidden'); document.body.style.overflow = 'auto'; };
-    </script>
-</body>
-</html>
+                                <button onclick="openItinerary('${t.id}')" class="group inline-flex items-center gap-4 text-[9px] tracking-[0.5em] uppercase text-stone-400 hover:text
