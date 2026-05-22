@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,30 +7,30 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #fdfcf7; --text: #242220; }
-        body { background-color: var(--bg); color: var(--text); font-family: 'Montserrat', sans-serif; margin: 0; overflow-x: hidden; }
+        :root { --bg-earth: #f4f1ea; --text-stone: #2e2b2a; }
+        body { background-color: var(--bg-earth); color: var(--text-stone); font-family: 'Montserrat', sans-serif; margin: 0; overflow-x: hidden; }
         .serif { font-family: 'Cormorant Garamond', serif; }
         
         .custom-navbar {
             position: absolute; top: 0; left: 0; width: 100%; z-index: 9999;
             display: flex; justify-content: space-between; align-items: center;
             box-sizing: border-box; padding: 40px 50px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%);
+            background: linear-gradient(to bottom, rgba(46,43,42,0.3) 0%, rgba(0,0,0,0) 100%);
         }
         .nav-group { display: flex; gap: 30px; }
         .nav-link { 
             color: #ffffff !important; text-transform: uppercase; font-size: 11px; 
-            font-weight: 300; letter-spacing: 0.3em; transition: all 0.3s ease; text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+            font-weight: 400; letter-spacing: 0.3em; transition: all 0.3s ease; text-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
-        .nav-link:hover { opacity: 0.6; }
+        .nav-link:hover { opacity: 0.7; }
 
         .hero-bg {
-            background: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)), 
+            background: linear-gradient(rgba(46,43,42,0.2), rgba(46,43,42,0.2)), 
                         url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070');
             background-size: cover; background-position: center; height: 100vh;
             animation: slowZoom 20s infinite alternate ease-in-out;
         }
-        @keyframes slowZoom { from { transform: scale(1); } to { transform: scale(1.05); } }
+        @keyframes slowZoom { from { transform: scale(1); } to { transform: scale(1.04); } }
 
         .block-compass { background-color: #c59b85; }
         .block-corners { background-color: #4a5857; }
@@ -41,93 +41,25 @@
 
     <header class="custom-navbar">
         <div class="nav-group">
-            <a href="index.html" class="nav-link style-home" style="font-weight: 500;">Home</a>
+            <a href="index.html" class="nav-link" style="font-weight: 500; color: #c59b85 !important;">Home</a>
             <a href="compass.html" class="nav-link">Compass</a>
             <a href="corners.html" class="nav-link">Corners</a>
             <a href="chronicles.html" class="nav-link">Chronicles</a>
         </div>
-        <div class="nav-group">
-            <a href="#" target="_blank" class="nav-link">Instagram</a>
-        </div>
+        <div class="nav-group"><a href="#" target="_blank" class="nav-link">Instagram</a></div>
     </header>
 
     <div class="relative w-full h-screen overflow-hidden">
         <div class="hero-bg flex items-center justify-center flex-col text-center w-full h-full"></div>
         <div class="absolute inset-0 flex flex-col items-center justify-center text-center text-white pointer-events-none z-10">
-            <p class="text-[10px] tracking-[0.9em] uppercase mb-4 opacity-70">The Chronicles of Exploration</p>
+            <p class="text-[10px] tracking-[0.9em] uppercase mb-4 opacity-80 font-light">The Chronicles of Exploration</p>
             <h1 class="serif text-6xl md:text-9xl italic font-light tracking-tighter">Latitudes & Longitudes</h1>
-            <div class="h-[60px] w-[1px] bg-white mt-12 opacity-40"></div>
+            <div class="h-[50px] w-[1px] bg-white mt-12 opacity-30"></div>
         </div>
     </div>
 
-    <section class="bg-[#fdfcf7] pt-32 pb-24 text-center px-6 max-w-4xl mx-auto relative z-20">
-        <div class="serif text-3xl md:text-4xl lg:text-[38px] leading-relaxed font-light italic text-stone-800 antialiased max-w-3xl mx-auto">
+    <section class="pt-32 pb-24 text-center px-6 max-w-4xl mx-auto relative z-20">
+        <div class="serif text-3xl md:text-4xl lg:text-[36px] leading-relaxed font-light italic text-[#2e2b2a] antialiased max-w-3xl mx-auto">
             "This is a space for those who crave <span class="text-[#8d5d46]">slow mornings</span>, meaningful journeys, and stories that stay with you. Created with heart, you’ll find reflections, photographs, and little moments gathered from places near and far — all meant to inspire your own path."
         </div>
-        <div class="mt-12 flex flex-col items-center gap-2">
-            <div class="h-[1px] w-12 bg-stone-300"></div>
-            <p class="serif italic text-lg text-stone-400 tracking-wide mt-2">Chasing lines of latitude, grounding in moments of longitude.</p>
-        </div>
-    </section>
-
-    <section class="max-w-6xl mx-auto px-6 pb-44 bg-[#fdfcf7] relative z-20">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 h-[65vh] min-h-[400px]">
-            <a href="compass.html" class="block-compass relative group flex flex-col items-center justify-center text-center text-white no-underline overflow-hidden transition-all duration-500 hover:brightness-105">
-                <div class="relative z-10 transition-transform duration-500 group-hover:scale-105">
-                    <h3 class="serif text-4xl md:text-5xl font-light tracking-wide mb-1">Compass</h3>
-                    <span class="text-[9px] tracking-[0.4em] uppercase opacity-60 block mt-2 border-t border-white/20 pt-2 max-w-[60px] mx-auto">Routes</span>
-                </div>
-            </a>
-            <a href="corners.html" class="block-corners relative group flex flex-col items-center justify-center text-center text-white no-underline overflow-hidden transition-all duration-500 hover:brightness-105">
-                <div class="relative z-10 transition-transform duration-500 group-hover:scale-105">
-                    <h3 class="serif text-4xl md:text-5xl font-light tracking-wide mb-1">Corners</h3>
-                    <span class="text-[9px] tracking-[0.4em] uppercase opacity-60 block mt-2 border-t border-white/20 pt-2 max-w-[60px] mx-auto">Places</span>
-                </div>
-            </a>
-            <a href="chronicles.html" class="block-chronicles relative group flex flex-col items-center justify-center text-center text-white no-underline overflow-hidden transition-all duration-500 hover:brightness-105">
-                <div class="relative z-10 transition-transform duration-500 group-hover:scale-105">
-                    <h3 class="serif text-4xl md:text-5xl font-light tracking-wide mb-1">Chronicles</h3>
-                    <span class="text-[9px] tracking-[0.4em] uppercase opacity-60 block mt-2 border-t border-white/20 pt-2 max-w-[60px] mx-auto">Journal</span>
-                </div>
-            </a>
-        </div>
-    </section>
-
-    <main class="pb-44 bg-[#fdfcf7] relative z-20 max-w-6xl mx-auto px-6">
-        <p class="text-[10px] tracking-[0.6em] uppercase text-stone-400 font-semibold mb-4">Latest Logs</p>
-        <div id="index-preview-grid" class="space-y-48">
-            </div>
-    </main>
-
-    <footer class="bg-[#242220] text-[#fdfcf7] pt-24 pb-12 px-6 border-t border-stone-800">
-        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-16 md:gap-8 items-start mb-24">
-            <div class="md:col-span-4 text-center md:text-left">
-                <h4 class="serif text-2xl font-light tracking-wide mb-6 text-white">Quick Routes</h4>
-                <div class="flex flex-col space-y-2 text-xs tracking-widest text-stone-400">
-                    <a href="compass.html" class="hover:text-[#c59b85]">Itineraries Hub</a>
-                    <a href="corners.html" class="hover:text-[#c59b85]">Geographic Corners</a>
-                    <a href="chronicles.html" class="hover:text-[#c59b85]">Written Chronicles</a>
-                </div>
-            </div>
-            <div class="md:col-span-4 text-center flex flex-col items-center">
-                <a href="index.html" class="serif text-4xl italic tracking-tighter text-[#c59b85] font-light mb-4 lowercase">l&l</a>
-                <p class="text-xs text-stone-400 font-light max-w-xs leading-relaxed">Chasing lines of latitude, grounding in moments of longitude.</p>
-            </div>
-            <div class="md:col-span-4 text-center md:text-right w-full">
-                <h4 class="serif text-2xl font-light tracking-wide mb-4 text-white">The Digest</h4>
-                <input type="email" placeholder="Email Address" class="bg-[#2c2927] text-white text-xs p-3 outline-none w-full max-w-xs text-center md:text-left">
-            </div>
-        </div>
-        <div class="max-w-6xl mx-auto pt-12 border-t border-stone-800/60 flex flex-col md:flex-row justify-between items-center text-[10px] tracking-[0.25em] text-stone-500 uppercase">
-            <div class="flex gap-6"><a href="index.html">Home</a><a href="compass.html">Compass</a><a href="corners.html">Corners</a><a href="chronicles.html">Chronicles</a></div>
-            <a href="admin.html" class="hover:text-[#c59b85]">Architect Entry ⟶</a>
-        </div>
-    </footer>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAecvrfHyFXRGF3kkr-nL2vEhyIn4tZmU0",
-            authDomain: "latitudesandlongitudes-3f37b.firebase
+        <div class="mt-12 flex flex-col items
