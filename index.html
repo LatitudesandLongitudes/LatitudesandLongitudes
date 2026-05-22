@@ -11,47 +11,71 @@
         body { background-color: var(--bg); color: var(--text); font-family: 'Montserrat', sans-serif; margin: 0; overflow-x: hidden; }
         .serif { font-family: 'Cormorant Garamond', serif; }
         
+        /* NATIVE CSS NAVIGATION OVERRIDE - NO FRAMEWORKS REQUIRED */
+        .custom-navbar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 9999 !important;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            padding: 40px 50px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%);
+        }
+
+        .nav-group {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-link { 
+            color: #ffffff !important;
+            text-decoration: none !important;
+            text-transform: uppercase;
+            font-size: 11px;
+            font-weight: 300;
+            letter-spacing: 0.3em;
+            transition: all 0.3s ease; 
+            display: inline-block;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+        }
+        .nav-link:hover { color: #fdfcf7 !important; opacity: 0.6; }
+
+        /* Background cover imagery */
         .hero-bg {
-            background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)), 
+            background: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)), 
                         url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070');
             background-size: cover; background-position: center; height: 100vh;
             animation: slowZoom 20s infinite alternate ease-in-out;
         }
 
         @keyframes slowZoom { from { transform: scale(1); } to { transform: scale(1.05); } }
-        
-        .nav-link { 
-            color: rgba(255, 255, 255, 0.9) !important;
-            transition: all 0.3s ease; 
-            display: inline-block;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-        }
-        .nav-link:hover { color: #fdfcf7 !important; opacity: 0.6; transform: translateY(-1px); }
-
         @keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fadeIn 1.5s ease forwards; }
     </style>
 </head>
 <body>
 
-    <div class="absolute top-0 left-0 w-full z-50 px-8 py-8 md:px-12 md:py-10 flex justify-between items-center bg-gradient-to-b from-black/20 to-transparent">
-        
-        <div class="flex gap-6 md:gap-8 text-[11px] tracking-[0.3em] uppercase font-light">
-            <a href="index.html" class="nav-link font-medium">Home</a>
+    <header class="custom-navbar">
+        <div class="nav-group">
+            <a href="index.html" class="nav-link" style="font-weight: 500;">Home</a>
             <a href="#" class="nav-link">About</a>
             <a href="#" class="nav-link">Blog</a>
             <a href="#" class="nav-link">Places</a>
         </div>
 
-        <div class="flex gap-6 md:gap-8 text-[10px] tracking-[0.3em] uppercase font-light">
+        <div class="nav-group">
             <a href="#" target="_blank" class="nav-link">Instagram</a>
             <a href="#" target="_blank" class="nav-link">YouTube</a>
             <a href="#" target="_blank" class="nav-link">Facebook</a>
         </div>
-    </div>
+    </header>
 
     <div class="relative w-full h-screen overflow-hidden">
-        <header class="hero-bg flex items-center justify-center flex-col text-center w-full h-full"></header>
+        <div class="hero-bg flex items-center justify-center flex-col text-center w-full h-full"></div>
         <div class="absolute inset-0 flex flex-col items-center justify-center text-center text-white pointer-events-none z-10">
             <p class="text-[10px] tracking-[0.9em] uppercase mb-4 opacity-70">The Chronicles of Exploration</p>
             <h1 class="serif text-6xl md:text-9xl italic font-light tracking-tighter animate-fade-in">Latitudes & Longitudes</h1>
@@ -60,7 +84,8 @@
     </div>
 
     <main class="py-44 bg-[#fdfcf7] relative z-20">
-        <div id="story-grid" class="max-w-6xl mx-auto px-6 space-y-64"></div>
+        <div id="story-grid" class="max-w-6xl mx-auto px-6 space-y-64">
+            </div>
     </main>
 
     <div id="itinerary-modal" class="hidden fixed inset-0 z-[100] w-full h-full bg-[#fdfcf7] overflow-y-auto">
