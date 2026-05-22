@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #fdfcf7; --text: #242220; --accent: #8d5d46; }
-        body { background-color: var(--bg); color: var(--text); font-family: 'Montserrat', sans-serif; margin: 0; overflow-x: hidden; letter-spacing: -0.01em; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Montserrat', sans-serif; margin: 0; overflow-x: hidden; }
         .serif { font-family: 'Cormorant Garamond', serif; }
         
         /* Slow, cinematic ambient zoom for the cover image */
@@ -21,35 +21,40 @@
 
         @keyframes slowZoom { from { transform: scale(1); } to { transform: scale(1.05); } }
         
-        /* Nav links using mix-blend to invert colors naturally over images */
-        .nav-link { mix-blend-mode: difference; color: white; transition: all 0.4s ease; }
-        .nav-link:hover { opacity: 0.5; color: var(--accent); }
+        /* Clean menu link styling */
+        .nav-link { 
+            color: white; 
+            mix-blend-mode: difference; 
+            transition: all 0.4s ease; 
+            display: inline-block;
+        }
+        .nav-link:hover { opacity: 0.5; transform: translateY(-1px); }
     </style>
 </head>
 <body>
 
-    <nav class="fixed top-0 left-0 w-full z-50 p-6 md:p-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pointer-events-none">
+    <div class="fixed top-0 left-0 w-full z-50 px-8 py-8 md:px-12 md:py-10 flex justify-between items-center bg-transparent">
         
-        <div class="flex gap-6 text-[10px] tracking-[0.3em] uppercase font-light pointer-events-auto">
+        <div class="flex gap-6 md:gap-8 text-[11px] tracking-[0.3em] uppercase font-light">
             <a href="index.html" class="nav-link font-medium">Home</a>
             <a href="#" class="nav-link">About</a>
             <a href="#" class="nav-link">Blog</a>
             <a href="#" class="nav-link">Places</a>
         </div>
 
-        <div class="flex gap-6 text-[9px] tracking-[0.3em] uppercase font-light pointer-events-auto md:text-right">
+        <div class="flex gap-6 md:gap-8 text-[10px] tracking-[0.3em] uppercase font-light">
             <a href="#" target="_blank" class="nav-link">Instagram</a>
             <a href="#" target="_blank" class="nav-link">YouTube</a>
             <a href="#" target="_blank" class="nav-link">Facebook</a>
         </div>
-    </nav>
+    </div>
 
     <div class="relative w-full h-screen overflow-hidden">
         <header class="hero-bg flex items-center justify-center flex-col text-center w-full h-full"></header>
         <div class="absolute inset-0 flex flex-col items-center justify-center text-center text-white pointer-events-none mix-blend-difference z-10">
             <p class="text-[10px] tracking-[0.9em] uppercase mb-4 opacity-70">The Chronicles of Exploration</p>
             <h1 class="serif text-6xl md:text-9xl italic font-light tracking-tighter">Latitudes & Longitudes</h1>
-            <div class="h-[60px] w-[1px] bg-white mt-12 opacity-40 animate-pulse"></div>
+            <div class="h-[60px] w-[1px] bg-white mt-12 opacity-40"></div>
         </div>
     </div>
 
