@@ -10,7 +10,6 @@
         :root { --bg-earth: #f4f1ea; --text-stone: #2e2b2a; }
         body { background-color: var(--bg-earth); color: var(--text-stone); font-family: 'Montserrat', sans-serif; margin: 0; }
         .serif { font-family: 'Cormorant Garamond', serif; }
-        
         .navbar { display: flex; justify-content: space-between; align-items: center; padding: 30px 50px; border-bottom: 1px solid #dad4c5; }
         .nav-link { text-transform: uppercase; font-size: 11px; letter-spacing: 0.2em; color: #2e2b2a; }
     </style>
@@ -33,43 +32,33 @@
     </nav>
 
     <main class="max-w-6xl mx-auto py-24 px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
-        
         <a href="compass.html" class="bg-[#c59b85] text-white p-12 text-center h-[350px] flex flex-col justify-center transition hover:brightness-110">
             <h3 class="serif text-4xl italic mb-4">Compass</h3>
             <p class="text-[10px] uppercase tracking-[0.3em] opacity-80">Route Logistics</p>
         </a>
-
         <a href="corners.html" class="bg-[#4a5857] text-white p-12 text-center h-[350px] flex flex-col justify-center transition hover:brightness-110">
             <h3 class="serif text-4xl italic mb-4">Corners</h3>
             <p class="text-[10px] uppercase tracking-[0.3em] opacity-80">Destination Guides</p>
         </a>
-
         <a href="chronicles.html" class="bg-[#8c7d62] text-white p-12 text-center h-[350px] flex flex-col justify-center transition hover:brightness-110">
             <h3 class="serif text-4xl italic mb-4">Chronicles</h3>
             <p class="text-[10px] uppercase tracking-[0.3em] opacity-80">Personal Journal</p>
         </a>
-
     </main>
 
     <footer class="bg-[#2e2b2a] text-[#dad4c5] py-24 px-6 mt-12">
-        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-16">
-            <div>
-                <div class="serif text-xl italic text-white mb-6">Latitudes & Longitudes</div>
-                <p class="text-xs leading-relaxed opacity-70">Exploring the world, one coordinate at a time. Sharing the stories of places, the logistics of routes, and the moments that matter.</p>
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-16 items-start">
+            <div class="md:col-span-4 text-center md:text-left">
+                <div class="serif text-3xl italic text-[#c59b85] mb-4 lowercase">l&l</div>
+                <p class="text-xs leading-relaxed opacity-70 italic font-light">Chasing lines of latitude, grounding in moments of longitude.</p>
             </div>
-            <div>
-                <h4 class="text-[10px] uppercase tracking-widest mb-6">Destinations</h4>
-                <ul class="text-xs space-y-3 opacity-70">
-                    <li><a href="corners.html">Albania</a></li>
-                    <li><a href="corners.html">Ecuador</a></li>
-                    <li><a href="corners.html">Canada</a></li>
-                    <li><a href="corners.html">Goa</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="text-[10px] uppercase tracking-widest mb-6">Newsletter</h4>
+            <div class="md:col-span-4 text-center">
+                <h4 class="text-[10px] uppercase tracking-widest mb-6 text-white">Newsletter</h4>
                 <p class="text-xs opacity-70 mb-4">Join our quiet travel community.</p>
-                <input type="email" placeholder="Email Address" class="w-full bg-[#3a3635] p-3 text-xs border border-stone-700 outline-none">
+                <input type="email" placeholder="Email Address" class="w-full bg-[#3a3635] p-3 text-xs border border-stone-700 outline-none text-center">
+            </div>
+            <div class="md:col-span-4 text-center md:text-right">
+                <a href="admin.html" class="text-[10px] uppercase tracking-widest text-[#c59b85] hover:text-white transition">Admin Portal ⟶</a>
             </div>
         </div>
         <div class="text-center text-[9px] uppercase tracking-widest mt-24 opacity-50">
