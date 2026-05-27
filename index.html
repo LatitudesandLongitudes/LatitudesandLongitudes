@@ -125,5 +125,17 @@
             </div>
         </div>
     </footer>
+    <script>
+    function closeModal() {
+        const modal = document.getElementById('itinerary-modal');
+        modal.classList.add('hidden');
+    }
+
+    // Optional: Add this if you want to open the modal too
+    function openModal() {
+        const modal = document.getElementById('itinerary-modal');
+        modal.classList.remove('hidden');
+    }
+</script>
 </body>
 </html>
