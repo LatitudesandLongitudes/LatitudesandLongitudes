@@ -78,6 +78,45 @@
             </a>
         </div>
     </section>
+    <section class="bg-[#fdfcf7] py-32 px-6">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+            
+            <div class="animate-on-scroll flex flex-col items-center opacity-0 translate-y-10 transition-all duration-1000">
+                <div class="w-32 h-32 rounded-full bg-stone-200 mb-6 flex items-center justify-center overflow-hidden border border-stone-300">
+                    <img src="image_822924.jpg" alt="Couple" class="w-full h-full object-cover">
+                </div>
+                <h3 class="serif text-2xl italic mb-2">DP & KP</h3>
+                <p class="text-[10px] tracking-[0.2em] uppercase text-stone-500">Explorers of the world</p>
+            </div>
+
+            <div class="animate-on-scroll flex flex-col items-center opacity-0 translate-y-10 transition-all duration-1000 delay-300">
+                <div class="w-32 h-32 flex items-center justify-center mb-6">
+                    <span class="serif text-5xl italic text-[#c59b85]">l&l</span>
+                </div>
+                <h3 class="serif text-2xl italic mb-2">The Identity</h3>
+                <p class="text-[10px] tracking-[0.2em] uppercase text-stone-500">Our shared narrative</p>
+            </div>
+
+            <div class="animate-on-scroll flex flex-col items-center opacity-0 translate-y-10 transition-all duration-1000 delay-500">
+                <div class="w-32 h-32 flex items-center justify-center mb-6">
+                    <svg class="w-16 h-16 text-stone-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.06M15 22v-3a2 2 0 012-2h3a2 2 0 012-2m-2-8a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                </div>
+                <h3 class="serif text-2xl italic mb-2">Coordinates</h3>
+                <p class="text-[10px] tracking-[0.2em] uppercase text-stone-500">Finding our place</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.remove('opacity-0', 'translate-y-10');
+                }
+            });
+        });
+        document.querySelectorAll('.animate-on-scroll').forEach((el) => observer.observe(el));
+    </script>
 
     <div id="itinerary-modal" class="hidden fixed inset-0 z-[100] w-full h-full bg-[#fdfcf7] overflow-y-auto">
         <div class="max-w-4xl mx-auto px-6 py-32 relative">
