@@ -2,84 +2,63 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Architect | Latitudes & Longitudes</title>
+    <title>Admin Architect | Full Data Suite</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #fcfbf7; font-family: 'Montserrat', sans-serif; color: #2d2a26; }
-        .serif { font-family: 'Cormorant Garamond', serif; }
-        .input-box { border: 1px solid #e2ded5; padding: 14px; width: 100%; margin-bottom: 16px; background: white; transition: border 0.3s; }
-        .input-box:focus { border-color: #8d5d46; outline: none; }
-        label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.25em; opacity: 0.6; margin-bottom: 8px; display: block; font-weight: 500; }
+        .input-box { border: 1px solid #e2ded5; padding: 12px; width: 100%; margin-bottom: 15px; background: white; }
+        label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.6; display: block; margin-bottom: 5px; }
     </style>
 </head>
-<body class="p-6 md:p-20">
+<body class="p-10 bg-[#fcfbf7]">
 
-    <div class="max-w-4xl mx-auto">
-        <header class="mb-16 border-b border-stone-200 pb-10">
-            <h1 class="serif text-4xl text-[#8d5d46] font-light italic">Admin Architect</h1>
-            <p class="text-[9px] tracking-widest uppercase opacity-40 mt-1">Data Matrix Configuration</p>
-        </header>
+    <div class="max-w-5xl mx-auto">
+        <h1 class="text-3xl italic mb-10 text-[#8d5d46]">Data Architect</h1>
 
-        <div class="bg-white p-8 border border-stone-200 mb-16">
-            <h2 class="serif text-2xl mb-8 italic text-stone-700">1. Create Base Destination</h2>
-            <div class="grid md:grid-cols-2 gap-6">
-                <div><label>Destination Name</label><input type="text" id="tripName" class="input-box"></div>
-                <div><label>Country</label><input type="text" id="tripCountry" class="input-box"></div>
-            </div>
-            <button id="submitBtn" class="w-full bg-stone-900 text-white py-4 text-[10px] uppercase tracking-[0.3em] hover:bg-[#8d5d46] transition-all">Archive Base Entry</button>
-        </div>
+        <div id="archive-list" class="mb-10 space-y-2"></div>
 
-        <div id="itinerary-editor" class="hidden bg-stone-50 p-8 md:p-12 border-2 border-[#8d5d46] shadow-xl">
-            <h2 id="selected-trip-name" class="serif text-2xl mb-8 italic text-[#8d5d46]"></h2>
+        <div id="itinerary-editor" class="hidden bg-white p-10 border border-stone-200">
+            <h2 id="selected-trip-name" class="text-2xl mb-8 italic"></h2>
             
-            <div class="grid md:grid-cols-2 gap-8">
-                <div>
-                    <h3 class="font-bold text-xs uppercase tracking-widest mb-4">Compass (Itinerary)</h3>
-                    <label>Sequence Title</label><input type="text" id="dayTitle" class="input-box">
-                    <label>Logistics/Notes</label><textarea id="dayContent" class="input-box h-32"></textarea>
+            <div class="grid grid-cols-3 gap-8">
+                <div class="space-y-4">
+                    <h3 class="font-bold text-xs uppercase tracking-widest border-b pb-2">1. Compass</h3>
+                    <label>Itinerary Details</label><textarea id="c_details" class="input-box h-32"></textarea>
+                    <label>Grid Caption</label><input type="text" id="c_caption" class="input-box">
                 </div>
-                <div>
-                    <h3 class="font-bold text-xs uppercase tracking-widest mb-4">Narrative & Corners</h3>
-                    <label>Chronicle Story</label><textarea id="chronicleStory" class="input-box h-20"></textarea>
-                    <label>Photo URL</label><input type="text" id="chroniclePhoto" class="input-box">
-                    <label>Corners: Cheesy Caption</label><input type="text" id="cornerCaption" class="input-box">
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-xs uppercase tracking-widest border-b pb-2">2. Chronicles</h3>
+                    <label>Story/Narrative</label><textarea id="ch_details" class="input-box h-32"></textarea>
+                    <label>Grid Caption</label><input type="text" id="ch_caption" class="input-box">
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-xs uppercase tracking-widest border-b pb-2">3. Corners</h3>
+                    <label>Place Details/Info</label><textarea id="co_details" class="input-box h-32"></textarea>
+                    <label>Grid Caption</label><input type="text" id="co_caption" class="input-box">
                 </div>
             </div>
-            
-            <button id="saveAllBtn" class="w-full bg-[#8d5d46] text-white py-5 text-[10px] uppercase tracking-[0.5em] mt-8 hover:bg-stone-900 transition-all">Commit Full Data Suite</button>
-        </div>
 
-        <div id="archive-list" class="space-y-4"></div>
+            <button id="saveAllBtn" class="w-full mt-10 bg-black text-white py-4 text-[10px] uppercase tracking-[0.3em]">Save All Grids</button>
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        const db = getDatabase(initializeApp({
-            databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com"
-        }));
+        const db = getDatabase(initializeApp({ databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com" }));
         let activeId = null;
 
-        // Archive Base
-        document.getElementById('submitBtn').addEventListener('click', async () => {
-            const name = document.getElementById('tripName').value;
-            if(!name) return alert('Name required');
-            await push(ref(db, 'itineraries'), { name, country: document.getElementById('tripCountry').value });
-            alert("Entry Created.");
-        });
-
-        // Save Full Suite
+        // Save Logic
         document.getElementById('saveAllBtn').addEventListener('click', async () => {
-            if(!activeId) return;
             const data = {
-                compass: { title: document.getElementById('dayTitle').value, content: document.getElementById('dayContent').value },
-                chronicles: { story: document.getElementById('chronicleStory').value, photo: document.getElementById('chroniclePhoto').value },
-                corners: { caption: document.getElementById('cornerCaption').value }
+                compass: { details: document.getElementById('c_details').value, caption: document.getElementById('c_caption').value },
+                chronicles: { details: document.getElementById('ch_details').value, caption: document.getElementById('ch_caption').value },
+                corners: { details: document.getElementById('co_details').value, caption: document.getElementById('co_caption').value }
             };
-            await set(ref(db, `itineraries/${activeId}/data`), data);
-            alert("All nodes (Compass, Chronicle, Corner) updated for this location.");
+            await set(ref(db, `itineraries/${activeId}/grids`), data);
+            alert("All grids updated with content and captions.");
         });
 
         // Load Index
@@ -87,9 +66,9 @@
             const data = snapshot.val();
             const list = document.getElementById('archive-list');
             list.innerHTML = data ? Object.keys(data).map(key => `
-                <div class="bg-white p-5 border border-stone-200 flex justify-between">
+                <div class="flex justify-between p-4 bg-white border border-stone-100">
                     <span>${data[key].name}</span>
-                    <button onclick="window.openEditor('${key}', '${data[key].name}')" class="text-blue-600 uppercase text-[9px]">Edit Full Data</button>
+                    <button onclick="window.openEditor('${key}', '${data[key].name}')" class="text-blue-600 uppercase text-[9px]">Edit Grids</button>
                 </div>
             `).join('') : '';
         });
@@ -97,7 +76,7 @@
         window.openEditor = (id, name) => {
             activeId = id;
             document.getElementById('itinerary-editor').classList.remove('hidden');
-            document.getElementById('selected-trip-name').innerText = "Active Matrix: " + name;
+            document.getElementById('selected-trip-name').innerText = "Configuring: " + name;
         };
     </script>
 </body>
