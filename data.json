@@ -1,1 +1,38 @@
-
+[
+  {
+    "name": "Cities",
+    "links": [
+      { "title": "Paris", "url": "/paris" },
+      { "title": "London", "url": "/london" },
+      { "title": "Rome", "url": "/rome" },
+      { "title": "New York", "url": "/new-york" }
+    ]
+  },
+  {
+    "name": "Plan a Trip",
+    "links": [
+      { "title": "First trip solo", "url": "/solo" },
+      { "title": "Packing guide", "url": "/packing" },
+      { "title": "Solo Female Travel", "url": "/female-travel" },
+      { "title": "After a break up", "url": "/breakup" }
+    ]
+  },
+  {
+    "name": "Continents",
+    "links": [
+      { "title": "Africa", "url": "/africa" },
+      { "title": "Americas", "url": "/americas" },
+      { "title": "Asia", "url": "/asia" },
+      { "title": "Europe", "url": "/europe" }
+    ]
+  },
+  {
+    "name": "Ways to Travel",
+    "links": [
+      { "title": "Solo travel", "url": "/solo-travel" },
+      { "title": "Adventure", "url": "/adventure" },
+      { "title": "Luxury travel", "url": "/luxury" },
+      { "title": "Blogging", "url": "/blogging" }
+    ]
+  }
+]
