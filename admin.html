@@ -36,7 +36,17 @@
         </div>
 
         <div class="bg-stone-50 p-8 md:p-12 border border-stone-200 mb-16">
-            <h2 class="serif text-2xl mb-8 italic text-stone-700">2. Current Database Index</h2>
+            <h2 class="serif text-2xl mb-8 italic text-stone-700">2. Update Footer Navigation</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div><label>Category</label><input type="text" id="footerCategory" placeholder="e.g. Cities" class="input-box"></div>
+                <div><label>Link Title</label><input type="text" id="footerLinkTitle" placeholder="e.g. Paris" class="input-box"></div>
+                <div><label>URL Path</label><input type="text" id="footerLinkUrl" placeholder="e.g. /paris" class="input-box"></div>
+            </div>
+            <button onclick="saveFooterLink()" class="w-full bg-stone-900 text-white py-4 text-[10px] uppercase tracking-[0.3em] hover:bg-[#8d5d46] transition-all">Update Footer Link</button>
+        </div>
+
+        <div class="bg-stone-50 p-8 md:p-12 border border-stone-200 mb-16">
+            <h2 class="serif text-2xl mb-8 italic text-stone-700">3. Current Database Index</h2>
             <div id="archive-list" class="space-y-4"></div>
         </div>
 
@@ -69,53 +79,21 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
+        // --- Save Footer Link ---
+        window.saveFooterLink = async () => {
+            const category = document.getElementById('footerCategory').value;
+            const title = document.getElementById('footerLinkTitle').value;
+            const url = document.getElementById('footerLinkUrl').value;
+            if(!category || !title || !url) return alert('Fill all fields');
+            
+            await push(ref(db, `footerLinks/${category}/links`), { title, url });
+            await set(ref(db, `footerLinks/${category}/name`), category);
+            alert("Footer link saved!");
+        };
+
+        // --- Original Admin Logic ---
         document.getElementById('submitBtn').addEventListener('click', async () => {
             const data = {
                 name: document.getElementById('tripName').value,
                 country: document.getElementById('tripCountry').value,
                 photo: document.getElementById('tripPhoto').value,
-                story: document.getElementById('tripStory').value
-            };
-            if(!data.name) return alert('Name required.');
-            await push(ref(db, 'itineraries'), data);
-            alert("Base entry committed to Firebase.");
-            document.querySelectorAll('input, textarea').forEach(i => i.value = "");
-        });
-
-        onValue(ref(db, 'itineraries'), (snapshot) => {
-            const data = snapshot.val();
-            const list = document.getElementById('archive-list');
-            if (data) {
-                list.innerHTML = Object.keys(data).map(key => `
-                    <div class="flex justify-between items-center bg-white p-5 border border-stone-200">
-                        <div><p class="font-medium text-stone-800">${data[key].name}</p><p class="text-[9px] opacity-40 uppercase tracking-widest">${data[key].country || 'Global'}</p></div>
-                        <div class="flex gap-6 text-[10px] tracking-widest uppercase">
-                            <button onclick="window.manageItinerary('${key}', '${data[key].name}')" class="text-blue-500 hover:text-blue-700 transition-colors font-medium">Add Details</button>
-                            <button onclick="window.deleteTrip('${key}')" class="text-red-400 hover:text-red-600 transition-colors">Delete</button>
-                        </div>
-                    </div>
-                `).reverse().join('');
-            } else { list.innerHTML = `<p class="text-xs opacity-40">Index array is currently empty.</p>`; }
-        });
-
-        let activeId = null;
-        window.manageItinerary = (id, name) => {
-            activeId = id;
-            document.getElementById('itinerary-editor').classList.remove('hidden');
-            document.getElementById('selected-trip-name').innerText = "Target Compass Matrix: " + name;
-            document.getElementById('itinerary-editor').scrollIntoView({behavior:'smooth'});
-        };
-
-        window.addDay = async () => {
-            if(!activeId) return;
-            const day = { title: document.getElementById('dayTitle').value, content: document.getElementById('dayContent').value };
-            if(!day.title) return alert('Title required.');
-            await push(ref(db, `itineraries/${activeId}/days`), day);
-            alert("Itinerary node appended.");
-            document.getElementById('dayTitle').value = ""; document.getElementById('dayContent').value = "";
-        };
-
-        window.deleteTrip = (id) => { if(confirm("Purge node path entirely from database?")) remove(ref(db, `itineraries/${id}`)); };
-    </script>
-</body>
-</html>
