@@ -6,7 +6,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #fcfbF7; font-family: 'Montserrat', sans-serif; color: #2d2a26; }
+        body { background-color: #fcfbf7; font-family: 'Montserrat', sans-serif; color: #2d2a26; }
         .serif { font-family: 'Cormorant Garamond', serif; }
         .input-box { border: 1px solid #e2ded5; padding: 14px; width: 100%; margin-bottom: 24px; background: white; transition: border 0.3s; }
         .input-box:focus { border-color: #8d5d46; outline: none; }
@@ -24,47 +24,36 @@
             <a href="index.html" class="text-[10px] tracking-widest uppercase border-b border-black pb-1 hover:text-[#8d5d46] transition-colors">Return to Site</a>
         </header>
 
-        <div class="bg-white p-8 md:p-12 border border-stone-200 shadow-sm mb-16">
+        <section class="bg-white p-8 md:p-12 border border-stone-200 shadow-sm mb-16">
             <h2 class="serif text-2xl mb-8 italic text-stone-700">1. Publish Main Narrative</h2>
             <div class="grid md:grid-cols-2 gap-6">
-                <div><label>Journey Designation</label><input type="text" id="tripName" placeholder="e.g. Exploring Rocky Mountain" class="input-box"></div>
-                <div><label>Geographic Country</label><input type="text" id="tripCountry" placeholder="e.g. USA" class="input-box"></div>
+                <div><label>Journey Designation</label><input type="text" id="tripName" class="input-box"></div>
+                <div><label>Geographic Country</label><input type="text" id="tripCountry" class="input-box"></div>
             </div>
-            <label>Cover Image Resource URL</label><input type="text" id="tripPhoto" placeholder="https://unsplash.com/..." class="input-box">
-            <label>Poetic Overview Introduction</label><textarea id="tripStory" placeholder="The soul of the journey..." class="input-box h-32"></textarea>
-            <button id="submitBtn" class="w-full bg-stone-900 text-white py-5 text-[10px] uppercase tracking-[0.5em] hover:bg-[#8d5d46] transition-all duration-300">Archive Base Entry</button>
-        </div>
+            <label>Cover Image Resource URL</label><input type="text" id="tripPhoto" class="input-box">
+            <label>Poetic Overview Introduction</label><textarea id="tripStory" class="input-box h-32"></textarea>
+            <button id="submitBtn" class="w-full bg-stone-900 text-white py-5 text-[10px] uppercase tracking-[0.5em] hover:bg-[#8d5d46] transition-all">Archive Base Entry</button>
+        </section>
 
-        <div class="bg-stone-50 p-8 md:p-12 border border-stone-200 mb-16">
-            <h2 class="serif text-2xl mb-8 italic text-stone-700">2. Update Footer Navigation</h2>
-            <div class="grid md:grid-cols-3 gap-6">
-                <div><label>Category</label><input type="text" id="footerCategory" placeholder="e.g. Cities" class="input-box"></div>
-                <div><label>Link Title</label><input type="text" id="footerLinkTitle" placeholder="e.g. Paris" class="input-box"></div>
-                <div><label>URL Path</label><input type="text" id="footerLinkUrl" placeholder="e.g. /paris" class="input-box"></div>
-            </div>
-            <button onclick="saveFooterLink()" class="w-full bg-stone-900 text-white py-4 text-[10px] uppercase tracking-[0.3em] hover:bg-[#8d5d46] transition-all">Update Footer Link</button>
-        </div>
-
-        <div class="bg-stone-50 p-8 md:p-12 border border-stone-200 mb-16">
-            <h2 class="serif text-2xl mb-8 italic text-stone-700">3. Current Database Index</h2>
+        <section class="bg-stone-50 p-8 md:p-12 border border-stone-200 mb-16">
+            <h2 class="serif text-2xl mb-8 italic text-stone-700">2. Current Database Index</h2>
             <div id="archive-list" class="space-y-4"></div>
-        </div>
+        </section>
 
-        <div id="itinerary-editor" class="hidden bg-white p-8 md:p-12 border-2 border-[#8d5d46] shadow-xl">
+        <section id="itinerary-editor" class="hidden bg-white p-8 md:p-12 border-2 border-[#8d5d46] shadow-xl">
             <h2 id="selected-trip-name" class="serif text-2xl mb-8 italic text-[#8d5d46]"></h2>
-            <label>Chronological Sequence / Location Title</label><input type="text" id="dayTitle" placeholder="e.g. Day 01: High Alpine Pass" class="input-box">
-            <label>Granular Structural Content</label><textarea id="dayContent" placeholder="Logistics, notes, accommodations..." class="input-box h-44"></textarea>
-            
+            <label>Chronological Sequence / Location Title</label><input type="text" id="dayTitle" class="input-box">
+            <label>Granular Structural Content</label><textarea id="dayContent" class="input-box h-44"></textarea>
             <div class="flex gap-4">
-                <button onclick="addDay()" class="flex-1 bg-stone-900 text-white py-4 text-[10px] uppercase tracking-widest hover:bg-[#8d5d46] transition-all">Append Node to Compass</button>
-                <button onclick="document.getElementById('itinerary-editor').classList.add('hidden')" class="px-8 border border-stone-300 text-[10px] uppercase">Close Context</button>
+                <button id="addDayBtn" class="flex-1 bg-stone-900 text-white py-4 text-[10px] uppercase tracking-widest hover:bg-[#8d5d46] transition-all">Append Node to Compass</button>
+                <button id="closeEditorBtn" class="px-8 border border-stone-300 text-[10px] uppercase">Close Context</button>
             </div>
-        </div>
+        </section>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAecvrfHyFXRGF3kkr-nL2vEhyIn4tZmU0",
@@ -76,24 +65,59 @@
             appId: "1:831088196667:web:3b54c623a82d04febbf01e"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        const db = getDatabase(initializeApp(firebaseConfig));
+        let activeId = null;
 
-        // --- Save Footer Link ---
-        window.saveFooterLink = async () => {
-            const category = document.getElementById('footerCategory').value;
-            const title = document.getElementById('footerLinkTitle').value;
-            const url = document.getElementById('footerLinkUrl').value;
-            if(!category || !title || !url) return alert('Fill all fields');
-            
-            await push(ref(db, `footerLinks/${category}/links`), { title, url });
-            await set(ref(db, `footerLinks/${category}/name`), category);
-            alert("Footer link saved!");
-        };
-
-        // --- Original Admin Logic ---
+        // Archive Base Entry
         document.getElementById('submitBtn').addEventListener('click', async () => {
             const data = {
                 name: document.getElementById('tripName').value,
                 country: document.getElementById('tripCountry').value,
                 photo: document.getElementById('tripPhoto').value,
+                story: document.getElementById('tripStory').value
+            };
+            if(!data.name) return alert('Name required.');
+            await push(ref(db, 'itineraries'), data);
+            alert("Entry archived.");
+            document.querySelectorAll('input, textarea').forEach(i => i.value = "");
+        });
+
+        // Load Index
+        onValue(ref(db, 'itineraries'), (snapshot) => {
+            const data = snapshot.val();
+            const list = document.getElementById('archive-list');
+            list.innerHTML = data ? Object.keys(data).map(key => `
+                <div class="flex justify-between items-center bg-white p-5 border border-stone-200">
+                    <div><p class="font-medium">${data[key].name}</p><p class="text-[9px] uppercase tracking-widest opacity-40">${data[key].country || 'Global'}</p></div>
+                    <div class="flex gap-4 text-[10px] uppercase">
+                        <button onclick="window.openEditor('${key}', '${data[key].name}')" class="text-blue-600">Details</button>
+                        <button onclick="window.deleteTrip('${key}')" class="text-red-400">Delete</button>
+                    </div>
+                </div>
+            `).reverse().join('') : '<p class="text-xs opacity-40">Index is empty.</p>';
+        });
+
+        // Editor Functions
+        window.openEditor = (id, name) => {
+            activeId = id;
+            document.getElementById('itinerary-editor').classList.remove('hidden');
+            document.getElementById('selected-trip-name').innerText = "Target: " + name;
+            document.getElementById('itinerary-editor').scrollIntoView({behavior:'smooth'});
+        };
+
+        document.getElementById('addDayBtn').addEventListener('click', async () => {
+            if(!activeId) return;
+            await push(ref(db, `itineraries/${activeId}/days`), {
+                title: document.getElementById('dayTitle').value,
+                content: document.getElementById('dayContent').value
+            });
+            alert("Node appended.");
+            document.getElementById('dayTitle').value = ""; document.getElementById('dayContent').value = "";
+        });
+
+        document.getElementById('closeEditorBtn').onclick = () => document.getElementById('itinerary-editor').classList.add('hidden');
+        window.deleteTrip = (id) => { if(confirm("Delete this entry?")) remove(ref(db, `itineraries/${id}`)); };
+    </script>
+</body>
+</html>
+
