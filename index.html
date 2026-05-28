@@ -86,49 +86,37 @@
             </a>
         </div>
     </section>
-    <section class="bg-[#fdfcf7] py-20 px-6 border-t border-stone-100">
-    <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
-        
-        <div class="text-center">
-            <h4 class="text-[10px] tracking-[0.3em] uppercase mb-6 pb-2 border-b border-stone-200 inline-block">Cities</h4>
-            <ul class="space-y-4 text-[12px] text-stone-600 font-light">
-                <li><a href="#" class="hover:text-[#c59b85] transition">Paris</a></li>
-                <li><a href="#" class="hover:text-[#c59b85] transition">London</a></li>
-                <li><a href="#" class="hover:text-[#c59b85] transition">Rome</a></li>
-                <li><a href="#" class="hover:text-[#c59b85] transition">New York</a></li>
-            </ul>
+<section class="bg-[#fdfcf7] py-20 px-6 border-t border-stone-100">
+    <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8" id="footer-data-container">
         </div>
+</section>
 
-        <div class="text-center">
-            <h4 class="text-[10px] tracking-[0.3em] uppercase mb-6 pb-2 border-b border-stone-200 inline-block">Plan a Trip</h4>
-            <ul class="space-y-4 text-[12px] text-stone-600 font-light">
-                <li><a href="#" class="hover:text-[#c59b85] transition">First trip solo</a></li>
-                <li><a href="#" class="hover:text-[#c59b85] transition">Packing guide</a></li>
-                <li><a href="#" class="hover:text-[#c59b85] transition">Solo Female Travel</a></li>
-                <li><a href="#" class="hover:text-[#c59b85] transition">After a break up</a></li>
-            </ul>
-        </div>
+<script>
+    // This script fetches data from your database (or JSON file)
+    async function updateFooter() {
+        try {
+            const response = await fetch('your-api-or-json-file-path');
+            const categories = await response.json(); 
+            const container = document.getElementById('footer-data-container');
 
-        <div class="text-center">
-            <h4 class="text-[10px] tracking-[0.3em] uppercase mb-6 pb-2 border-b border-stone-200 inline-block">Continents</h4>
-            <ul class="space-y-4 text-[12px] text-stone-600 font-light">
-                <li><a href="#" class="hover:text-[#c59b85] transition">Africa</a></li>
-                <li><a href="#" class="hover:text-[#c59b85] transition">Americas</a></li>
-                <li><a href="#" class="hover:text-[#c59b85] transition">Asia</a></li>
-                <li><a href="#" class="hover:text-[#c59b85] transition">Europe</a></li>
-            </ul>
-        </div>
-
-        <div class="text-center">
-            <h4 class="text-[10px] tracking-[0.3em] uppercase mb-6 pb-2 border-b border-stone-200 inline-block">Ways to Travel</h4>
-            <ul class="space-y-4 text-[12px] text-stone-600 font-light">
-                <li><a href="#" class="hover:text-[#c59b85] transition">Solo travel</a></li>
-                <li><a href="#" class="hover:text-[#c59b85] transition">Adventure</a></li>
-                <li><a href="#" class="hover:text-[#c59b85] transition">Luxury travel</a></li>
-                <li><a href="#" class="hover:text-[#c59b85] transition">Blogging</a></li>
-            </ul>
-        </div>
-
+            container.innerHTML = categories.map(cat => `
+                <div class="text-center">
+                    <h4 class="text-[10px] tracking-[0.3em] uppercase mb-6 pb-2 border-b border-stone-200 inline-block">
+                        ${cat.name}
+                    </h4>
+                    <ul class="space-y-4 text-[12px] text-stone-600 font-light">
+                        ${cat.links.map(link => `
+                            <li><a href="${link.url}" class="hover:text-[#c59b85] transition">${link.title}</a></li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `).join('');
+        } catch (error) {
+            console.error("Could not load footer data. Ensure your admin data is connected.");
+        }
+    }
+    updateFooter();
+</script>
     </div>
 </section>
     <section class="bg-[#e8d6d2] py-32 px-6">
