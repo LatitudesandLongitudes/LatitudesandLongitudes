@@ -33,8 +33,7 @@
     </section>
 
     <section class="max-w-4xl mx-auto px-6 py-32">
-        <div id="story-grid" class="space-y-44">
-            </div>
+        <div id="story-grid" class="space-y-44"></div>
     </section>
 
     <footer class="py-12 text-center bg-[#2e2b2a] text-[#dad4c5] text-[10px] tracking-widest uppercase">
@@ -63,20 +62,24 @@
             if (data) {
                 const trips = Object.keys(data).map(key => ({...data[key], id: key})).reverse();
 
-                longGrid.innerHTML = trips.map((t) => `
-                    <article class="text-left max-w-2xl mx-auto border-b border-[#dad4c5] pb-24 last:border-0">
-                        <div class="w-full h-96 overflow-hidden mb-8 shadow-sm p-2 bg-[#e4dfd5] border border-[#dad4c5]">
-                            <img src="${t.photo}" class="w-full h-full object-cover filter contrast-[1.01] brightness-[0.98] sepia-[10%]">
-                        </div>
-                        <span class="text-[9px] tracking-[0.5em] uppercase text-[#c59b85] font-semibold block mb-2">${t.country || 'Journal'}</span>
-                        <h2 class="serif text-4xl md:text-5xl font-light italic text-[#2e2b2a] mb-6 leading-tight">${t.name}</h2>
-                        
-                        <div class="serif text-lg md:text-xl text-stone-700 italic font-light leading-relaxed space-y-6 antialiased">
-                            <p>${t.story}</p>
-                            <p class="text-stone-400 text-xs font-sans tracking-normal not-italic mt-4">Captured live from our travel diaries.</p>
-                        </div>
-                    </article>
-                `).join('');
+                longGrid.innerHTML = trips.map((t) => {
+                    const chronicle = t.grids?.chronicles || {};
+                    return `
+                        <article class="text-left max-w-2xl mx-auto border-b border-[#dad4c5] pb-24 last:border-0">
+                            <div class="w-full h-96 overflow-hidden mb-8 shadow-sm p-2 bg-[#e4dfd5] border border-[#dad4c5]">
+                                <img src="${chronicle.photo || ''}" class="w-full h-full object-cover filter contrast-[1.01] brightness-[0.98] sepia-[10%]">
+                            </div>
+                            <span class="text-[9px] tracking-[0.5em] uppercase text-[#c59b85] font-semibold block mb-2">${t.country || 'Journal'}</span>
+                            <h2 class="serif text-4xl md:text-5xl font-light italic text-[#2e2b2a] mb-6 leading-tight">${t.name}</h2>
+                            
+                            <div class="serif text-lg md:text-xl text-stone-700 italic font-light leading-relaxed space-y-6 antialiased">
+                                <p>${chronicle.text || 'No chronicle entry yet.'}</p>
+                                ${chronicle.link ? `<a href="${chronicle.link}" target="_blank" class="text-blue-600 underline text-xs">Watch/View Link</a>` : ''}
+                                <p class="text-stone-400 text-xs font-sans tracking-normal not-italic mt-4">${chronicle.caption || 'Captured live from our travel diaries.'}</p>
+                            </div>
+                        </article>
+                    `;
+                }).join('');
             }
         });
     </script>
