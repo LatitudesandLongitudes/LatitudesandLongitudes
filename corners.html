@@ -1,90 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Corners - Destination Profiles</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
-    <style>
-        :root { --bg-earth: #f4f1ea; --text-stone: #2e2b2a; --nav-sage: #4a5857; }
-        body { background-color: var(--bg-earth); color: var(--text-stone); font-family: 'Montserrat', sans-serif; margin: 0; }
-        .serif { font-family: 'Cormorant Garamond', serif; }
-        .dark-navbar { background-color: var(--nav-sage); padding: 30px 50px; display: flex; justify-content: space-between; align-items: center; }
-        .nav-group { display: flex; gap: 30px; }
-        .nav-link { color: #ffffff; text-transform: uppercase; font-size: 11px; font-weight: 300; letter-spacing: 0.3em; }
-        .hidden { display: none; }
-    </style>
-</head>
-<body>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    <nav class="dark-navbar">
-        <div class="nav-group">
-            <a href="index.html" class="nav-link">Home</a>
-            <a href="compass.html" class="nav-link">Compass</a>
-            <a href="corners.html" class="nav-link" style="color: #c59b85 !important; font-weight: 500;">Corners</a>
-            <a href="chronicles.html" class="nav-link">Chronicles</a>
-        </div>
-        <a href="index.html" class="serif text-2xl italic tracking-widest text-[#c59b85] lowercase no-underline">l&l</a>
-    </nav>
+    const db = getDatabase(initializeApp({
+        databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com"
+    }));
 
-    <div id="hub-view">
-        <header class="py-24 text-center max-w-xl mx-auto px-6">
-            <h1 class="serif text-5xl md:text-6xl font-light text-[#2e2b2a] mb-4">Corners</h1>
-            <p class="serif text-lg italic text-[#fdfcf7]/70 font-light">Stories waiting at every turn of the world.</p>
-        </header>
+    onValue(ref(db, 'itineraries'), (snapshot) => {
+        const data = snapshot.val();
+        console.log("Firebase Data:", data); // If this shows in the console, we are connected!
+        
+        if (!data) return;
 
-        <section class="max-w-5xl mx-auto px-6 pb-44">
-            <div id="destinations-mosaic" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
-        </section>
-    </div>
+        const mosaic = document.getElementById('destinations-mosaic');
+        window.allTrips = Object.values(data);
 
-    <div id="profile-view" class="hidden bg-[#f4f1ea]">
-        <div id="profile-cover" class="w-full h-[70vh] bg-cover bg-center relative flex items-center justify-center text-center">
-            <div class="absolute inset-0 bg-black/40"></div>
-            <div class="relative z-10 text-white px-6">
-                <button onclick="closeProfile()" class="text-[10px] tracking-widest uppercase border border-white/40 bg-black/20 backdrop-blur-sm px-5 py-2.5 hover:bg-white hover:text-stone-900 transition-all duration-300 mb-8">← Back to Corners</button>
-                <p class="text-[10px] tracking-[0.6em] uppercase text-white/75 mb-2">Destination Dossier</p>
-                <h1 id="profile-title" class="serif text-6xl md:text-8xl italic font-light tracking-tight capitalize"></h1>
+        // This builds the buttons for each location
+        const locations = [...new Set(window.allTrips.map(t => t.country).filter(Boolean))];
+        mosaic.innerHTML = locations.map(place => `
+            <div onclick="openProfile('${place}')" class="bg-[#8c7d62] text-white aspect-square flex items-center justify-center cursor-pointer hover:bg-[#6e634e]">
+                <span class="serif text-xl">${place}</span>
             </div>
-        </div>
+        `).join('');
+    });
 
-        <main class="max-w-4xl mx-auto px-6 py-28 space-y-24">
-            <section class="grid md:grid-cols-3 gap-12 items-start border-b border-[#dad4c5] pb-20">
-                <h3 class="text-[10px] tracking-[0.4em] uppercase text-stone-500 font-semibold">Notes & Reflections</h3>
-                <div class="md:col-span-2 text-left">
-                    <p id="profile-text" class="serif text-2xl font-light text-[#2e2b2a] italic leading-relaxed"></p>
-                </div>
-            </section>
+    window.openProfile = function(placeName) {
+        // Find the trip for this country
+        const trip = window.allTrips.find(t => t.country === placeName) || {};
+        
+        // Look inside 'grids' -> 'corners'
+        const info = trip.grids?.corners || {}; 
 
-            <section class="grid md:grid-cols-3 gap-12 items-start border-b border-[#dad4c5] pb-20">
-                <h3 class="text-[10px] tracking-[0.4em] uppercase text-stone-500 font-semibold">Additional Details</h3>
-                <div class="md:col-span-2 text-left">
-                    <p id="profile-caption" class="text-stone-700 font-light leading-relaxed text-base"></p>
-                </div>
-            </section>
+        document.getElementById('profile-title').innerText = placeName;
+        document.getElementById('profile-text').innerText = info.text || "No notes yet.";
+        document.getElementById('profile-caption').innerText = info.caption || "No details.";
+        document.getElementById('profile-img-1').src = info.photo || '';
+        
+        document.getElementById('hub-view').classList.add('hidden');
+        document.getElementById('profile-view').classList.remove('hidden');
+    };
 
-            <section class="text-left">
-                <h3 class="text-[10px] tracking-[0.4em] uppercase text-stone-500 font-semibold mb-10">Atmosphere & Visuals</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-[#e4dfd5] aspect-[4/3] overflow-hidden p-2 border border-[#dad4c5]">
-                        <img id="profile-img-1" class="w-full h-full object-cover">
-                    </div>
-                    <div class="bg-[#e4dfd5] aspect-[4/3] overflow-hidden p-2 border border-[#dad4c5]">
-                        <img id="profile-img-2" class="w-full h-full object-cover">
-                    </div>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-        const db = getDatabase(initializeApp({ databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com" }));
-        window.allTrips = [];
-
-        onValue(ref(db, 'itineraries'), (snapshot) => {
-            const data = snapshot.val();
-            const mosaic = document.getElementById('destinations-
+    window.closeProfile = () => {
+        document.getElementById('profile-view').classList.add('hidden');
+        document.getElementById('hub-view').classList.remove('hidden');
+    };
+</script>
