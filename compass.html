@@ -1,115 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compass - Routes & Logistics</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
-    <style>
-        :root { --bg-earth: #f4f1ea; --text-stone: #2e2b2a; }
-        body { background-color: var(--bg-earth); color: var(--text-stone); font-family: 'Montserrat', sans-serif; margin: 0; }
-        .serif { font-family: 'Cormorant Garamond', serif; }
-        .custom-navbar { position: absolute; top: 0; left: 0; width: 100%; z-index: 9999; display: flex; justify-content: space-between; align-items: center; padding: 40px 50px; box-sizing: border-box; }
-        .nav-group { display: flex; gap: 30px; }
-        .nav-link { color: var(--text-stone) !important; text-transform: uppercase; font-size: 11px; font-weight: 400; letter-spacing: 0.3em; }
-    </style>
-</head>
-<body>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    <header class="custom-navbar">
-        <div class="nav-group">
-            <a href="index.html" class="nav-link">Home</a>
-            <a href="compass.html" class="nav-link" style="color: #c59b85 !important; font-weight: 500;">Compass</a>
-            <a href="corners.html" class="nav-link">Corners</a>
-            <a href="chronicles.html" class="nav-link">Chronicles</a>
-        </div>
-        <a href="index.html" class="serif text-2xl italic text-[#8d5d46] lowercase no-underline">l&l</a>
-    </header>
+    const firebaseConfig = {
+        apiKey: "AIzaSyAecvrfHyFXRGF3kkr-nL2vEhyIn4tZmU0",
+        authDomain: "latitudesandlongitudes-3f37b.firebaseapp.com",
+        projectId: "latitudesandlongitudes-3f37b",
+        databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com",
+        storageBucket: "latitudesandlongitudes-3f37b.firebasestorage.app"
+    };
 
-    <section class="bg-[#e4dfd5] pt-44 pb-24 px-6 border-b border-[#dad4c5]">
-        <div class="max-w-4xl mx-auto text-left md:pl-12 flex flex-col md:flex-row items-center justify-between gap-8">
-            <div>
-                <h1 class="serif text-5xl md:text-6xl font-light text-[#2e2b2a] tracking-tight mb-2">The Compass</h1>
-                <p class="serif text-xl italic text-stone-500 font-light">Your guide to roads worth taking.</p>
-            </div>
-            <div class="opacity-20 text-[#2e2b2a]">
-                <svg width="100" height="100" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1">
-                    <circle cx="50" cy="50" r="40"/>
-                    <path d="M50 10 L50 90 M10 50 L90 50 M30 30 L70 70 M30 70 L70 30"/>
-                </svg>
-            </div>
-        </div>
-    </section>
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    window.allTrips = [];
 
-    <main class="max-w-6xl mx-auto px-6 py-24">
-        <div id="itinerary-cards-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            </div>
-    </main>
-
-    <div id="itinerary-modal" class="hidden fixed inset-0 z-[100] w-full h-full bg-[#f4f1ea] overflow-y-auto">
-        <div class="max-w-4xl mx-auto px-6 py-32 relative">
-            <button onclick="closeModal()" class="fixed top-12 right-12 text-[9px] tracking-[0.4em] uppercase border border-[#dad4c5] bg-[#e4dfd5] text-[#2e2b2a] px-6 py-3 hover:bg-[#2e2b2a] hover:text-[#f4f1ea] transition-all">Close Roadmap</button>
-            <div id="modal-content" class="mt-12"></div>
-        </div>
-    </div>
-
-    <footer class="py-12 text-center bg-[#2e2b2a] text-[#dad4c5] text-[10px] tracking-widest uppercase">
-        <p><a href="index.html" class="hover:text-white">Return Cover Home</a> | &copy; Latitudes & Longitudes</p>
-    </footer>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAecvrfHyFXRGF3kkr-nL2vEhyIn4tZmU0",
-            authDomain: "latitudesandlongitudes-3f37b.firebaseapp.com",
-            projectId: "latitudesandlongitudes-3f37b",
-            databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com",
-            storageBucket: "latitudesandlongitudes-3f37b.firebasestorage.app"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        window.allTrips = [];
-
-        onValue(ref(db, 'itineraries'), (snapshot) => {
-            const data = snapshot.val();
-            const cardsGrid = document.getElementById('itinerary-cards-grid');
-            if (data) {
-                window.allTrips = Object.keys(data).map(key => ({...data[key], id: key})).reverse();
-                cardsGrid.innerHTML = window.allTrips.map(t => `
-                    <div class="flex flex-col cursor-pointer group text-left bg-[#e4dfd5]/40 p-4 border border-[#e4dfd5] transition-all duration-300 hover:bg-[#e4dfd5]/80" onclick="openItinerary('${t.id}')">
-                        <div class="w-full h-64 overflow-hidden bg-stone-200 mb-4 shadow-sm relative border border-[#dad4c5]">
-                            <img src="${t.photo}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-102 filter sepia-[15%]">
-                        </div>
-                        <h3 class="serif text-xl text-[#2e2b2a] leading-snug group-hover:text-[#8d5d46] transition-colors mb-1 font-light">${t.name}</h3>
-                        <span class="text-[9px] tracking-wider text-stone-500 uppercase font-light">🗺️ ${t.country || 'Route'}</span>
+    onValue(ref(db, 'itineraries'), (snapshot) => {
+        const data = snapshot.val();
+        const cardsGrid = document.getElementById('itinerary-cards-grid');
+        if (data) {
+            window.allTrips = Object.keys(data).map(key => ({...data[key], id: key})).reverse();
+            cardsGrid.innerHTML = window.allTrips.map(t => `
+                <div class="flex flex-col cursor-pointer group text-left bg-[#e4dfd5]/40 p-4 border border-[#e4dfd5] transition-all duration-300 hover:bg-[#e4dfd5]/80" onclick="openItinerary('${t.id}')">
+                    <div class="w-full h-64 overflow-hidden bg-stone-200 mb-4 shadow-sm relative border border-[#dad4c5]">
+                        <img src="${t.photo || ''}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-102 filter sepia-[15%]">
                     </div>
-                `).join('');
-            }
-        });
+                    <h3 class="serif text-xl text-[#2e2b2a] leading-snug group-hover:text-[#8d5d46] transition-colors mb-1 font-light">${t.name}</h3>
+                    <span class="text-[9px] tracking-wider text-stone-500 uppercase font-light">🗺️ ${t.country || 'Route'}</span>
+                </div>
+            `).join('');
+        }
+    });
 
-        window.openItinerary = function(tripId) {
-            const trip = window.allTrips.find(t => t.id === tripId);
-            const modal = document.getElementById('itinerary-modal');
-            const content = document.getElementById('modal-content');
-            if (trip && trip.days) {
-                let daysHtml = `
-                    <div class="text-center mb-16">
-                        <span class="text-[10px] tracking-[0.6em] uppercase text-stone-500">Transit, Airport & Mapping Grid</span>
-                        <h2 class="serif text-5xl italic font-light text-[#2e2b2a] mt-2">${trip.name}</h2>
-                    </div>
-                    <div class="max-w-xl mx-auto mb-16 p-6 bg-[#e4dfd5] border border-[#dad4c5] text-left text-xs text-stone-700 space-y-2">
-                        <p class="font-semibold uppercase tracking-wider text-[#2e2b2a]">📋 Core Transit Blueprint</p>
-                        <p>✈️ Arrival Hub: Regional Airport Terminus</p>
-                        <p>🚗 Internal Logistics: Car Rental Fleet & Secondary Railway Links</p>
-                    </div>
-                    <div class="relative border-l border-[#dad4c5] max-w-xl mx-auto pl-8 space-y-16">
-                `;
+    window.openItinerary = function(tripId) {
+        const trip = window.allTrips.find(t => t.id === tripId);
+        const modal = document.getElementById('itinerary-modal');
+        const content = document.getElementById('modal-content');
+        
+        if (trip) {
+            // Get rich data from the new grids node
+            const compass = trip.grids?.compass || {};
+
+            let html = `
+                <div class="text-center mb-16">
+                    <span class="text-[10px] tracking-[0.6em] uppercase text-stone-500">Transit & Story Map</span>
+                    <h2 class="serif text-5xl italic font-light text-[#2e2b2a] mt-2">${trip.name}</h2>
+                </div>
+
+                ${compass.photo ? `<div class="mb-12"><img src="${compass.photo}" class="w-full max-h-96 object-cover border border-[#dad4c5] p-1"></div>` : ''}
+                ${compass.text ? `<p class="max-w-xl mx-auto text-stone-700 italic serif text-xl mb-12">${compass.text}</p>` : ''}
+                
+                <div class="relative border-l border-[#dad4c5] max-w-xl mx-auto pl-8 space-y-16">
+            `;
+
+            if (trip.days) {
                 Object.values(trip.days).forEach((day, index) => {
-                    daysHtml += `
+                    html += `
                         <div class="text-left">
                             <span class="serif text-5xl font-light text-[#c59b85]/40 block mb-1">${String(index+1).padStart(2,'0')}</span>
                             <h3 class="serif text-2xl italic text-[#2e2b2a] mb-2">${day.title}</h3>
@@ -117,11 +62,14 @@
                         </div>
                     `;
                 });
-                daysHtml += `</div>`;
-                content.innerHTML = daysHtml; modal.classList.remove('hidden'); document.body.style.overflow = 'hidden';
             }
-        };
-        window.closeModal = () => { document.getElementById('itinerary-modal').classList.add('hidden'); document.body.style.overflow = 'auto'; };
-    </script>
-</body>
-</html>
+            
+            html += `</div></div>`; // End of days container
+            content.innerHTML = html;
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+    };
+    
+    window.closeModal = () => { document.getElementById('itinerary-modal').classList.add('hidden'); document.body.style.overflow = 'auto'; };
+</script>
