@@ -1,47 +1,45 @@
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Corners</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#f4f1ea]">
+    <h1 class="text-center text-4xl mt-10">Corners</h1>
+    <div id="content" class="max-w-2xl mx-auto p-10">Loading...</div>
 
-    const db = getDatabase(initializeApp({
-        databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com"
-    }));
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    onValue(ref(db, 'itineraries'), (snapshot) => {
-        const data = snapshot.val();
-        console.log("Firebase Data:", data); // If this shows in the console, we are connected!
-        
-        if (!data) return;
+        const db = getDatabase(initializeApp({
+            databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com"
+        }));
 
-        const mosaic = document.getElementById('destinations-mosaic');
-        window.allTrips = Object.values(data);
+        onValue(ref(db, 'itineraries'), (snapshot) => {
+            const data = snapshot.val();
+            const container = document.getElementById('content');
+            
+            if (!data) {
+                container.innerHTML = "No data found in database.";
+                return;
+            }
 
-        // This builds the buttons for each location
-        const locations = [...new Set(window.allTrips.map(t => t.country).filter(Boolean))];
-        mosaic.innerHTML = locations.map(place => `
-            <div onclick="openProfile('${place}')" class="bg-[#8c7d62] text-white aspect-square flex items-center justify-center cursor-pointer hover:bg-[#6e634e]">
-                <span class="serif text-xl">${place}</span>
-            </div>
-        `).join('');
-    });
-
-    window.openProfile = function(placeName) {
-        // Find the trip for this country
-        const trip = window.allTrips.find(t => t.country === placeName) || {};
-        
-        // Look inside 'grids' -> 'corners'
-        const info = trip.grids?.corners || {}; 
-
-        document.getElementById('profile-title').innerText = placeName;
-        document.getElementById('profile-text').innerText = info.text || "No notes yet.";
-        document.getElementById('profile-caption').innerText = info.caption || "No details.";
-        document.getElementById('profile-img-1').src = info.photo || '';
-        
-        document.getElementById('hub-view').classList.add('hidden');
-        document.getElementById('profile-view').classList.remove('hidden');
-    };
-
-    window.closeProfile = () => {
-        document.getElementById('profile-view').classList.add('hidden');
-        document.getElementById('hub-view').classList.remove('hidden');
-    };
-</script>
+            // Loop through all trips
+            container.innerHTML = Object.values(data).map(trip => {
+                // This looks for the new 'grids' folder
+                const info = trip.grids?.corners || {};
+                
+                return `
+                    <div class="border-b mb-10 pb-10">
+                        <h2 class="text-2xl">${trip.country || 'Unknown'}</h2>
+                        <p>${info.text || "No notes saved in 'grids/corners' yet."}</p>
+                        <p class="text-sm text-gray-500">${info.caption || ""}</p>
+                    </div>
+                `;
+            }).join('');
+        });
+    </script>
+</body>
+</html>
