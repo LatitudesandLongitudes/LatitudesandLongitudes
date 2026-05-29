@@ -1,156 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Corners - Destination Profiles</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
-    <style>
-        :root { --bg-earth: #f4f1ea; --text-stone: #2e2b2a; --nav-sage: #4a5857; }
-        body { background-color: var(--bg-earth); color: var(--text-stone); font-family: 'Montserrat', sans-serif; margin: 0; }
-        .serif { font-family: 'Cormorant Garamond', serif; }
-        .dark-navbar { background-color: var(--nav-sage); padding: 30px 50px; display: flex; justify-content: space-between; align-items: center; }
-        .nav-group { display: flex; gap: 30px; }
-        .nav-link { color: #ffffff; text-transform: uppercase; font-size: 11px; font-weight: 300; letter-spacing: 0.3em; }
-    </style>
-</head>
-<body>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    <nav class="dark-navbar">
-        <div class="nav-group">
-            <a href="index.html" class="nav-link">Home</a>
-            <a href="compass.html" class="nav-link">Compass</a>
-            <a href="corners.html" class="nav-link" style="color: #c59b85 !important; font-weight: 500;">Corners</a>
-            <a href="chronicles.html" class="nav-link">Chronicles</a>
-        </div>
-        <a href="index.html" class="serif text-2xl italic tracking-widest text-[#c59b85] lowercase no-underline">l&l</a>
-    </nav>
+    const firebaseConfig = {
+        apiKey: "AIzaSyAecvrfHyFXRGF3kkr-nL2vEhyIn4tZmU0",
+        authDomain: "latitudesandlongitudes-3f37b.firebaseapp.com",
+        projectId: "latitudesandlongitudes-3f37b",
+        databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com",
+        storageBucket: "latitudesandlongitudes-3f37b.firebasestorage.app"
+    };
 
-    <div id="hub-view">
-        <header class="py-24 text-center max-w-xl mx-auto px-6">
-            <h1 class="serif text-5xl md:text-6xl font-light text-[#2e2b2a] mb-4">Corners</h1>
-             <p class="serif text-lg italic text-[#fdfcf7]/70 font-light">Stories waiting at every turn of the world.</p>
-    </section>
-        </header>
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    window.allTrips = [];
 
-        <section class="max-w-5xl mx-auto px-6 pb-44">
-            <div id="destinations-mosaic" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                </div>
-        </section>
-    </div>
+    const earthyPalette = ['#4a5857', '#8c7d62', '#c59b85', '#9e8b70', '#5b6966', '#b08772'];
 
-    <div id="profile-view" class="hidden bg-[#f4f1ea]">
-        <div id="profile-cover" class="w-full h-[70vh] bg-cover bg-center relative flex items-center justify-center text-center">
-            <div class="absolute inset-0 bg-black/40"></div>
-            <div class="relative z-10 text-white px-6">
-                <button onclick="closeProfile()" class="text-[10px] tracking-widest uppercase border border-white/40 bg-black/20 backdrop-blur-sm px-5 py-2.5 hover:bg-white hover:text-stone-900 transition-all duration-300 mb-8">
-                    ← Back to Corners
-                </button>
-                <p class="text-[10px] tracking-[0.6em] uppercase text-white/75 mb-2">Destination Dossier</p>
-                <h1 id="profile-title" class="serif text-6xl md:text-8xl italic font-light tracking-tight capitalize"></h1>
-            </div>
-        </div>
+    onValue(ref(db, 'itineraries'), (snapshot) => {
+        const data = snapshot.val();
+        const mosaic = document.getElementById('destinations-mosaic');
+        if (data) {
+            window.allTrips = Object.values(data);
+            let locations = [...new Set(window.allTrips.map(item => item.country).filter(Boolean))];
+            if (!locations.includes("North America")) locations.unshift("North America");
 
-        <main class="max-w-4xl mx-auto px-6 py-28 space-y-24">
-            <section class="grid md:grid-cols-3 gap-12 items-start border-b border-[#dad4c5] pb-20">
-                <h3 class="text-[10px] tracking-[0.4em] uppercase text-stone-500 font-semibold">Historical Importance</h3>
-                <div class="md:col-span-2 text-left">
-                    <p id="profile-history" class="serif text-2xl font-light text-[#2e2b2a] italic leading-relaxed"></p>
-                </div>
-            </section>
-
-            <section class="grid md:grid-cols-3 gap-12 items-start border-b border-[#dad4c5] pb-20">
-                <h3 class="text-[10px] tracking-[0.4em] uppercase text-stone-500 font-semibold">Culinary Landscapes</h3>
-                <div class="md:col-span-2 text-left">
-                    <p id="profile-food" class="text-stone-700 font-light leading-relaxed text-base whitespace-pre-wrap"></p>
-                </div>
-            </section>
-
-            <section class="text-left">
-                <h3 class="text-[10px] tracking-[0.4em] uppercase text-stone-500 font-semibold mb-10">Atmosphere & Visual Notes</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-[#e4dfd5] aspect-[4/3] overflow-hidden p-2 border border-[#dad4c5]">
-                        <img id="profile-img-1" class="w-full h-full object-cover sepia-[10%]">
+            mosaic.innerHTML = locations.map((place, idx) => {
+                const backgroundTone = earthyPalette[idx % earthyPalette.length];
+                return `
+                    <div onclick="openProfile('${place}')" style="background-color: ${backgroundTone}" class="text-white aspect-square flex flex-col items-center justify-center text-center p-6 transition-all duration-500 hover:brightness-105 cursor-pointer group">
+                        <span class="serif text-xl md:text-2xl font-light tracking-wide group-hover:scale-105 transition-transform">${place}</span>
+                        <span class="text-[8px] tracking-[0.3em] uppercase opacity-40 mt-3 border-t border-white/20 pt-1.5">Explore Guide</span>
                     </div>
-                    <div class="bg-[#e4dfd5] aspect-[4/3] overflow-hidden p-2 border border-[#dad4c5]">
-                        <img id="profile-img-2" class="w-full h-full object-cover sepia-[10%]">
-                    </div>
-                </div>
-            </section>
-        </main>
-    </div>
+                `;
+            }).join('');
+        }
+    });
 
-    <footer class="py-12 text-center bg-[#2e2b2a] text-[#dad4c5] text-[10px] tracking-widest uppercase">
-        <a href="index.html" class="hover:text-white">Return Cover Home</a>
-    </footer>
+    window.openProfile = function(placeName) {
+        // Find the trip based on the country
+        const referenceData = window.allTrips.find(t => t.country === placeName) || {};
+        
+        // Access the new nested grids.corners structure
+        const cornerData = referenceData.grids?.corners || {};
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        document.getElementById('profile-title').innerText = placeName;
+        document.getElementById('profile-cover').style.backgroundImage = `url('${cornerData.photo || referenceData.photo || ''}')`;
+        
+        // Populate the content from grids.corners
+        document.getElementById('profile-history').innerText = cornerData.text || "No history notes recorded for this location.";
+        document.getElementById('profile-food').innerText = cornerData.caption || "No culinary notes recorded.";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAecvrfHyFXRGF3kkr-nL2vEhyIn4tZmU0",
-            authDomain: "latitudesandlongitudes-3f37b.firebaseapp.com",
-            projectId: "latitudesandlongitudes-3f37b",
-            databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com",
-            storageBucket: "latitudesandlongitudes-3f37b.firebasestorage.app"
-        };
+        document.getElementById('profile-img-1').src = cornerData.photo || referenceData.photo || '';
+        document.getElementById('profile-img-2').src = cornerData.link || referenceData.photo || '';
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        window.allTrips = [];
+        document.getElementById('hub-view').classList.add('hidden');
+        document.getElementById('profile-view').classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
-        const earthyPalette = ['#4a5857', '#8c7d62', '#c59b85', '#9e8b70', '#5b6966', '#b08772'];
-
-        onValue(ref(db, 'itineraries'), (snapshot) => {
-            const data = snapshot.val();
-            const mosaic = document.getElementById('destinations-mosaic');
-            if (data) {
-                window.allTrips = Object.values(data);
-                let locations = [...new Set(window.allTrips.map(item => item.country).filter(Boolean))];
-                if (!locations.includes("North America")) locations.unshift("North America");
-
-                mosaic.innerHTML = locations.map((place, idx) => {
-                    const backgroundTone = earthyPalette[idx % earthyPalette.length];
-                    return `
-                        <div onclick="openProfile('${place}')" style="background-color: ${backgroundTone}" class="text-white aspect-square flex flex-col items-center justify-center text-center p-6 transition-all duration-500 hover:brightness-105 cursor-pointer group">
-                            <span class="serif text-xl md:text-2xl font-light tracking-wide group-hover:scale-105 transition-transform">${place}</span>
-                            <span class="text-[8px] tracking-[0.3em] uppercase opacity-40 mt-3 border-t border-white/20 pt-1.5">Explore Guide</span>
-                        </div>
-                    `;
-                }).join('');
-            }
-        });
-
-        window.openProfile = function(placeName) {
-            const referenceData = window.allTrips.find(t => t.country === placeName) || {};
-            document.getElementById('profile-title').innerText = placeName;
-            
-            const defaultCover = "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070";
-            document.getElementById('profile-cover').style.backgroundImage = `url('${referenceData.photo || defaultCover}')`;
-            
-            if (placeName === "North America") {
-                document.getElementById('profile-history').innerText = "Defined by major geographical shifts, ancient glacial paths carved out landmarks like the Great Lakes Basin, forming a unique, structural terrain that has defined seasonal travels for generations.";
-                document.getElementById('profile-food').innerText = "Our focus shifted to simple, regional traditions—coastal culinary preparations, earthy farm-to-table finds across the Midwest, and deep heritage recipes cooked over open wood flames during seasonal road tracks.";
-            } else {
-                document.getElementById('profile-history').innerText = referenceData.history || `Steeped in a rich, complex cultural history, ${placeName} features distinctive architectural layouts, ancient trade pathways, and deep historical milestones that completely define its local identity.`;
-                document.getElementById('profile-food').innerText = referenceData.food || `From hidden local markets to traditional morning dishes, exploring the culinary profile of ${placeName} revealed incredible unique combinations, local ingredients, and recipes handed down over centuries.`;
-            }
-
-            document.getElementById('profile-img-1').src = referenceData.photo || defaultCover;
-            document.getElementById('profile-img-2').src = referenceData.photo || defaultCover;
-
-            document.getElementById('hub-view').classList.add('hidden');
-            document.getElementById('profile-view').classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
-        window.closeProfile = function() {
-            document.getElementById('profile-view').classList.add('hidden');
-            document.getElementById('hub-view').classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-    </script>
-</body>
-</html>
+    window.closeProfile = function() {
+        document.getElementById('profile-view').classList.add('hidden');
+        document.getElementById('hub-view').classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+</script>
