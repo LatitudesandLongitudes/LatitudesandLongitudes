@@ -9,6 +9,7 @@
         body { background-color: #fcfbf7; font-family: 'Montserrat', sans-serif; color: #2d2a26; }
         .input-box { border: 1px solid #e2ded5; padding: 12px; width: 100%; margin-bottom: 15px; background: white; }
         label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.6; display: block; margin-bottom: 5px; }
+        .hidden { display: none; }
     </style>
 </head>
 <body class="p-10">
@@ -20,27 +21,39 @@
         <div id="itinerary-editor" class="hidden bg-white p-10 border border-stone-200">
             <h2 id="selected-trip-name" class="text-2xl mb-8 italic text-[#8d5d46]"></h2>
             
-            <div class="mb-10 p-6 bg-stone-50 border">
-                <h3 class="font-bold text-xs uppercase mb-4">Add Compass Itinerary Day</h3>
+            <div class="mb-10 p-6 bg-stone-50 border border-stone-200">
+                <h3 class="font-bold text-xs uppercase mb-4">Append Compass Day</h3>
                 <input type="text" id="dayTitle" placeholder="Day Title" class="input-box">
                 <textarea id="dayContent" placeholder="Details" class="input-box h-24"></textarea>
-                <button id="addDayBtn" class="bg-black text-white px-6 py-2 text-[10px] uppercase">Append Day</button>
+                <button id="addDayBtn" class="bg-black text-white px-6 py-2 text-[10px] uppercase">Add to Itinerary</button>
             </div>
 
             <div class="grid grid-cols-3 gap-8">
-                ${['compass', 'chronicles', 'corners'].map(grid => `
-                    <div class="space-y-3">
-                        <h3 class="font-bold text-xs uppercase border-b pb-2">${grid}</h3>
-                        <label>Content/Notes</label><textarea id="${grid}_text" class="input-box h-24"></textarea>
-                        <label>Photo URL</label><input type="text" id="${grid}_photo" class="input-box">
-                        <label>YouTube/Link</label><input type="text" id="${grid}_link" class="input-box">
-                        <label>Caption</label><input type="text" id="${grid}_caption" class="input-box">
-                    </div>
-                `).join('')}
+                <div class="space-y-3">
+                    <h3 class="font-bold text-xs uppercase border-b pb-2">1. Compass Grid</h3>
+                    <textarea id="c_text" class="input-box h-20" placeholder="Notes..."></textarea>
+                    <input type="text" id="c_photo" class="input-box" placeholder="Photo URL">
+                    <input type="text" id="c_link" class="input-box" placeholder="YouTube/Link">
+                    <input type="text" id="c_caption" class="input-box" placeholder="Caption">
+                </div>
+                <div class="space-y-3">
+                    <h3 class="font-bold text-xs uppercase border-b pb-2">2. Chronicles Grid</h3>
+                    <textarea id="ch_text" class="input-box h-20" placeholder="Story..."></textarea>
+                    <input type="text" id="ch_photo" class="input-box" placeholder="Photo URL">
+                    <input type="text" id="ch_link" class="input-box" placeholder="YouTube/Link">
+                    <input type="text" id="ch_caption" class="input-box" placeholder="Caption">
+                </div>
+                <div class="space-y-3">
+                    <h3 class="font-bold text-xs uppercase border-b pb-2">3. Corners Grid</h3>
+                    <textarea id="co_text" class="input-box h-20" placeholder="Notes..."></textarea>
+                    <input type="text" id="co_photo" class="input-box" placeholder="Photo URL">
+                    <input type="text" id="co_link" class="input-box" placeholder="YouTube/Link">
+                    <input type="text" id="co_caption" class="input-box" placeholder="Caption">
+                </div>
             </div>
 
             <button id="saveAllBtn" class="w-full mt-10 bg-[#8d5d46] text-white py-4 text-[10px] uppercase tracking-[0.3em]">Save All Rich Content</button>
-            <button id="closeEditorBtn" class="w-full mt-2 text-stone-400 text-[9px] uppercase tracking-widest">Close Editor</button>
+            <button onclick="document.getElementById('itinerary-editor').classList.add('hidden')" class="w-full mt-2 text-stone-400 text-[9px] uppercase tracking-widest">Close Editor</button>
         </div>
     </div>
 
@@ -51,31 +64,7 @@
         const db = getDatabase(initializeApp({ databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com" }));
         let activeId = null;
 
-        // Save Rich Content (The 3 Grids)
-        document.getElementById('saveAllBtn').onclick = async () => {
-            const gridData = {};
-            ['compass', 'chronicles', 'corners'].forEach(grid => {
-                gridData[grid] = {
-                    text: document.getElementById(`${grid}_text`).value,
-                    photo: document.getElementById(`${grid}_photo`).value,
-                    link: document.getElementById(`${grid}_link`).value,
-                    caption: document.getElementById(`${grid}_caption`).value
-                };
-            });
-            await set(ref(db, `itineraries/${activeId}/grids`), gridData);
-            alert("Rich content saved!");
-        };
-
-        // Existing Day Add
-        document.getElementById('addDayBtn').onclick = async () => {
-            await push(ref(db, `itineraries/${activeId}/days`), {
-                title: document.getElementById('dayTitle').value,
-                content: document.getElementById('dayContent').value
-            });
-            alert("Day added to Compass.");
-        };
-
-        // Boilerplate loading...
+        // 1. Load the list
         onValue(ref(db, 'itineraries'), (snapshot) => {
             const data = snapshot.val();
             const list = document.getElementById('archive-list');
@@ -87,12 +76,34 @@
             `).join('');
         });
 
+        // 2. Open Editor
         window.openEditor = (id, name) => {
             activeId = id;
             document.getElementById('itinerary-editor').classList.remove('hidden');
             document.getElementById('selected-trip-name').innerText = "Editing: " + name;
         };
-        document.getElementById('closeEditorBtn').onclick = () => document.getElementById('itinerary-editor').classList.add('hidden');
+
+        // 3. Append Day (Itinerary)
+        document.getElementById('addDayBtn').onclick = async () => {
+            if(!activeId) return alert("Select a trip first!");
+            await push(ref(db, `itineraries/${activeId}/days`), {
+                title: document.getElementById('dayTitle').value,
+                content: document.getElementById('dayContent').value
+            });
+            alert("Day added!");
+        };
+
+        // 4. Save Grid (Rich Content)
+        document.getElementById('saveAllBtn').onclick = async () => {
+            if(!activeId) return;
+            const gridData = {
+                compass: { text: document.getElementById('c_text').value, photo: document.getElementById('c_photo').value, link: document.getElementById('c_link').value, caption: document.getElementById('c_caption').value },
+                chronicles: { text: document.getElementById('ch_text').value, photo: document.getElementById('ch_photo').value, link: document.getElementById('ch_link').value, caption: document.getElementById('ch_caption').value },
+                corners: { text: document.getElementById('co_text').value, photo: document.getElementById('co_photo').value, link: document.getElementById('co_link').value, caption: document.getElementById('co_caption').value }
+            };
+            await set(ref(db, `itineraries/${activeId}/grids`), gridData);
+            alert("All content saved to Firebase!");
+        };
     </script>
 </body>
 </html>
