@@ -59,7 +59,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const db = getDatabase(initializeApp({ databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com" }));
         let activeId = null;
@@ -69,9 +69,12 @@
             const data = snapshot.val();
             const list = document.getElementById('archive-list');
             if(data) list.innerHTML = Object.keys(data).map(key => `
-                <div class="flex justify-between p-4 bg-white border">
+                <div class="flex justify-between items-center p-4 bg-white border">
                     <span>${data[key].name}</span>
-                    <button onclick="window.openEditor('${key}', '${data[key].name}')" class="text-blue-600 uppercase text-[9px]">Edit</button>
+                    <div class="space-x-3">
+                        <button onclick="window.openEditor('${key}', '${data[key].name}')" class="text-blue-600 uppercase text-[9px]">Edit</button>
+                        <button onclick="window.deleteTrip('${key}')" class="text-red-600 uppercase text-[9px]">Delete</button>
+                    </div>
                 </div>
             `).join('');
         });
@@ -83,7 +86,16 @@
             document.getElementById('selected-trip-name').innerText = "Editing: " + name;
         };
 
-        // 3. Append Day (Itinerary)
+        // 3. Delete Trip
+        window.deleteTrip = (id) => {
+            if (confirm("Are you sure? This will delete the trip and ALL its content permanently.")) {
+                remove(ref(db, `itineraries/${id}`))
+                    .then(() => alert("Trip deleted!"))
+                    .catch(e => alert("Error: " + e.message));
+            }
+        };
+
+        // 4. Append Day
         document.getElementById('addDayBtn').onclick = async () => {
             if(!activeId) return alert("Select a trip first!");
             await push(ref(db, `itineraries/${activeId}/days`), {
@@ -93,7 +105,7 @@
             alert("Day added!");
         };
 
-        // 4. Save Grid (Rich Content)
+        // 5. Save Grid
         document.getElementById('saveAllBtn').onclick = async () => {
             if(!activeId) return;
             const gridData = {
@@ -102,7 +114,7 @@
                 corners: { text: document.getElementById('co_text').value, photo: document.getElementById('co_photo').value, link: document.getElementById('co_link').value, caption: document.getElementById('co_caption').value }
             };
             await set(ref(db, `itineraries/${activeId}/grids`), gridData);
-            alert("All content saved to Firebase!");
+            alert("All content saved!");
         };
     </script>
 </body>
