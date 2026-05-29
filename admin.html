@@ -14,7 +14,16 @@
 </head>
 <body class="p-10">
     <div class="max-w-6xl mx-auto">
+        <a href="index.html" class="text-[9px] uppercase tracking-widest text-stone-400 hover:text-[#8d5d46] transition-colors mb-4 block">← Return to Main Site</a>
+        
         <h1 class="text-3xl italic mb-10 text-[#8d5d46]">Data Architect</h1>
+
+        <div class="mb-12 p-8 bg-white border border-stone-200">
+            <h3 class="font-bold text-xs uppercase mb-4">Add New Destination</h3>
+            <input type="text" id="newTripName" placeholder="Trip Name (e.g., Colorado)" class="input-box">
+            <input type="text" id="newCountryName" placeholder="Country/Region" class="input-box">
+            <button id="createTripBtn" class="bg-[#8d5d46] text-white px-8 py-2 text-[10px] uppercase tracking-widest">Create New Trip</button>
+        </div>
 
         <div id="archive-list" class="mb-10 space-y-2"></div>
 
@@ -79,43 +88,31 @@
             `).join('');
         });
 
-        // 2. Open Editor
+        // 2. Create New Trip
+        document.getElementById('createTripBtn').onclick = async () => {
+            const name = document.getElementById('newTripName').value;
+            const country = document.getElementById('newCountryName').value;
+            if (!name || !country) return alert("Enter name and country");
+            await push(ref(db, 'itineraries'), { name, country });
+            document.getElementById('newTripName').value = '';
+            document.getElementById('newCountryName').value = '';
+        };
+
+        // 3. Open Editor
         window.openEditor = (id, name) => {
             activeId = id;
             document.getElementById('itinerary-editor').classList.remove('hidden');
             document.getElementById('selected-trip-name').innerText = "Editing: " + name;
         };
 
-        // 3. Delete Trip
+        // 4. Delete Trip
         window.deleteTrip = (id) => {
-            if (confirm("Are you sure? This will delete the trip and ALL its content permanently.")) {
-                remove(ref(db, `itineraries/${id}`))
-                    .then(() => alert("Trip deleted!"))
-                    .catch(e => alert("Error: " + e.message));
+            if (confirm("Permanently delete this trip?")) {
+                remove(ref(db, `itineraries/${id}`));
             }
         };
 
-        // 4. Append Day
+        // 5. Append Day
         document.getElementById('addDayBtn').onclick = async () => {
             if(!activeId) return alert("Select a trip first!");
-            await push(ref(db, `itineraries/${activeId}/days`), {
-                title: document.getElementById('dayTitle').value,
-                content: document.getElementById('dayContent').value
-            });
-            alert("Day added!");
-        };
-
-        // 5. Save Grid
-        document.getElementById('saveAllBtn').onclick = async () => {
-            if(!activeId) return;
-            const gridData = {
-                compass: { text: document.getElementById('c_text').value, photo: document.getElementById('c_photo').value, link: document.getElementById('c_link').value, caption: document.getElementById('c_caption').value },
-                chronicles: { text: document.getElementById('ch_text').value, photo: document.getElementById('ch_photo').value, link: document.getElementById('ch_link').value, caption: document.getElementById('ch_caption').value },
-                corners: { text: document.getElementById('co_text').value, photo: document.getElementById('co_photo').value, link: document.getElementById('co_link').value, caption: document.getElementById('co_caption').value }
-            };
-            await set(ref(db, `itineraries/${activeId}/grids`), gridData);
-            alert("All content saved!");
-        };
-    </script>
-</body>
-</html>
+            await push(ref(db,
