@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Architect | Full Data Suite</title>
+    <title>Admin Architect | Complete Entry Suite</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
     <style>
         body { background-color: #fcfbf7; font-family: 'Montserrat', sans-serif; color: #2d2a26; }
-        .input-box { border: 1px solid #e2ded5; padding: 12px; width: 100%; margin-bottom: 15px; background: white; }
+        .input-box { border: 1px solid #e2ded5; padding: 10px; width: 100%; margin-bottom: 10px; background: white; font-size: 12px; }
         label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.6; display: block; margin-bottom: 5px; }
         .hidden { display: none; }
     </style>
@@ -17,7 +17,7 @@
         <!-- Return Link -->
         <a href="index.html" class="text-[9px] uppercase tracking-widest text-stone-400 hover:text-[#8d5d46] transition-colors mb-4 block">← Return to Main Site</a>
         
-        <h1 class="text-3xl italic mb-10 text-[#8d5d46]">Data Architect</h1>
+        <h1 class="text-3xl italic mb-10 text-[#8d5d46]">Data Architect — Entry Manager</h1>
 
         <!-- Add New Destination Section -->
         <div class="mb-12 p-8 bg-white border border-stone-200">
@@ -32,59 +32,68 @@
         <div class="mb-4 font-bold text-xs uppercase tracking-wider text-stone-500">Existing Destinations</div>
         <div id="archive-list" class="mb-10 space-y-2"></div>
 
-        <!-- Rich Content & Itinerary Editor (Hidden by default) -->
+        <!-- Rich Content & Entry Manager (Hidden by default) -->
         <div id="itinerary-editor" class="hidden bg-white p-10 border border-stone-200 shadow-sm">
-            <h2 id="selected-trip-name" class="text-2xl mb-8 italic text-[#8d5d46]"></h2>
+            <div class="flex justify-between items-center mb-8">
+                <h2 id="selected-trip-name" class="text-2xl italic text-[#8d5d46]"></h2>
+                <button onclick="document.getElementById('itinerary-editor').classList.add('hidden')" class="text-stone-400 text-[9px] uppercase tracking-widest border px-3 py-1">Close Editor</button>
+            </div>
             
-            <!-- Append Itinerary Day -->
+            <!-- Append / Manage Itinerary Days -->
             <div class="mb-10 p-6 bg-stone-50 border border-stone-200">
-                <h3 class="font-bold text-xs uppercase mb-4">Append Itinerary Day</h3>
+                <h3 class="font-bold text-xs uppercase mb-4">Manage & Append Itinerary Days</h3>
                 <input type="text" id="dayTitle" placeholder="Day Title (e.g., Arrival in the Valley)" class="input-box">
-                <textarea id="dayContent" placeholder="Day details..." class="input-box h-24"></textarea>
-                <button id="addDayBtn" class="bg-black text-white px-6 py-2 text-[10px] uppercase">Add to Itinerary</button>
+                <textarea id="dayContent" placeholder="Day details..." class="input-box h-20"></textarea>
+                <button id="addDayBtn" class="bg-black text-white px-6 py-2 text-[10px] uppercase mb-4">Add New Day</button>
+                <div id="days-admin-list" class="space-y-2 border-t pt-4"></div>
             </div>
 
-            <!-- Three Tabs Content Grids -->
+            <!-- Tab Entry Managers (Compass, Chronicles, Corners) -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Compass Grid -->
-                <div class="space-y-3">
-                    <h3 class="font-bold text-xs uppercase border-b pb-2 text-[#8d5d46]">1. Compass Grid</h3>
-                    <textarea id="c_text" class="input-box h-20" placeholder="Compass Notes..."></textarea>
+                <!-- Compass Entries -->
+                <div class="p-4 bg-stone-50 border border-stone-200 space-y-3">
+                    <h3 class="font-bold text-xs uppercase border-b pb-2 text-[#8d5d46]">Compass Entries</h3>
+                    <textarea id="c_text" class="input-box h-16" placeholder="Notes/Story..."></textarea>
                     <input type="text" id="c_photo" class="input-box" placeholder="Photo URL">
-                    <input type="text" id="c_link" class="input-box" placeholder="Link/URL">
+                    <input type="text" id="c_link" class="input-box" placeholder="Link URL">
                     <input type="text" id="c_caption" class="input-box" placeholder="Caption">
+                    <button id="addCompassBtn" class="bg-[#8d5d46] text-white w-full py-2 text-[9px] uppercase tracking-wider">Add Compass Entry</button>
+                    <div id="compass-entries-list" class="space-y-2 pt-4 border-t"></div>
                 </div>
-                <!-- Chronicles Grid -->
-                <div class="space-y-3">
-                    <h3 class="font-bold text-xs uppercase border-b pb-2 text-[#8d5d46]">2. Chronicles Grid</h3>
-                    <textarea id="ch_text" class="input-box h-20" placeholder="Chronicle Story..."></textarea>
+
+                <!-- Chronicles Entries -->
+                <div class="p-4 bg-stone-50 border border-stone-200 space-y-3">
+                    <h3 class="font-bold text-xs uppercase border-b pb-2 text-[#8d5d46]">Chronicles Entries</h3>
+                    <textarea id="ch_text" class="input-box h-16" placeholder="Story text..."></textarea>
                     <input type="text" id="ch_photo" class="input-box" placeholder="Photo URL">
-                    <input type="text" id="ch_link" class="input-box" placeholder="Link/URL">
+                    <input type="text" id="ch_link" class="input-box" placeholder="Link URL">
                     <input type="text" id="ch_caption" class="input-box" placeholder="Caption">
+                    <button id="addChroniclesBtn" class="bg-[#8d5d46] text-white w-full py-2 text-[9px] uppercase tracking-wider">Add Chronicle Entry</button>
+                    <div id="chronicles-entries-list" class="space-y-2 pt-4 border-t"></div>
                 </div>
-                <!-- Corners Grid -->
-                <div class="space-y-3">
-                    <h3 class="font-bold text-xs uppercase border-b pb-2 text-[#8d5d46]">3. Corners Grid</h3>
-                    <textarea id="co_text" class="input-box h-20" placeholder="Corner Notes..."></textarea>
+
+                <!-- Corners Entries -->
+                <div class="p-4 bg-stone-50 border border-stone-200 space-y-3">
+                    <h3 class="font-bold text-xs uppercase border-b pb-2 text-[#8d5d46]">Corners Entries</h3>
+                    <textarea id="co_text" class="input-box h-16" placeholder="Guide notes..."></textarea>
                     <input type="text" id="co_photo" class="input-box" placeholder="Photo URL">
-                    <input type="text" id="co_link" class="input-box" placeholder="Link/URL">
+                    <input type="text" id="co_link" class="input-box" placeholder="Link URL">
                     <input type="text" id="co_caption" class="input-box" placeholder="Caption">
+                    <button id="addCornersBtn" class="bg-[#8d5d46] text-white w-full py-2 text-[9px] uppercase tracking-wider">Add Corner Entry</button>
+                    <div id="corners-entries-list" class="space-y-2 pt-4 border-t"></div>
                 </div>
             </div>
-
-            <button id="saveAllBtn" class="w-full mt-10 bg-[#8d5d46] text-white py-4 text-[10px] uppercase tracking-[0.3em]">Save All Rich Content</button>
-            <button onclick="document.getElementById('itinerary-editor').classList.add('hidden')" class="w-full mt-2 text-stone-400 text-[9px] uppercase tracking-widest">Close Editor</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const db = getDatabase(initializeApp({ databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com" }));
         let activeId = null;
 
-        // 1. Load the list of trips dynamically
+        // 1. Load Destinations List
         onValue(ref(db, 'itineraries'), (snapshot) => {
             const data = snapshot.val();
             const list = document.getElementById('archive-list');
@@ -93,8 +102,8 @@
                     <div class="flex justify-between items-center p-4 bg-white border border-stone-200">
                         <span class="font-medium">${data[key].name || 'Unnamed'} <span class="text-xs text-stone-400">(${data[key].country || ''})</span></span>
                         <div class="space-x-3">
-                            <button onclick="window.openEditor('${key}', '${data[key].name || ''}')" class="text-blue-600 uppercase text-[9px] font-bold">Edit</button>
-                            <button onclick="window.deleteTrip('${key}')" class="text-red-600 uppercase text-[9px] font-bold">Delete</button>
+                            <button onclick="window.openEditor('${key}', '${data[key].name || ''}')" class="text-blue-600 uppercase text-[9px] font-bold">Manage Entries</button>
+                            <button onclick="window.deleteTrip('${key}')" class="text-red-600 uppercase text-[9px] font-bold">Delete Trip</button>
                         </div>
                     </div>
                 `).join('');
@@ -103,7 +112,7 @@
             }
         });
 
-        // 2. Create New Trip
+        // 2. Create Trip
         document.getElementById('createTripBtn').onclick = async () => {
             const name = document.getElementById('newTripName').value;
             const country = document.getElementById('newCountryName').value;
@@ -117,86 +126,128 @@
             alert("Destination created successfully!");
         };
 
-        // 3. Open Editor and load existing data if available
+        // 3. Open Editor and Load All Sub-lists (Days, Compass, Chronicles, Corners)
         window.openEditor = (id, name) => {
             activeId = id;
             document.getElementById('itinerary-editor').classList.remove('hidden');
-            document.getElementById('selected-trip-name').innerText = "Editing Content For: " + name;
+            document.getElementById('selected-trip-name').innerText = "Managing Entries For: " + name;
 
-            // Pull current grid values from Firebase to populate inputs cleanly
-            onValue(ref(db, `itineraries/${id}/grids`), (snapshot) => {
-                const grids = snapshot.val() || {};
-                
-                // Compass
-                document.getElementById('c_text').value = grids.compass?.text || '';
-                document.getElementById('c_photo').value = grids.compass?.photo || '';
-                document.getElementById('c_link').value = grids.compass?.link || '';
-                document.getElementById('c_caption').value = grids.compass?.caption || '';
+            // Load Itinerary Days
+            onValue(ref(db, `itineraries/${id}/days`), (snapshot) => {
+                const days = snapshot.val();
+                const container = document.getElementById('days-admin-list');
+                container.innerHTML = days ? Object.keys(days).map((k, idx) => `
+                    <div class="flex justify-between items-center bg-white p-2 border text-xs">
+                        <span><strong>Day ${idx+1}:</strong> ${days[k].title}</span>
+                        <button onclick="window.removeItem('${id}/days', '${k}')" class="text-red-500 uppercase text-[9px] font-bold">Delete</button>
+                    </div>
+                `).join('') : `<span class="text-stone-400 text-xs italic">No days added.</span>`;
+            });
 
-                // Chronicles
-                document.getElementById('ch_text').value = grids.chronicles?.text || '';
-                document.getElementById('ch_photo').value = grids.chronicles?.photo || '';
-                document.getElementById('ch_link').value = grids.chronicles?.link || '';
-                document.getElementById('ch_caption').value = grids.chronicles?.caption || '';
+            // Load Compass Entries
+            onValue(ref(db, `itineraries/${id}/grids/compass`), (snapshot) => {
+                const items = snapshot.val();
+                const container = document.getElementById('compass-entries-list');
+                container.innerHTML = items ? Object.keys(items).map(k => `
+                    <div class="flex justify-between items-center bg-white p-2 border text-xs">
+                        <span class="truncate max-w-[150px]">${items[k].text || 'Photo Entry'}</span>
+                        <button onclick="window.removeItem('${id}/grids/compass', '${k}')" class="text-red-500 uppercase text-[9px] font-bold">Delete</button>
+                    </div>
+                `).join('') : `<span class="text-stone-400 text-xs italic">No compass entries.</span>`;
+            });
 
-                // Corners
-                document.getElementById('co_text').value = grids.corners?.text || '';
-                document.getElementById('co_photo').value = grids.corners?.photo || '';
-                document.getElementById('co_link').value = grids.corners?.link || '';
-                document.getElementById('co_caption').value = grids.corners?.caption || '';
-            }, { onlyOnce: true });
+            // Load Chronicles Entries
+            onValue(ref(db, `itineraries/${id}/grids/chronicles`), (snapshot) => {
+                const items = snapshot.val();
+                const container = document.getElementById('chronicles-entries-list');
+                container.innerHTML = items ? Object.keys(items).map(k => `
+                    <div class="flex justify-between items-center bg-white p-2 border text-xs">
+                        <span class="truncate max-w-[150px]">${items[k].text || 'Photo Entry'}</span>
+                        <button onclick="window.removeItem('${id}/grids/chronicles', '${k}')" class="text-red-500 uppercase text-[9px] font-bold">Delete</button>
+                    </div>
+                `).join('') : `<span class="text-stone-400 text-xs italic">No chronicle entries.</span>`;
+            });
+
+            // Load Corners Entries
+            onValue(ref(db, `itineraries/${id}/grids/corners`), (snapshot) => {
+                const items = snapshot.val();
+                const container = document.getElementById('corners-entries-list');
+                container.innerHTML = items ? Object.keys(items).map(k => `
+                    <div class="flex justify-between items-center bg-white p-2 border text-xs">
+                        <span class="truncate max-w-[150px]">${items[k].text || 'Photo Entry'}</span>
+                        <button onclick="window.removeItem('${id}/grids/corners', '${k}')" class="text-red-500 uppercase text-[9px] font-bold">Delete</button>
+                    </div>
+                `).join('') : `<span class="text-stone-400 text-xs italic">No corner entries.</span>`;
+            });
         };
 
-        // 4. Delete Trip
-        window.deleteTrip = (id) => {
-            if (confirm("Permanently delete this trip and its connected tab details?")) {
-                remove(ref(db, `itineraries/${id}`))
-                    .then(() => {
-                        document.getElementById('itinerary-editor').classList.add('hidden');
-                        alert("Trip deleted.");
-                    })
-                    .catch(e => alert("Error: " + e.message));
-            }
-        };
-
-        // 5. Append Day
+        // 4. Add Sub-Items (Push to lists instead of overwriting)
         document.getElementById('addDayBtn').onclick = async () => {
-            if (!activeId) return alert("Select a trip first by clicking 'Edit'!");
+            if (!activeId) return;
             const title = document.getElementById('dayTitle').value;
             const content = document.getElementById('dayContent').value;
-            if (!title || !content) return alert("Please fill out both day title and content.");
-
+            if (!title || !content) return alert("Fill out day title and content.");
             await push(ref(db, `itineraries/${activeId}/days`), { title, content });
             document.getElementById('dayTitle').value = '';
             document.getElementById('dayContent').value = '';
-            alert("Itinerary day added successfully!");
         };
 
-        // 6. Save All Grid Tab Data (Compass, Chronicles, Corners)
-        document.getElementById('saveAllBtn').onclick = async () => {
-            if (!activeId) return alert("No active trip selected.");
-            const gridData = {
-                compass: { 
-                    text: document.getElementById('c_text').value, 
-                    photo: document.getElementById('c_photo').value, 
-                    link: document.getElementById('c_link').value, 
-                    caption: document.getElementById('c_caption').value 
-                },
-                chronicles: { 
-                    text: document.getElementById('ch_text').value, 
-                    photo: document.getElementById('ch_photo').value, 
-                    link: document.getElementById('ch_link').value, 
-                    caption: document.getElementById('ch_caption').value 
-                },
-                corners: { 
-                    text: document.getElementById('co_text').value, 
-                    photo: document.getElementById('co_photo').value, 
-                    link: document.getElementById('co_link').value, 
-                    caption: document.getElementById('co_caption').value 
-                }
-            };
-            await set(ref(db, `itineraries/${activeId}/grids`), gridData);
-            alert("All tab data saved successfully!");
+        document.getElementById('addCompassBtn').onclick = async () => {
+            if (!activeId) return;
+            await push(ref(db, `itineraries/${activeId}/grids/compass`), {
+                text: document.getElementById('c_text').value,
+                photo: document.getElementById('c_photo').value,
+                link: document.getElementById('c_link').value,
+                caption: document.getElementById('c_caption').value
+            });
+            document.getElementById('c_text').value = '';
+            document.getElementById('c_photo').value = '';
+            document.getElementById('c_link').value = '';
+            document.getElementById('c_caption').value = '';
+        };
+
+        document.getElementById('addChroniclesBtn').onclick = async () => {
+            if (!activeId) return;
+            await push(ref(db, `itineraries/${activeId}/grids/chronicles`), {
+                text: document.getElementById('ch_text').value,
+                photo: document.getElementById('ch_photo').value,
+                link: document.getElementById('ch_link').value,
+                caption: document.getElementById('ch_caption').value
+            });
+            document.getElementById('ch_text').value = '';
+            document.getElementById('ch_photo').value = '';
+            document.getElementById('ch_link').value = '';
+            document.getElementById('ch_caption').value = '';
+        };
+
+        document.getElementById('addCornersBtn').onclick = async () => {
+            if (!activeId) return;
+            await push(ref(db, `itineraries/${activeId}/grids/corners`), {
+                text: document.getElementById('co_text').value,
+                photo: document.getElementById('co_photo').value,
+                link: document.getElementById('co_link').value,
+                caption: document.getElementById('co_caption').value
+            });
+            document.getElementById('co_text').value = '';
+            document.getElementById('co_photo').value = '';
+            document.getElementById('co_link').value = '';
+            document.getElementById('co_caption').value = '';
+        };
+
+        // 5. General Item Removal
+        window.removeItem = async (path, key) => {
+            if (confirm("Delete this specific entry?")) {
+                await remove(ref(db, `itineraries/${path}/${key}`));
+            }
+        };
+
+        // 6. Delete Full Trip
+        window.deleteTrip = (id) => {
+            if (confirm("Permanently delete this destination and all its entries?")) {
+                remove(ref(db, `itineraries/${id}`)).then(() => {
+                    document.getElementById('itinerary-editor').classList.add('hidden');
+                });
+            }
         };
     </script>
 </body>
