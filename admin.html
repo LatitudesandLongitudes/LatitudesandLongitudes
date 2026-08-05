@@ -14,49 +14,60 @@
 </head>
 <body class="p-10">
     <div class="max-w-6xl mx-auto">
+        <!-- Return Link -->
         <a href="index.html" class="text-[9px] uppercase tracking-widest text-stone-400 hover:text-[#8d5d46] transition-colors mb-4 block">← Return to Main Site</a>
         
         <h1 class="text-3xl italic mb-10 text-[#8d5d46]">Data Architect</h1>
 
+        <!-- Add New Destination Section -->
         <div class="mb-12 p-8 bg-white border border-stone-200">
             <h3 class="font-bold text-xs uppercase mb-4">Add New Destination</h3>
             <input type="text" id="newTripName" placeholder="Trip Name (e.g., Colorado)" class="input-box">
             <input type="text" id="newCountryName" placeholder="Country/Region" class="input-box">
+            <input type="text" id="newPhotoUrl" placeholder="Main Cover Photo URL" class="input-box">
             <button id="createTripBtn" class="bg-[#8d5d46] text-white px-8 py-2 text-[10px] uppercase tracking-widest">Create New Trip</button>
         </div>
 
+        <!-- Existing Trips List Grid -->
+        <div class="mb-4 font-bold text-xs uppercase tracking-wider text-stone-500">Existing Destinations</div>
         <div id="archive-list" class="mb-10 space-y-2"></div>
 
-        <div id="itinerary-editor" class="hidden bg-white p-10 border border-stone-200">
+        <!-- Rich Content & Itinerary Editor (Hidden by default) -->
+        <div id="itinerary-editor" class="hidden bg-white p-10 border border-stone-200 shadow-sm">
             <h2 id="selected-trip-name" class="text-2xl mb-8 italic text-[#8d5d46]"></h2>
             
+            <!-- Append Itinerary Day -->
             <div class="mb-10 p-6 bg-stone-50 border border-stone-200">
-                <h3 class="font-bold text-xs uppercase mb-4">Append Compass Day</h3>
-                <input type="text" id="dayTitle" placeholder="Day Title" class="input-box">
-                <textarea id="dayContent" placeholder="Details" class="input-box h-24"></textarea>
+                <h3 class="font-bold text-xs uppercase mb-4">Append Itinerary Day</h3>
+                <input type="text" id="dayTitle" placeholder="Day Title (e.g., Arrival in the Valley)" class="input-box">
+                <textarea id="dayContent" placeholder="Day details..." class="input-box h-24"></textarea>
                 <button id="addDayBtn" class="bg-black text-white px-6 py-2 text-[10px] uppercase">Add to Itinerary</button>
             </div>
 
-            <div class="grid grid-cols-3 gap-8">
+            <!-- Three Tabs Content Grids -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Compass Grid -->
                 <div class="space-y-3">
-                    <h3 class="font-bold text-xs uppercase border-b pb-2">1. Compass Grid</h3>
-                    <textarea id="c_text" class="input-box h-20" placeholder="Notes..."></textarea>
+                    <h3 class="font-bold text-xs uppercase border-b pb-2 text-[#8d5d46]">1. Compass Grid</h3>
+                    <textarea id="c_text" class="input-box h-20" placeholder="Compass Notes..."></textarea>
                     <input type="text" id="c_photo" class="input-box" placeholder="Photo URL">
-                    <input type="text" id="c_link" class="input-box" placeholder="YouTube/Link">
+                    <input type="text" id="c_link" class="input-box" placeholder="Link/URL">
                     <input type="text" id="c_caption" class="input-box" placeholder="Caption">
                 </div>
+                <!-- Chronicles Grid -->
                 <div class="space-y-3">
-                    <h3 class="font-bold text-xs uppercase border-b pb-2">2. Chronicles Grid</h3>
-                    <textarea id="ch_text" class="input-box h-20" placeholder="Story..."></textarea>
+                    <h3 class="font-bold text-xs uppercase border-b pb-2 text-[#8d5d46]">2. Chronicles Grid</h3>
+                    <textarea id="ch_text" class="input-box h-20" placeholder="Chronicle Story..."></textarea>
                     <input type="text" id="ch_photo" class="input-box" placeholder="Photo URL">
-                    <input type="text" id="ch_link" class="input-box" placeholder="YouTube/Link">
+                    <input type="text" id="ch_link" class="input-box" placeholder="Link/URL">
                     <input type="text" id="ch_caption" class="input-box" placeholder="Caption">
                 </div>
+                <!-- Corners Grid -->
                 <div class="space-y-3">
-                    <h3 class="font-bold text-xs uppercase border-b pb-2">3. Corners Grid</h3>
-                    <textarea id="co_text" class="input-box h-20" placeholder="Notes..."></textarea>
+                    <h3 class="font-bold text-xs uppercase border-b pb-2 text-[#8d5d46]">3. Corners Grid</h3>
+                    <textarea id="co_text" class="input-box h-20" placeholder="Corner Notes..."></textarea>
                     <input type="text" id="co_photo" class="input-box" placeholder="Photo URL">
-                    <input type="text" id="co_link" class="input-box" placeholder="YouTube/Link">
+                    <input type="text" id="co_link" class="input-box" placeholder="Link/URL">
                     <input type="text" id="co_caption" class="input-box" placeholder="Caption">
                 </div>
             </div>
@@ -73,46 +84,120 @@
         const db = getDatabase(initializeApp({ databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com" }));
         let activeId = null;
 
-        // 1. Load the list
+        // 1. Load the list of trips dynamically
         onValue(ref(db, 'itineraries'), (snapshot) => {
             const data = snapshot.val();
             const list = document.getElementById('archive-list');
-            if(data) list.innerHTML = Object.keys(data).map(key => `
-                <div class="flex justify-between items-center p-4 bg-white border">
-                    <span>${data[key].name}</span>
-                    <div class="space-x-3">
-                        <button onclick="window.openEditor('${key}', '${data[key].name}')" class="text-blue-600 uppercase text-[9px]">Edit</button>
-                        <button onclick="window.deleteTrip('${key}')" class="text-red-600 uppercase text-[9px]">Delete</button>
+            if (data) {
+                list.innerHTML = Object.keys(data).map(key => `
+                    <div class="flex justify-between items-center p-4 bg-white border border-stone-200">
+                        <span class="font-medium">${data[key].name || 'Unnamed'} <span class="text-xs text-stone-400">(${data[key].country || ''})</span></span>
+                        <div class="space-x-3">
+                            <button onclick="window.openEditor('${key}', '${data[key].name || ''}')" class="text-blue-600 uppercase text-[9px] font-bold">Edit</button>
+                            <button onclick="window.deleteTrip('${key}')" class="text-red-600 uppercase text-[9px] font-bold">Delete</button>
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `).join('');
+            } else {
+                list.innerHTML = `<p class="text-xs text-stone-400 italic">No destinations found. Create one above.</p>`;
+            }
         });
 
         // 2. Create New Trip
         document.getElementById('createTripBtn').onclick = async () => {
             const name = document.getElementById('newTripName').value;
             const country = document.getElementById('newCountryName').value;
-            if (!name || !country) return alert("Enter name and country");
-            await push(ref(db, 'itineraries'), { name, country });
+            const photo = document.getElementById('newPhotoUrl').value;
+            if (!name || !country) return alert("Please enter both a trip name and country/region.");
+            
+            await push(ref(db, 'itineraries'), { name, country, photo });
             document.getElementById('newTripName').value = '';
             document.getElementById('newCountryName').value = '';
+            document.getElementById('newPhotoUrl').value = '';
+            alert("Destination created successfully!");
         };
 
-        // 3. Open Editor
+        // 3. Open Editor and load existing data if available
         window.openEditor = (id, name) => {
             activeId = id;
             document.getElementById('itinerary-editor').classList.remove('hidden');
-            document.getElementById('selected-trip-name').innerText = "Editing: " + name;
+            document.getElementById('selected-trip-name').innerText = "Editing Content For: " + name;
+
+            // Pull current grid values from Firebase to populate inputs cleanly
+            onValue(ref(db, `itineraries/${id}/grids`), (snapshot) => {
+                const grids = snapshot.val() || {};
+                
+                // Compass
+                document.getElementById('c_text').value = grids.compass?.text || '';
+                document.getElementById('c_photo').value = grids.compass?.photo || '';
+                document.getElementById('c_link').value = grids.compass?.link || '';
+                document.getElementById('c_caption').value = grids.compass?.caption || '';
+
+                // Chronicles
+                document.getElementById('ch_text').value = grids.chronicles?.text || '';
+                document.getElementById('ch_photo').value = grids.chronicles?.photo || '';
+                document.getElementById('ch_link').value = grids.chronicles?.link || '';
+                document.getElementById('ch_caption').value = grids.chronicles?.caption || '';
+
+                // Corners
+                document.getElementById('co_text').value = grids.corners?.text || '';
+                document.getElementById('co_photo').value = grids.corners?.photo || '';
+                document.getElementById('co_link').value = grids.corners?.link || '';
+                document.getElementById('co_caption').value = grids.corners?.caption || '';
+            }, { onlyOnce: true });
         };
 
         // 4. Delete Trip
         window.deleteTrip = (id) => {
-            if (confirm("Permanently delete this trip?")) {
-                remove(ref(db, `itineraries/${id}`));
+            if (confirm("Permanently delete this trip and its connected tab details?")) {
+                remove(ref(db, `itineraries/${id}`))
+                    .then(() => {
+                        document.getElementById('itinerary-editor').classList.add('hidden');
+                        alert("Trip deleted.");
+                    })
+                    .catch(e => alert("Error: " + e.message));
             }
         };
 
         // 5. Append Day
         document.getElementById('addDayBtn').onclick = async () => {
-            if(!activeId) return alert("Select a trip first!");
-            await push(ref(db,
+            if (!activeId) return alert("Select a trip first by clicking 'Edit'!");
+            const title = document.getElementById('dayTitle').value;
+            const content = document.getElementById('dayContent').value;
+            if (!title || !content) return alert("Please fill out both day title and content.");
+
+            await push(ref(db, `itineraries/${activeId}/days`), { title, content });
+            document.getElementById('dayTitle').value = '';
+            document.getElementById('dayContent').value = '';
+            alert("Itinerary day added successfully!");
+        };
+
+        // 6. Save All Grid Tab Data (Compass, Chronicles, Corners)
+        document.getElementById('saveAllBtn').onclick = async () => {
+            if (!activeId) return alert("No active trip selected.");
+            const gridData = {
+                compass: { 
+                    text: document.getElementById('c_text').value, 
+                    photo: document.getElementById('c_photo').value, 
+                    link: document.getElementById('c_link').value, 
+                    caption: document.getElementById('c_caption').value 
+                },
+                chronicles: { 
+                    text: document.getElementById('ch_text').value, 
+                    photo: document.getElementById('ch_photo').value, 
+                    link: document.getElementById('ch_link').value, 
+                    caption: document.getElementById('ch_caption').value 
+                },
+                corners: { 
+                    text: document.getElementById('co_text').value, 
+                    photo: document.getElementById('co_photo').value, 
+                    link: document.getElementById('co_link').value, 
+                    caption: document.getElementById('co_caption').value 
+                }
+            };
+            await set(ref(db, `itineraries/${activeId}/grids`), gridData);
+            alert("All tab data saved successfully!");
+        };
+    </script>
+</body>
+</html>
