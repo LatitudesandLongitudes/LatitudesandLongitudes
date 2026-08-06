@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -58,6 +58,7 @@
                 <!-- Compass Entries -->
                 <div class="p-4 bg-stone-50 border border-stone-200 space-y-3">
                     <h3 class="font-bold text-xs uppercase border-b pb-2 text-[#8d5d46]">Compass Entries</h3>
+                    <input type="text" id="c_title" class="input-box" placeholder="Entry Title">
                     <textarea id="c_text" class="input-box h-16" placeholder="Notes/Story..."></textarea>
                     <input type="text" id="c_photo" class="input-box" placeholder="Photo URL">
                     <input type="text" id="c_link" class="input-box" placeholder="Link URL">
@@ -69,6 +70,7 @@
                 <!-- Chronicles Entries -->
                 <div class="p-4 bg-stone-50 border border-stone-200 space-y-3">
                     <h3 class="font-bold text-xs uppercase border-b pb-2 text-[#8d5d46]">Chronicles Entries</h3>
+                    <input type="text" id="ch_title" class="input-box" placeholder="Entry Title">
                     <textarea id="ch_text" class="input-box h-16" placeholder="Story text..."></textarea>
                     <input type="text" id="ch_photo" class="input-box" placeholder="Photo URL">
                     <input type="text" id="ch_link" class="input-box" placeholder="Link URL">
@@ -80,6 +82,7 @@
                 <!-- Corners Entries -->
                 <div class="p-4 bg-stone-50 border border-stone-200 space-y-3">
                     <h3 class="font-bold text-xs uppercase border-b pb-2 text-[#8d5d46]">Corners Entries</h3>
+                    <input type="text" id="co_title" class="input-box" placeholder="Entry Title">
                     <textarea id="co_text" class="input-box h-16" placeholder="Guide notes..."></textarea>
                     <input type="text" id="co_photo" class="input-box" placeholder="Photo URL">
                     <input type="text" id="co_link" class="input-box" placeholder="Link URL">
@@ -202,7 +205,7 @@
                 const container = document.getElementById('compass-entries-list');
                 container.innerHTML = items ? Object.keys(items).map(k => `
                     <div class="flex justify-between items-center bg-white p-2 border text-xs">
-                        <span class="truncate max-w-[150px]">${items[k].text || 'Photo Entry'}</span>
+                        <span class="truncate max-w-[150px]">${items[k].title || items[k].text || 'Photo Entry'}</span>
                         <button onclick="window.removeItem('${id}/grids/compass', '${k}')" class="text-red-500 uppercase text-[9px] font-bold">Delete</button>
                     </div>
                 `).join('') : `<span class="text-stone-400 text-xs italic">No compass entries.</span>`;
@@ -214,7 +217,7 @@
                 const container = document.getElementById('chronicles-entries-list');
                 container.innerHTML = items ? Object.keys(items).map(k => `
                     <div class="flex justify-between items-center bg-white p-2 border text-xs">
-                        <span class="truncate max-w-[150px]">${items[k].text || 'Photo Entry'}</span>
+                        <span class="truncate max-w-[150px]">${items[k].title || items[k].text || 'Photo Entry'}</span>
                         <button onclick="window.removeItem('${id}/grids/chronicles', '${k}')" class="text-red-500 uppercase text-[9px] font-bold">Delete</button>
                     </div>
                 `).join('') : `<span class="text-stone-400 text-xs italic">No chronicle entries.</span>`;
@@ -226,7 +229,7 @@
                 const container = document.getElementById('corners-entries-list');
                 container.innerHTML = items ? Object.keys(items).map(k => `
                     <div class="flex justify-between items-center bg-white p-2 border text-xs">
-                        <span class="truncate max-w-[150px]">${items[k].text || 'Photo Entry'}</span>
+                        <span class="truncate max-w-[150px]">${items[k].title || items[k].text || 'Photo Entry'}</span>
                         <button onclick="window.removeItem('${id}/grids/corners', '${k}')" class="text-red-500 uppercase text-[9px] font-bold">Delete</button>
                     </div>
                 `).join('') : `<span class="text-stone-400 text-xs italic">No corner entries.</span>`;
@@ -247,11 +250,13 @@
         document.getElementById('addCompassBtn').onclick = async () => {
             if (!activeId) return;
             await push(ref(db, `itineraries/${activeId}/grids/compass`), {
+                title: document.getElementById('c_title').value,
                 text: document.getElementById('c_text').value,
                 photo: document.getElementById('c_photo').value,
                 link: document.getElementById('c_link').value,
                 caption: document.getElementById('c_caption').value
             });
+            document.getElementById('c_title').value = '';
             document.getElementById('c_text').value = '';
             document.getElementById('c_photo').value = '';
             document.getElementById('c_link').value = '';
@@ -261,11 +266,13 @@
         document.getElementById('addChroniclesBtn').onclick = async () => {
             if (!activeId) return;
             await push(ref(db, `itineraries/${activeId}/grids/chronicles`), {
+                title: document.getElementById('ch_title').value,
                 text: document.getElementById('ch_text').value,
                 photo: document.getElementById('ch_photo').value,
                 link: document.getElementById('ch_link').value,
                 caption: document.getElementById('ch_caption').value
             });
+            document.getElementById('ch_title').value = '';
             document.getElementById('ch_text').value = '';
             document.getElementById('ch_photo').value = '';
             document.getElementById('ch_link').value = '';
@@ -275,11 +282,13 @@
         document.getElementById('addCornersBtn').onclick = async () => {
             if (!activeId) return;
             await push(ref(db, `itineraries/${activeId}/grids/corners`), {
+                title: document.getElementById('co_title').value,
                 text: document.getElementById('co_text').value,
                 photo: document.getElementById('co_photo').value,
                 link: document.getElementById('co_link').value,
                 caption: document.getElementById('co_caption').value
             });
+            document.getElementById('co_title').value = '';
             document.getElementById('co_text').value = '';
             document.getElementById('co_photo').value = '';
             document.getElementById('co_link').value = '';
