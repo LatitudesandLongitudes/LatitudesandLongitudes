@@ -19,13 +19,18 @@
         
         <h1 class="text-3xl italic mb-10 text-[#8d5d46]">Data Architect — Entry Manager</h1>
 
-        <!-- Add New Destination Section -->
-        <div class="mb-12 p-8 bg-white border border-stone-200">
-            <h3 class="font-bold text-xs uppercase mb-4">Add New Destination</h3>
+        <!-- Add / Edit Destination Section -->
+        <div class="mb-12 p-8 bg-white border border-stone-200" id="destination-form-container">
+            <h3 id="form-title" class="font-bold text-xs uppercase mb-4">Add New Destination</h3>
+            <input type="hidden" id="editTripId">
             <input type="text" id="newTripName" placeholder="Trip Name (e.g., Colorado)" class="input-box">
             <input type="text" id="newCountryName" placeholder="Country/Region" class="input-box">
             <input type="text" id="newPhotoUrl" placeholder="Main Cover Photo URL" class="input-box">
-            <button id="createTripBtn" class="bg-[#8d5d46] text-white px-8 py-2 text-[10px] uppercase tracking-widest">Create New Trip</button>
+            <div class="flex space-x-2">
+                <button id="createTripBtn" class="bg-[#8d5d46] text-white px-8 py-2 text-[10px] uppercase tracking-widest">Create New Trip</button>
+                <button id="updateTripBtn" class="bg-black text-white px-8 py-2 text-[10px] uppercase tracking-widest hidden">Save Changes</button>
+                <button id="cancelEditBtn" class="border border-stone-300 text-stone-600 px-4 py-2 text-[10px] uppercase tracking-widest hidden">Cancel</button>
+            </div>
         </div>
 
         <!-- Existing Trips List Grid -->
@@ -88,14 +93,16 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, push, set, update, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const db = getDatabase(initializeApp({ databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com" }));
         let activeId = null;
+        let cachedDestinations = {};
 
         // 1. Load Destinations List
         onValue(ref(db, 'itineraries'), (snapshot) => {
             const data = snapshot.val();
+            cachedDestinations = data || {};
             const list = document.getElementById('archive-list');
             if (data) {
                 list.innerHTML = Object.keys(data).map(key => `
@@ -103,6 +110,7 @@
                         <span class="font-medium">${data[key].name || 'Unnamed'} <span class="text-xs text-stone-400">(${data[key].country || ''})</span></span>
                         <div class="space-x-3">
                             <button onclick="window.openEditor('${key}', '${data[key].name || ''}')" class="text-blue-600 uppercase text-[9px] font-bold">Manage Entries</button>
+                            <button onclick="window.startEditTrip('${key}')" class="text-amber-600 uppercase text-[9px] font-bold">Edit Destination</button>
                             <button onclick="window.deleteTrip('${key}')" class="text-red-600 uppercase text-[9px] font-bold">Delete Trip</button>
                         </div>
                     </div>
@@ -120,11 +128,55 @@
             if (!name || !country) return alert("Please enter both a trip name and country/region.");
             
             await push(ref(db, 'itineraries'), { name, country, photo });
+            resetTripForm();
+            alert("Destination created successfully!");
+        };
+
+        // 2b. Edit / Update Trip Prep & Action
+        window.startEditTrip = (id) => {
+            const trip = cachedDestinations[id];
+            if (!trip) return;
+            document.getElementById('form-title').innerText = "Edit Destination: " + (trip.name || '');
+            document.getElementById('editTripId').value = id;
+            document.getElementById('newTripName').value = trip.name || '';
+            document.getElementById('newCountryName').value = trip.country || '';
+            document.getElementById('newPhotoUrl').value = trip.photo || '';
+            
+            document.getElementById('createTripBtn').classList.add('hidden');
+            document.getElementById('updateTripBtn').classList.remove('hidden');
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        document.getElementById('cancelEditBtn').onclick = () => {
+            resetTripForm();
+        };
+
+        document.getElementById('updateTripBtn').onclick = async () => {
+            const id = document.getElementById('editTripId').value;
+            const name = document.getElementById('newTripName').value;
+            const country = document.getElementById('newCountryName').value;
+            const photo = document.getElementById('newPhotoUrl').value;
+            if (!id || !name || !country) return alert("Please enter both a trip name and country/region.");
+
+            await update(ref(db, `itineraries/${id}`), { name, country, photo });
+            if (activeId === id) {
+                document.getElementById('selected-trip-name').innerText = "Managing Entries For: " + name;
+            }
+            resetTripForm();
+            alert("Destination updated successfully!");
+        };
+
+        function resetTripForm() {
+            document.getElementById('form-title').innerText = "Add New Destination";
+            document.getElementById('editTripId').value = '';
             document.getElementById('newTripName').value = '';
             document.getElementById('newCountryName').value = '';
             document.getElementById('newPhotoUrl').value = '';
-            alert("Destination created successfully!");
-        };
+            document.getElementById('createTripBtn').classList.remove('hidden');
+            document.getElementById('updateTripBtn').classList.add('hidden');
+            document.getElementById('cancelEditBtn').classList.add('hidden');
+        }
 
         // 3. Open Editor and Load All Sub-lists (Days, Compass, Chronicles, Corners)
         window.openEditor = (id, name) => {
@@ -245,7 +297,9 @@
         window.deleteTrip = (id) => {
             if (confirm("Permanently delete this destination and all its entries?")) {
                 remove(ref(db, `itineraries/${id}`)).then(() => {
-                    document.getElementById('itinerary-editor').classList.add('hidden');
+                    if (activeId === id) {
+                        document.getElementById('itinerary-editor').classList.add('hidden');
+                    }
                 });
             }
         };
