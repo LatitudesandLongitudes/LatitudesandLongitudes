@@ -55,6 +55,13 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
+        window.globalGuides = {};
+
+        // Fetch Global Travel Guides
+        onValue(ref(db, 'other_usa_guides'), (snapshot) => {
+            window.globalGuides = snapshot.val() || {};
+        });
+
         onValue(ref(db, 'itineraries'), (snapshot) => {
             const data = snapshot.val();
             const longGrid = document.getElementById('story-grid');
@@ -64,7 +71,7 @@
 
                 longGrid.innerHTML = trips.map((t) => {
                     const corners = t.grids?.corners || {};
-                    return `
+                    let articleHTML = `
                         <article class="text-left max-w-2xl mx-auto border-b border-[#dad4c5] pb-24 last:border-0">
                             <div class="w-full h-96 overflow-hidden mb-8 shadow-sm p-2 bg-[#e4dfd5] border border-[#dad4c5]">
                                 <img src="${corners.photo || ''}" class="w-full h-full object-cover filter contrast-[1.01] brightness-[0.98] sepia-[10%]">
@@ -77,8 +84,29 @@
                                 ${corners.link ? `<a href="${corners.link}" target="_blank" class="text-blue-600 underline text-xs">Watch/View Link</a>` : ''}
                                 <p class="text-stone-400 text-xs font-sans tracking-normal not-italic mt-4">${corners.caption || 'Captured live from our travel diaries.'}</p>
                             </div>
-                        </article>
                     `;
+
+                    // Render Travel Guides inside the article block
+                    const guidesToDisplay = t.other_guides || window.globalGuides;
+                    if (guidesToDisplay && Object.keys(guidesToDisplay).length > 0) {
+                        articleHTML += `
+                            <div class="border-t border-[#dad4c5] pt-16 mt-16">
+                                <h3 class="serif text-2xl italic text-stone-400 text-center mb-10">Other USA Travel Guides</h3>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        `;
+                        Object.values(guidesToDisplay).forEach(guide => {
+                            articleHTML += `
+                                <a href="${guide.link || '#'}" class="group block bg-white/70 p-5 border border-[#dad4c5] hover:bg-white hover:border-[#8d5d46] transition-all text-left shadow-sm">
+                                    ${guide.photo ? `<div class="h-40 overflow-hidden mb-4 border border-[#dad4c5] bg-stone-100"><img src="${guide.photo}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"></div>` : ''}
+                                    <h4 class="serif text-xl italic text-[#2e2b2a] group-hover:text-[#8d5d46] transition-colors">${guide.title || 'Untitled Guide'}</h4>
+                                </a>
+                            `;
+                        });
+                        articleHTML += `</div></div>`;
+                    }
+
+                    articleHTML += `</article>`;
+                    return articleHTML;
                 }).join('');
             }
         });
