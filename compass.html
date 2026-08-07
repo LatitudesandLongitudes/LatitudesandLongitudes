@@ -127,7 +127,7 @@
                 
                 html += `</div>`;
 
-                // Render Other USA Travel Guides inside the modal using global database records
+                // Render Other USA Travel Guides inside the modal cleanly with robust formatting
                 const guidesToDisplay = trip.other_guides || window.globalGuides;
                 if (guidesToDisplay && Object.keys(guidesToDisplay).length > 0) {
                     html += `
@@ -137,9 +137,9 @@
                     `;
                     Object.values(guidesToDisplay).forEach(guide => {
                         html += `
-                            <a href="${guide.link || '#'}" class="group block bg-white/60 p-4 border border-[#dad4c5] hover:bg-white transition-all text-left">
-                                ${guide.photo ? `<div class="h-40 overflow-hidden mb-3 border border-[#dad4c5]"><img src="${guide.photo}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"></div>` : ''}
-                                <h4 class="serif text-lg text-[#2e2b2a] group-hover:text-[#8d5d46] transition-colors">${guide.title}</h4>
+                            <a href="${guide.link || '#'}" class="group block bg-white/70 p-5 border border-[#dad4c5] hover:bg-white hover:border-[#8d5d46] transition-all text-left shadow-sm">
+                                ${guide.photo ? `<div class="h-40 overflow-hidden mb-4 border border-[#dad4c5] bg-stone-100"><img src="${guide.photo}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"></div>` : ''}
+                                <h4 class="serif text-xl italic text-[#2e2b2a] group-hover:text-[#8d5d46] transition-colors">${guide.title || 'Untitled Guide'}</h4>
                             </a>
                         `;
                     });
@@ -159,4 +159,4 @@
         };
     </script>
 </body>
-</html>
+</html> 
