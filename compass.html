@@ -32,14 +32,14 @@
         <p class="serif text-lg italic text-[#fdfcf7]/70 font-light">Maps, miles and moments that shape the journey.</p>
     </section>
 
-    <!-- Destination Cards Grid -->
+    <!-- Destination Cards Grid Section -->
     <section class="max-w-6xl mx-auto px-6 py-32">
         <div id="itinerary-cards-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <p class="text-sm text-stone-500 italic col-span-full text-center">Loading compass routes...</p>
         </div>
     </section>
 
-    <!-- Other USA Travel Guides Section (Dynamic from Firebase - Matches index.html) -->
+    <!-- Other USA Travel Guides Section -->
     <section class="bg-[#fdfcf7] py-24 px-6 border-t border-stone-200">
         <div class="max-w-6xl mx-auto">
             <div class="text-center mb-16">
@@ -47,7 +47,7 @@
             </div>
             
             <div id="other-guides-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                <!-- Dynamically populated from admin.html -->
+                <p class="text-sm text-stone-400 italic col-span-full text-center">Loading travel guides...</p>
             </div>
         </div>
     </section>
@@ -76,7 +76,7 @@
 
         window.allTrips = [];
 
-        // 1. Load Itineraries for Compass Grid
+        // 1. Fetch Itineraries Grid
         onValue(ref(db, 'itineraries'), (snapshot) => {
             const data = snapshot.val();
             const cardsGrid = document.getElementById('itinerary-cards-grid');
@@ -93,11 +93,11 @@
                     </div>
                 `).join('');
             } else {
-                cardsGrid.innerHTML = `<p class="text-sm text-stone-500 italic col-span-full text-center">No compass routes added yet. Add one in admin.html.</p>`;
+                cardsGrid.innerHTML = `<p class="text-sm text-stone-500 italic col-span-full text-center">No compass routes found in database.</p>`;
             }
         });
 
-        // 2. Load "Other USA Travel Guides" at the bottom (matching index.html)
+        // 2. Fetch Other USA Travel Guides
         onValue(ref(db, 'other_usa_guides'), (snapshot) => {
             const data = snapshot.val();
             const grid = document.getElementById('other-guides-grid');
