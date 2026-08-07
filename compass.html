@@ -20,8 +20,8 @@
         <div class="nav-group">
             <a href="index.html" class="nav-link">Home</a>
             <a href="index.html#explorers" class="nav-link">About</a>
-            <a href="chronicles.html" class="nav-link" style="color: #c59b85 !important; font-weight: 500;">Blog</a>
-            <a href="compass.html" class="nav-link">Places</a>
+            <a href="chronicles.html" class="nav-link">Blog</a>
+            <a href="compass.html" class="nav-link" style="color: #c59b85 !important; font-weight: 500;">Places</a>
             <a href="corners.html" class="nav-link">Corners</a>
         </div>
         <a href="index.html" class="serif text-2xl italic text-[#c59b85] lowercase no-underline">l&l</a>
@@ -39,7 +39,7 @@
         </div>
     </section>
 
-    <!-- Itinerary Modal View (Where Appended Days Appear) -->
+    <!-- Itinerary Modal View -->
     <div id="itinerary-modal" class="hidden fixed inset-0 z-[100] w-full h-full bg-[#fdfcf7] overflow-y-auto">
         <div class="max-w-4xl mx-auto px-6 py-32 relative">
             <button onclick="closeModal()" class="fixed top-12 left-12 md:left-24 flex items-center gap-2 text-[9px] tracking-[0.4em] uppercase text-stone-500 hover:text-black transition-all">
@@ -110,7 +110,7 @@
                         <h3 class="serif text-2xl italic text-stone-400 text-center mb-10">Itinerary Schedule</h3>
                 `;
 
-                // Loops through and displays all the Appended Itinerary Days
+                // Display Appended Itinerary Days
                 if (trip.days) {
                     Object.values(trip.days).forEach((day, index) => {
                         html += `
@@ -125,7 +125,27 @@
                     html += `<p class="text-center text-stone-400 italic text-sm">No itinerary days appended for this route yet.</p>`;
                 }
                 
-                html += `</div></div>`;
+                html += `</div>`;
+
+                // Display Destination-Specific Travel Guides Dynamically
+                if (trip.other_guides) {
+                    html += `
+                        <div class="border-t border-[#dad4c5] pt-16 mt-16 max-w-2xl mx-auto">
+                            <h3 class="serif text-2xl italic text-stone-400 text-center mb-10">More Guides for this Journey</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    `;
+                    Object.values(trip.other_guides).forEach(guide => {
+                        html += `
+                            <a href="${guide.link || '#'}" class="group block bg-white/60 p-4 border border-[#dad4c5] hover:bg-white transition-all text-left">
+                                ${guide.photo ? `<div class="h-40 overflow-hidden mb-3 border border-[#dad4c5]"><img src="${guide.photo}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"></div>` : ''}
+                                <h4 class="serif text-lg text-[#2e2b2a] group-hover:text-[#8d5d46] transition-colors">${guide.title}</h4>
+                            </a>
+                        `;
+                    });
+                    html += `</div></div>`;
+                }
+
+                html += `</div>`;
                 content.innerHTML = html;
                 modal.classList.remove('hidden');
                 document.body.style.overflow = 'hidden';
