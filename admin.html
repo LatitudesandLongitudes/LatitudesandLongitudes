@@ -65,6 +65,18 @@
                 <div id="days-admin-list" class="space-y-2 border-t pt-4"></div>
             </div>
 
+            <!-- Manage Destination Travel Guides (Right after Itinerary Schedule) -->
+            <div class="mb-10 p-6 bg-stone-50 border border-stone-200">
+                <h3 class="font-bold text-xs uppercase mb-4 text-[#8d5d46]">Manage Destination Travel Guides (Compass Section)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <input type="text" id="dt_guide_title" placeholder="Guide Title" class="input-box md:col-span-3">
+                    <input type="text" id="dt_guide_photo" placeholder="Photo Image URL" class="input-box">
+                    <input type="text" id="dt_guide_link" placeholder="Destination/Page Link URL" class="input-box md:col-span-2">
+                </div>
+                <button id="addDestinationGuideBtn" class="bg-[#8d5d46] text-white px-8 py-2 text-[10px] uppercase tracking-widest mt-2">Add Destination Travel Guide</button>
+                <div id="destination-guides-admin-list" class="mt-6 space-y-2 border-t pt-4"></div>
+            </div>
+
             <!-- Tab Entry Managers (Compass, Chronicles, Corners) -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Compass Entries -->
@@ -223,7 +235,7 @@
             document.getElementById('cancelEditBtn').classList.add('hidden');
         }
 
-        // 3. Open Editor and Load All Sub-lists (Days, Compass, Chronicles, Corners)
+        // 3. Open Editor and Load All Sub-lists (Days, Destination Travel Guides, Compass, Chronicles, Corners)
         window.openEditor = (id, name) => {
             activeId = id;
             document.getElementById('itinerary-editor').classList.remove('hidden');
@@ -239,6 +251,18 @@
                         <button onclick="window.removeItem('${id}/days', '${k}')" class="text-red-500 uppercase text-[9px] font-bold">Delete</button>
                     </div>
                 `).join('') : `<span class="text-stone-400 text-xs italic">No days added.</span>`;
+            });
+
+            // Load Destination-Specific Travel Guides
+            onValue(ref(db, `itineraries/${id}/other_guides`), (snapshot) => {
+                const guides = snapshot.val();
+                const container = document.getElementById('destination-guides-admin-list');
+                container.innerHTML = guides ? Object.keys(guides).map(k => `
+                    <div class="flex justify-between items-center bg-white p-2 border text-xs">
+                        <span class="truncate max-w-[400px]"><strong>${guides[k].title || 'Untitled'}</strong></span>
+                        <button onclick="window.removeItem('${id}/other_guides', '${k}')" class="text-red-500 uppercase text-[9px] font-bold">Delete</button>
+                    </div>
+                `).join('') : `<span class="text-stone-400 text-xs italic">No travel guides added for this destination yet.</span>`;
             });
 
             // Load Compass Entries
@@ -287,6 +311,19 @@
             await push(ref(db, `itineraries/${activeId}/days`), { title, content });
             document.getElementById('dayTitle').value = '';
             document.getElementById('dayContent').value = '';
+        };
+
+        document.getElementById('addDestinationGuideBtn').onclick = async () => {
+            if (!activeId) return;
+            const title = document.getElementById('dt_guide_title').value;
+            const photo = document.getElementById('dt_guide_photo').value;
+            const link = document.getElementById('dt_guide_link').value;
+            if (!title) return alert("Please enter a guide title.");
+            await push(ref(db, `itineraries/${activeId}/other_guides`), { title, photo, link });
+            document.getElementById('dt_guide_title').value = '';
+            document.getElementById('dt_guide_photo').value = '';
+            document.getElementById('dt_guide_link').value = '';
+            alert("Destination travel guide added successfully!");
         };
 
         document.getElementById('addCompassBtn').onclick = async () => {
