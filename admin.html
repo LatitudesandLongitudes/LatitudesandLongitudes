@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -31,6 +31,18 @@
                 <button id="updateTripBtn" class="bg-black text-white px-8 py-2 text-[10px] uppercase tracking-widest hidden">Save Changes</button>
                 <button id="cancelEditBtn" class="border border-stone-300 text-stone-600 px-4 py-2 text-[10px] uppercase tracking-widest hidden">Cancel</button>
             </div>
+        </div>
+
+        <!-- Other USA Travel Guides Manager Section -->
+        <div class="mb-12 p-8 bg-white border border-stone-200">
+            <h3 class="font-bold text-xs uppercase mb-4 text-[#8d5d46]">Manage Homepage: Other USA Travel Guides</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <input type="text" id="oguide_title" placeholder="Guide Title (e.g., 14 Stunning Sights in Death Valley)" class="input-box md:col-span-3">
+                <input type="text" id="oguide_photo" placeholder="Photo Image URL" class="input-box">
+                <input type="text" id="oguide_link" placeholder="Destination/Page Link URL" class="input-box md:col-span-2">
+            </div>
+            <button id="addOtherGuideBtn" class="bg-[#8d5d46] text-white px-8 py-2 text-[10px] uppercase tracking-widest mt-2">Add Travel Guide Card</button>
+            <div id="other-guides-admin-list" class="mt-6 space-y-2 border-t pt-4"></div>
         </div>
 
         <!-- Existing Trips List Grid -->
@@ -101,6 +113,36 @@
         const db = getDatabase(initializeApp({ databaseURL: "https://latitudesandlongitudes-3f37b-default-rtdb.firebaseio.com" }));
         let activeId = null;
         let cachedDestinations = {};
+
+        // Load Homepage Other USA Travel Guides
+        onValue(ref(db, 'other_usa_guides'), (snapshot) => {
+            const guides = snapshot.val();
+            const container = document.getElementById('other-guides-admin-list');
+            container.innerHTML = guides ? Object.keys(guides).map(k => `
+                <div class="flex justify-between items-center bg-stone-50 p-2 border text-xs">
+                    <span class="truncate max-w-[400px]"><strong>${guides[k].title || 'Untitled'}</strong></span>
+                    <button onclick="window.removeGlobalItem('other_usa_guides', '${k}')" class="text-red-500 uppercase text-[9px] font-bold">Delete</button>
+                </div>
+            `).join('') : `<span class="text-stone-400 text-xs italic">No travel guide cards added yet.</span>`;
+        });
+
+        document.getElementById('addOtherGuideBtn').onclick = async () => {
+            const title = document.getElementById('oguide_title').value;
+            const photo = document.getElementById('oguide_photo').value;
+            const link = document.getElementById('oguide_link').value;
+            if (!title) return alert("Please enter a guide title.");
+            await push(ref(db, 'other_usa_guides'), { title, photo, link });
+            document.getElementById('oguide_title').value = '';
+            document.getElementById('oguide_photo').value = '';
+            document.getElementById('oguide_link').value = '';
+            alert("Travel guide card added successfully!");
+        };
+
+        window.removeGlobalItem = async (path, key) => {
+            if (confirm("Delete this travel guide card?")) {
+                await remove(ref(db, `${path}/${key}`));
+            }
+        };
 
         // 1. Load Destinations List
         onValue(ref(db, 'itineraries'), (snapshot) => {
